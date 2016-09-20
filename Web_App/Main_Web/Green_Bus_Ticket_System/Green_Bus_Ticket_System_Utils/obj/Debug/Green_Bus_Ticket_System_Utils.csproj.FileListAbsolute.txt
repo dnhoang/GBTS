@@ -1,0 +1,5 @@
+E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System_Utils\bin\Debug\Green_Bus_Ticket_System_Utils.dll
+E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System_Utils\bin\Debug\Green_Bus_Ticket_System_Utils.pdb
+E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System_Utils\obj\Debug\Green_Bus_Ticket_System_Utils.csprojResolveAssemblyReference.cache
+E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System_Utils\obj\Debug\Green_Bus_Ticket_System_Utils.dll
+E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System_Utils\obj\Debug\Green_Bus_Ticket_System_Utils.pdb
