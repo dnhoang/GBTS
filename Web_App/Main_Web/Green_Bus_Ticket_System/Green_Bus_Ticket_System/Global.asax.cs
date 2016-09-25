@@ -7,7 +7,7 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using Autofac.Integration.Mvc;
 using Autofac;
-
+using log4net.Config;
 
 namespace Green_Bus_Ticket_System
 {
@@ -32,6 +32,8 @@ namespace Green_Bus_Ticket_System
             var container = builder.Build();
 
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+
+            XmlConfigurator.Configure();
         }
     }
 }

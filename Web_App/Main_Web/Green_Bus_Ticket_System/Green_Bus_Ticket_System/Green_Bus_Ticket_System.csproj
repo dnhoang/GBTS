@@ -53,6 +53,10 @@
       <HintPath>..\packages\Autofac.Mvc5.4.0.0\lib\net451\Autofac.Integration.Mvc.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=1.2.0.1011, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.1.2.0\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
@@ -86,6 +90,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="RestSharp, Version=105.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.2\lib\net452\RestSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -138,6 +146,18 @@
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="Twilio.Api, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.4.7.2\lib\3.5\Twilio.Api.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Twilio.Mvc, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.Mvc.3.2.1\lib\3.5\Twilio.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Twilio.Twiml, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.TwiML.3.0\lib\3.5\Twilio.Twiml.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
@@ -204,7 +224,11 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Areas\Passenger\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Passenger\PassengerAreaRegistration.cs" />
+    <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SMSController.cs" />
     <Compile Include="EFModule.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -220,6 +244,94 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\front\css\bootstrap.css" />
+    <Content Include="Content\front\css\font-awesome.min.css" />
+    <Content Include="Content\front\css\plugin\awesome-bootstrap-checkbox\awesome-bootstrap-checkbox.css" />
+    <Content Include="Content\front\css\plugin\bootstrap-select\bootstrap-select.css" />
+    <Content Include="Content\front\css\plugin\bootstrap-toggle\bootstrap-toggle.min.css" />
+    <Content Include="Content\front\css\plugin\bootstrap-wysihtml5\bootstrap-wysihtml5.css" />
+    <Content Include="Content\front\css\plugin\chartist\chartist.min.css" />
+    <Content Include="Content\front\css\plugin\datatables\datatables.css" />
+    <Content Include="Content\front\css\plugin\date-range-picker\daterangepicker-bs3.css" />
+    <Content Include="Content\front\css\plugin\fullcalendar\fullcalendar.css" />
+    <Content Include="Content\front\css\plugin\rickshaw\detail.css" />
+    <Content Include="Content\front\css\plugin\rickshaw\graph.css" />
+    <Content Include="Content\front\css\plugin\rickshaw\legend.css" />
+    <Content Include="Content\front\css\plugin\rickshaw\rickshaw.css" />
+    <Content Include="Content\front\css\plugin\summernote\summernote-bs3.css" />
+    <Content Include="Content\front\css\plugin\summernote\summernote.css" />
+    <Content Include="Content\front\css\plugin\sweet-alert\sweet-alert.css" />
+    <Content Include="Content\front\css\responsive.css" />
+    <Content Include="Content\front\css\root.css" />
+    <Content Include="Content\front\css\shortcuts.css" />
+    <Content Include="Content\front\css\style.css" />
+    <Content Include="Content\front\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\front\img\404.png" />
+    <Content Include="Content\front\img\500.png" />
+    <Content Include="Content\front\img\alerticons\anotherwarning.png" />
+    <Content Include="Content\front\img\alerticons\autotime.png" />
+    <Content Include="Content\front\img\alerticons\basic.png" />
+    <Content Include="Content\front\img\alerticons\picture.png" />
+    <Content Include="Content\front\img\alerticons\success.png" />
+    <Content Include="Content\front\img\alerticons\textunder.png" />
+    <Content Include="Content\front\img\alerticons\warning.png" />
+    <Content Include="Content\front\img\datatables\back_disabled.png" />
+    <Content Include="Content\front\img\datatables\back_enabled.png" />
+    <Content Include="Content\front\img\datatables\back_enabled_hover.png" />
+    <Content Include="Content\front\img\datatables\forward_disabled.png" />
+    <Content Include="Content\front\img\datatables\forward_enabled.png" />
+    <Content Include="Content\front\img\datatables\forward_enabled_hover.png" />
+    <Content Include="Content\front\img\datatables\sort_asc.png" />
+    <Content Include="Content\front\img\datatables\sort_asc_disabled.png" />
+    <Content Include="Content\front\img\datatables\sort_both.png" />
+    <Content Include="Content\front\img\datatables\sort_desc.png" />
+    <Content Include="Content\front\img\datatables\sort_desc_disabled.png" />
+    <Content Include="Content\front\img\example-logo.png" />
+    <Content Include="Content\front\img\example1.jpg" />
+    <Content Include="Content\front\img\kode-icon.png" />
+    <Content Include="Content\front\img\loading.gif" />
+    <Content Include="Content\front\img\modalicons\large.png" />
+    <Content Include="Content\front\img\modalicons\normal.png" />
+    <Content Include="Content\front\img\modalicons\small.png" />
+    <Content Include="Content\front\img\profileimg.png" />
+    <Content Include="Content\front\img\profileimg2.png" />
+    <Content Include="Content\front\img\profileimg3.png" />
+    <Content Include="Content\front\img\profileimg4.png" />
+    <Content Include="Content\front\img\profileimg5.png" />
+    <Content Include="Content\front\img\profileimg6.png" />
+    <Content Include="Content\front\img\signature.png" />
+    <Content Include="Content\front\img\socialbg.jpg" />
+    <Content Include="Content\front\js\bootstrap-select\bootstrap-select.js" />
+    <Content Include="Content\front\js\bootstrap-toggle\bootstrap-toggle.min.js" />
+    <Content Include="Content\front\js\bootstrap-wysihtml5\bootstrap-wysihtml5.js" />
+    <Content Include="Content\front\js\bootstrap-wysihtml5\wysihtml5-0.3.0.min.js" />
+    <Content Include="Content\front\js\bootstrap\bootstrap.min.js" />
+    <Content Include="Content\front\js\chartist\chartist-plugin.js" />
+    <Content Include="Content\front\js\chartist\chartist.js" />
+    <Content Include="Content\front\js\datatables\datatables.min.js" />
+    <Content Include="Content\front\js\date-range-picker\daterangepicker.js" />
+    <Content Include="Content\front\js\easypiechart\easypiechart-plugin.js" />
+    <Content Include="Content\front\js\easypiechart\easypiechart.js" />
+    <Content Include="Content\front\js\flot-chart\flot-chart-pie.js" />
+    <Content Include="Content\front\js\flot-chart\flot-chart-plugin.js" />
+    <Content Include="Content\front\js\flot-chart\flot-chart-stack.js" />
+    <Content Include="Content\front\js\flot-chart\flot-chart-time.js" />
+    <Content Include="Content\front\js\flot-chart\flot-chart.js" />
+    <Content Include="Content\front\js\full-calendar\fullcalendar.js" />
+    <Content Include="Content\front\js\gmaps\gmaps-plugin.js" />
+    <Content Include="Content\front\js\gmaps\gmaps.js" />
+    <Content Include="Content\front\js\jquery-ui\jquery-ui.min.js" />
+    <Content Include="Content\front\js\jquery.min.js" />
+    <Content Include="Content\front\js\kode-alert\main.js" />
+    <Content Include="Content\front\js\moment\moment.min.js" />
+    <Content Include="Content\front\js\plugins.js" />
+    <Content Include="Content\front\js\rickshaw\d3.v3.js" />
+    <Content Include="Content\front\js\rickshaw\rickshaw-plugin.js" />
+    <Content Include="Content\front\js\rickshaw\rickshaw.js" />
+    <Content Include="Content\front\js\sparkline\sparkline-plugin.js" />
+    <Content Include="Content\front\js\sparkline\sparkline.js" />
+    <Content Include="Content\front\js\summernote\summernote.min.js" />
+    <Content Include="Content\front\js\sweet-alert\sweet-alert.min.js" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -231,6 +343,22 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Areas\Passenger\Views\web.config" />
+    <Content Include="Content\front\css\plugin\.DS_Store" />
+    <Content Include="Content\front\css\plugin\bootstrap-toggle\.DS_Store" />
+    <Content Include="Content\front\css\style.less" />
+    <Content Include="Content\front\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\front\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\front\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\front\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\front\fonts\FontAwesome.otf" />
+    <Content Include="Content\front\img\alerticons\.DS_Store" />
+    <Content Include="Content\front\img\datatables\.DS_Store" />
+    <Content Include="Content\front\img\modalicons\.DS_Store" />
+    <Content Include="Content\front\js\chartist\.DS_Store" />
+    <Content Include="Areas\Passenger\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Passenger\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Passenger\Views\Home\Index.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -257,7 +385,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Passenger\Models\" />
+    <Folder Include="Views\Api\" />
     <Folder Include="Views\Home\" />
+    <Folder Include="Views\SMS\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

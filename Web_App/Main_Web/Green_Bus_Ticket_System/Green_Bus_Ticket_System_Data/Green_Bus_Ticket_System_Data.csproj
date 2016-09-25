@@ -38,6 +38,10 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
@@ -52,56 +56,44 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\AuditableEntity.cs" />
-    <Compile Include="Model\BusRoute.cs">
+    <Compile Include="BusRoute.cs">
       <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Card.cs">
+    <Compile Include="Card.cs">
       <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\CreditPlan.cs">
+    <Compile Include="CreditPlan.cs">
       <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Entity.cs" />
-    <Compile Include="Model\GreenBusTicketSystemModel.Context.cs">
+    <Compile Include="GreenBusTicketSystemModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>GreenBusTicketSystemModel.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\GreenBusTicketSystemModel.cs">
+    <Compile Include="GreenBusTicketSystemModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\GreenBusTicketSystemModel.Designer.cs">
+    <Compile Include="GreenBusTicketSystemModel.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>GreenBusTicketSystemModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Model\PaymentTransaction.cs">
+    <Compile Include="Model\AuditableEntity.cs" />
+    <Compile Include="Model\Entity.cs" />
+    <Compile Include="PaymentTransaction.cs">
       <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Promotion.cs">
-      <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\Role.cs">
-      <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\sysdiagram.cs">
-      <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\Ticket.cs">
-      <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\TicketType.cs">
-      <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\User.cs">
+    <Compile Include="Promotion.cs">
       <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\GenericRepository.cs" />
     <Compile Include="Repositories\GreenBusRepository.cs" />
+    <Compile Include="Role.cs">
+      <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Services\BusRouteService.cs" />
     <Compile Include="Services\CardService.cs" />
     <Compile Include="Services\CreditPlanService.cs" />
@@ -113,8 +105,20 @@
     <Compile Include="Services\TicketService.cs" />
     <Compile Include="Services\TicketTypeService.cs" />
     <Compile Include="Services\UserService.cs" />
+    <Compile Include="sysdiagram.cs">
+      <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Ticket.cs">
+      <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TicketType.cs">
+      <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="UnitOfWork\IUnitOfWork.cs" />
     <Compile Include="UnitOfWork\UnitOfWork.cs" />
+    <Compile Include="User.cs">
+      <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Green_Bus_Ticket_System_Utils\Green_Bus_Ticket_System_Utils.csproj">
@@ -123,32 +127,30 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EntityDeploy Include="Model\GreenBusTicketSystemModel.edmx">
+    <None Include="App.Config" />
+    <EntityDeploy Include="GreenBusTicketSystemModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>GreenBusTicketSystemModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.Config" />
-    <None Include="Model\GreenBusTicketSystemModel.edmx.diagram">
+    <None Include="GreenBusTicketSystemModel.edmx.diagram">
       <DependentUpon>GreenBusTicketSystemModel.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Model\GreenBusTicketSystemModel.Context.tt">
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="GreenBusTicketSystemModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>GreenBusTicketSystemModel.edmx</DependentUpon>
       <LastGenOutput>GreenBusTicketSystemModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Model\GreenBusTicketSystemModel.tt">
+    <Content Include="GreenBusTicketSystemModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>GreenBusTicketSystemModel.edmx</DependentUpon>
       <LastGenOutput>GreenBusTicketSystemModel.cs</LastGenOutput>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

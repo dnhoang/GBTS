@@ -12,6 +12,7 @@ namespace Green_Bus_Ticket_System_Data.Services
     public interface IBusRouteService : IEntityService<BusRoute>
     {
         BusRoute GetBusRoute(int id);
+        BusRoute GetBusRouteByCode(string code);
     }
 
     public class BusRouteService : EntityService<BusRoute>, IBusRouteService
@@ -28,6 +29,11 @@ namespace Green_Bus_Ticket_System_Data.Services
         public BusRoute GetBusRoute(int id)
         {
             return _repository.FindBy(obj => obj.Id == id).FirstOrDefault();
+        }
+
+        public BusRoute GetBusRouteByCode(string code)
+        {
+            return _repository.FindBy(obj => obj.Code.Equals(code)).FirstOrDefault();
         }
     }
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="afb937a0a5a84fb99e13ec0e7e4156cd" Name="Diagram1">
+        <EntityTypeShape EntityType="GreenBusModel.BusRoute" Width="1.5" PointX="8.25" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="GreenBusModel.Card" Width="1.5" PointX="5.25" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="GreenBusModel.CreditPlan" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="GreenBusModel.PaymentTransaction" Width="1.5" PointX="7.5" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="GreenBusModel.Promotion" Width="1.5" PointX="0.75" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="GreenBusModel.Role" Width="1.5" PointX="0.75" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="GreenBusModel.sysdiagram" Width="1.5" PointX="2.75" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="GreenBusModel.Ticket" Width="1.5" PointX="10.5" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="GreenBusModel.TicketType" Width="1.5" PointX="8.25" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="GreenBusModel.User" Width="1.5" PointX="3" PointY="4.5" IsExpanded="true" />
+        <AssociationConnector Association="GreenBusModel.FK_Ticket_BusRoute" ManuallyRouted="false" />
+        <AssociationConnector Association="GreenBusModel.FK_Card_User" ManuallyRouted="false" />
+        <AssociationConnector Association="GreenBusModel.FK_PaymentTransaction_Card" ManuallyRouted="false" />
+        <AssociationConnector Association="GreenBusModel.FK_Ticket_Card" ManuallyRouted="false" />
+        <AssociationConnector Association="GreenBusModel.FK_PaymentTransaction_CreditPlan" ManuallyRouted="false" />
+        <AssociationConnector Association="GreenBusModel.FK_User_Role" ManuallyRouted="false" />
+        <AssociationConnector Association="GreenBusModel.FK_Ticket_TicketType" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
