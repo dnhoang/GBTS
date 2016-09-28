@@ -28,5 +28,17 @@ namespace Green_Bus_Ticket_System_Utils
             DEACTIVATED = 0,
             ACTIVATED = 1,
         };
+
+        public enum TicketTypeStatus : int
+        {
+            DEACTIVATED = 0,
+            ACTIVATED = 1,
+        };
+
+        public enum CreditPlansStatus : int
+        {
+            DEACTIVATED = 0,
+            ACTIVATED = 1,
+        };
     }
 }

@@ -14,6 +14,7 @@ namespace Green_Bus_Ticket_System_Data.Services
     {
         Card GetCard(string cardId);
         Card AddCard(string cardId, int balance);
+        IEnumerable<Card> GetCardsByUser(int userId);
     }
 
     public class CardService : EntityService<Card>, ICardService
@@ -42,6 +43,11 @@ namespace Green_Bus_Ticket_System_Data.Services
             _repository.Add(card);
 
             return card;
+        }
+
+        public IEnumerable<Card> GetCardsByUser(int userId)
+        {
+            return _repository.FindBy(c => c.User.UserId == userId).ToList();
         }
     }
 }

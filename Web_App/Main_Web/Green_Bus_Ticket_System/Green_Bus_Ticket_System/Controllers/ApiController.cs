@@ -6,8 +6,11 @@ using System.Web.Mvc;
 using System.Configuration;
 using Green_Bus_Ticket_System_Data.Services;
 using Green_Bus_Ticket_System_Data;
+using Green_Bus_Ticket_System_Utils;
 using log4net;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 
 namespace Green_Bus_Ticket_System.Controllers
 {
@@ -30,6 +33,67 @@ namespace Green_Bus_Ticket_System.Controllers
             _busRouteService = busRouteService;
         }
 
+        //GET: GetAllTiketType
+        public JsonResult GetAllTicketType(string key)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            IEnumerable<TicketType> tmpTicketTypes = _ticketTypeService.GetAll()
+                .Where(t => t.Status == (int)StatusReference.TicketTypeStatus.ACTIVATED).ToList();
+
+            IEnumerable<TicketType> ticketTypes = tmpTicketTypes.Select(
+                t => new TicketType
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    Price = t.Price,
+                    Description = t.Description
+                }
+            );
+
+            success = true;
+
+            return Json(new { success = success, message = message, data = ticketTypes }, JsonRequestBehavior.AllowGet);
+
+        }
+
+        //GET: GetAllBusRoutes
+        public JsonResult GetAllBusRoutes(string key)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            IEnumerable<BusRoute> tmpBusRoutes = _busRouteService.GetAll().ToList();
+
+            IEnumerable<BusRoute> busRoutes = tmpBusRoutes.Select(
+                b => new BusRoute
+                {
+                    Id = b.Id,
+                    Code = b.Code,
+                    Name = b.Name
+                }
+            );
+
+            success = true;
+
+            return Json(new { success = success, message = message, data = busRoutes }, JsonRequestBehavior.AllowGet);
+
+        }
         // GET: SellTicket
         public JsonResult SellTicket(string key, string cardId, int ticketTypeId, string routeCode)
         {
@@ -41,7 +105,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 message = "Sai api key.";
                 success = false;
                 return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
-            } 
+            }
 
             try
             {
@@ -49,7 +113,8 @@ namespace Green_Bus_Ticket_System.Controllers
                 TicketType ticketType = _ticketTypeService.GetTicketType(ticketTypeId);
                 BusRoute busRoute = _busRouteService.GetBusRouteByCode(routeCode);
 
-                if(card == null) message = "Thẻ không tồn tại.";
+                if (card == null) message = "Thẻ không tồn tại.";
+                else if (card.Status == (int)StatusReference.CardStatus.BLOCKED) message = "Thẻ đang bị tạm khóa.";
                 else if(ticketType == null) message = "Loại vé không tồn tại.";
                 else if (busRoute == null) message = "Tuyến xe không tồn tại.";
                 else
@@ -75,7 +140,7 @@ namespace Green_Bus_Ticket_System.Controllers
                         message = "Mua vé thành công.";
 
                         //Check balance is running out & if user have installed mobile app
-                        if (card.Balance <= minBalance && card.User.NotificationId != null)
+                        if (card.Balance <= minBalance && card.User.NotificationCode != null)
                         {
                             SendNotification("");
                         }

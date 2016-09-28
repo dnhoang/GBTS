@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewBag.Title = "Thẻ của bạn";
+    List<Green_Bus_Ticket_System_Data.Card> cards =
+        (List<Green_Bus_Ticket_System_Data.Card>)ViewBag.Cards;
+    List<Green_Bus_Ticket_System_Data.CreditPlan> creditPlans =
+        (List<Green_Bus_Ticket_System_Data.CreditPlan>)ViewBag.CreditPlans;
+
+    float rate = float.Parse(ViewBag.Rate.ToString());
+}
+<div class="container-padding">
+    @if (cards.Count <= 0)
+    {
+        <p>Bạn chưa có thẻ nào!</p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td>MÃ THẺ</td>
+                    <td>NGÀY ĐĂNG KÝ</td>
+                    <td>SỐ DƯ</td>
+                    <td>TRẠNG THÁI</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Green_Bus_Ticket_System_Data.Card item in cards)
+                {
+
+                    <tr>
+                        <td>@item.CardId</td>
+                        <td>@item.RegistrationDate.ToShortDateString()</td>
+                        <td>@item.Balance đ</td>
+
+                        @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.ACTIVATED)
+                        {
+                            <td><span class="label label-success">ĐÃ KÍCH HOẠT</span></td>
+                            <td><button type="button" class="btn btn-success addcredit" id="@item.CardId"><i class="fa fa-paypal"></i> NẠP TIỀN</button></td>
+                        }
+                        else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.BLOCKED)
+                        {
+                            <td><span class="label label-danger">TẠM KHÓA</span></td>
+                            <td><button type="button" class="btn disabled"><i class="fa fa-paypal"></i> NẠP TIỀN</button></td>
+                        }
+
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Modal -->
+        <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Nạp tiền vào thẻ</h4>
+                    </div>
+                    <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+                        <div class="modal-body">
+                            <input type="hidden" name="cmd" value="_xclick">
+                            <input type="hidden" name="business" value="@ViewBag.Receiver">
+                            <input type="hidden" name="item_name" value="BGTS Add Credit">
+                            <input type="hidden" name="amount" value="@Math.Round((decimal)(creditPlans[0].Price / rate), 2)" id="amount">
+                            <input type="hidden" name="custom" value="" id="custom">
+                            <input type="hidden" name="return" value="@ViewBag.Return">
+                            <input type="hidden" name="notify_url" value="@ViewBag.Notify">
+                            <input type="hidden" name="cancel_return" value="@ViewBag.Cancel">
+
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label form-label text-right">Gói nạp tiền</label>
+                                <div class="col-sm-8">
+                                    <select class="selectpicker" name="item_number">
+                                        @foreach (Green_Bus_Ticket_System_Data.CreditPlan item in creditPlans)
+                                        {
+                                            <option value="@item.Id">@item.Name (@item.Price đ)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-default">THANH TOÁN</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+          <!-- End Moda Code -->
+
+    }
+</div>
+
+@section CustomJs{
+    <script>
+        var priceData = [];
+        @foreach (Green_Bus_Ticket_System_Data.CreditPlan item in creditPlans)
+        {
+            @Html.Raw("priceData["+ item.Id  +"] = " + Math.Round((decimal)(item.Price / rate), 2) + ";");
+        }
+        $(".addcredit").click(function () {
+            var id = this.id;
+            $("#custom").val(id);
+            $("#paymentModal").modal("show");
+        });
+        $(".selectpicker").change(function () {
+            var id = $(this).val();
+            $("#amount").val(priceData[id]);
+        })
+    </script>
+}

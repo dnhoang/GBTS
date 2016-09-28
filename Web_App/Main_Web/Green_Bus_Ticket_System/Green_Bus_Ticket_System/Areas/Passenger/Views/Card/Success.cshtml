@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "Nạp tiền vào thẻ";
+}
+
+<div class="container-padding text-center">
+    <img src="~/Content/front/logo/success-icon-10.png" />
+    <h2>THANH TOÁN THÀNH CÔNG</h2>
+    <p>Hệ thống sẽ cập nhật số dư vào thẻ trong giây lát</p>
+</div>
+
+@section CustomJs{
+    <script>
+        setTimeout(function() {
+            window.location = "/Passenger/Card/";
+        }, 3000);
+    </script>
+}

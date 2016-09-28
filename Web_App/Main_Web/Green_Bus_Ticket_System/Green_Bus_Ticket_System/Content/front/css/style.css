@@ -4079,3 +4079,41 @@ Widgets
   font-size: 11px;
   opacity: 0.7;
 }
+
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+    cursor: pointer;
+    background-color: #fff;
+    opacity: 1;
+}
+.content {
+    background: #ffffff;
+}
+
+.container-padding {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: auto;
+    overflow: auto;
+}
+
+.gb-padding{
+    padding: 20px 0px;
+}
+
+.report{
+    border-top: 1px solid #eee;
+}
+
+.page-header {
+    background: #f3f3f3;
+    margin: -20px -30px 0px -30px;
+    padding: 20px 30px 15px;
+    border-bottom: 1px solid #ccc;
+}
+.form-label {
+    font-weight: 500;
+    font-size: 15px;
+    padding-top: 5px;
+}

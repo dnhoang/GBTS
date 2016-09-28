@@ -224,8 +224,11 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Areas\Passenger\Controllers\CardController.cs" />
     <Compile Include="Areas\Passenger\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Passenger\Controllers\ReportController.cs" />
     <Compile Include="Areas\Passenger\PassengerAreaRegistration.cs" />
+    <Compile Include="Controllers\AccessController.cs" />
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SMSController.cs" />
@@ -332,6 +335,8 @@
     <Content Include="Content\front\js\sparkline\sparkline.js" />
     <Content Include="Content\front\js\summernote\summernote.min.js" />
     <Content Include="Content\front\js\sweet-alert\sweet-alert.min.js" />
+    <Content Include="Content\front\logo\gblogo.png" />
+    <Content Include="Content\front\logo\success-icon-10.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -359,6 +364,9 @@
     <Content Include="Areas\Passenger\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Passenger\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Passenger\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Passenger\Views\Card\Index.cshtml" />
+    <Content Include="Areas\Passenger\Views\Report\Index.cshtml" />
+    <Content Include="Areas\Passenger\Views\Card\Success.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -382,6 +390,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Service References\Application Insights\ConnectedService.json" />
+    <Content Include="Views\Access\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

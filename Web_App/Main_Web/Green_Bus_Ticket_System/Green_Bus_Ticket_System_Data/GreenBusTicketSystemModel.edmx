@@ -101,7 +101,7 @@
           <Property Name="Fullname" Type="nchar" MaxLength="100" />
           <Property Name="Status" Type="int" Nullable="false" />
           <Property Name="RoleId" Type="int" Nullable="false" />
-          <Property Name="NotificationId" Type="nvarchar(max)" />
+          <Property Name="NotificationCode" Type="nvarchar(max)" />
         </EntityType>
         <Association Name="FK_Card_User">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
@@ -341,7 +341,7 @@
           <Property Name="RoleId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Cards" Relationship="Self.FK_Card_User" FromRole="User" ToRole="Card" />
           <NavigationProperty Name="Role" Relationship="Self.FK_User_Role" FromRole="User" ToRole="Role" />
-          <Property Name="NotificationId" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="NotificationCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_Ticket_BusRoute">
           <End Role="BusRoute" Type="Self.BusRoute" Multiplicity="1" />
@@ -571,7 +571,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="GreenBusModel.User">
               <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
+                <ScalarProperty Name="NotificationCode" ColumnName="NotificationCode" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
                 <ScalarProperty Name="Password" ColumnName="Password" />

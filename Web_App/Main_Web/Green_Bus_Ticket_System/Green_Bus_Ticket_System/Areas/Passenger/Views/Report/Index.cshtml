@@ -1,0 +1,145 @@
+﻿
+@{
+    ViewBag.Title = "Báo cáo chi tiêu";
+    List<Green_Bus_Ticket_System_Data.Ticket> tickets =
+        (List<Green_Bus_Ticket_System_Data.Ticket>)ViewBag.Tickets;
+}
+<div class="container-padding">
+    <div class="col col-md-12 gb-padding">
+        <form class="form-inline">
+            <div class="form-group">
+                <label for="beginDate" class="form-label">TỪ NGÀY</label>
+                <div class="input-prepend input-group">
+                    <span class="add-on input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input type="text" id="date-picker-begin" class="form-control active" readonly value="@ViewBag.BeginDate">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="example2" class="form-label">ĐẾN NGÀY</label>
+                <div class="input-prepend input-group">
+                    <span class="add-on input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input type="text" id="date-picker-end" class="form-control active" readonly value="@ViewBag.EndDate">
+                </div>
+            </div>
+            <button type="button" class="btn btn-default" id="get-report">XEM BÁO CÁO</button>
+        </form>
+    </div>
+
+    <div class="col col-md-12 gb-padding report">
+        @if (tickets.Count <= 0)
+        {
+            <p>Không có dữ liệu trong khoảng thời gian đã chọn</p>
+        }
+        else
+        {
+            <table id="report-table" class="table display">
+                <thead>
+                    <tr>
+                        <th>NGÀY GIỜ</th>
+                        <th>SỐ XE BUÝT</th>
+                        <th>THẺ THANH TOÁN</th>
+                        <th>SỐ TIỀN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Green_Bus_Ticket_System_Data.Ticket item in tickets)
+                {
+                        <tr>
+                            <td>@item.BoughtDated.ToString("dd/MM/yyyy hh:mm:ss tt")</td>
+                            <td>@item.BusRoute.Code</td>
+                            <td>@item.CardId</td>
+                            <td>@item.Total đ</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>NGÀY GIỜ</th>
+                        <th>SỐ XE BUÝT</th>
+                        <th>THẺ THANH TOÁN</th>
+                        <th>SỐ TIỀN</th>
+                    </tr>
+                </tfoot>
+            </table>
+
+        }
+    </div>
+    <br />
+</div>
+@section CustomJs{
+    <!-- ================================================
+    Moment.js
+    ================================================ -->
+    <script type="text/javascript" src="~/Content/front/js/moment/moment.min.js"></script>
+
+    <!-- ================================================
+    Bootstrap Date Range Picker
+    ================================================ -->
+    <script type="text/javascript" src="~/Content/front/js/date-range-picker/daterangepicker.js"></script>
+    <!-- ================================================
+    Data Tables
+    ================================================ -->
+    <script src="~/Content/front/js/datatables/datatables.min.js"></script>
+
+    <!-- ================================================
+    Sweet Alert
+    ================================================ -->
+    <script src="~/Content/front/js/sweet-alert/sweet-alert.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#date-picker-begin').daterangepicker({
+                singleDatePicker: true,
+                format: 'DD/MM/YYYY',
+                maxDate: new Date()
+
+            }, function (start, end, lable) {
+                var newEndDate = moment(start).add(30, "days");
+                if (newEndDate > moment()) {
+                    newEndDate = moment();
+                }
+                $('#date-picker-end').data("daterangepicker").setStartDate(newEndDate);
+                $('#date-picker-end').data("daterangepicker").setEndDate(newEndDate);
+            });
+
+            $('#date-picker-end').daterangepicker({
+                singleDatePicker: true,
+                format: 'DD/MM/YYYY',
+                maxDate: new Date()
+            }, function (start, end, lable) {
+                var newBeginDate = moment(start).subtract(30, "days");
+                $('#date-picker-begin').data("daterangepicker").setStartDate(newBeginDate);
+                $('#date-picker-begin').data("daterangepicker").setEndDate(newBeginDate);
+            });
+
+            $('#report-table').DataTable();
+
+            $("#get-report").click(function () {
+                var beginDate = $('#date-picker-begin').val();
+                var endDate = $('#date-picker-end').val();
+
+                $.ajax({
+                    url: "/Report/GetReport",
+                    dataType: "json",
+                    data: { beginDate: beginDate, endDate: endDate },
+                    method: "GET",
+                    success: function (data) {
+                        if (data.success) {
+                            $('#report-table').DataTable().destroy();
+                            $('#report-table').DataTable({
+                                data: data.data
+                            });
+                        } else {
+                            swal({
+                                text: data.message,
+                                type: "error",
+                            });
+                        }
+
+                    }
+                });
+            });
+        });
+
+    </script>
+}

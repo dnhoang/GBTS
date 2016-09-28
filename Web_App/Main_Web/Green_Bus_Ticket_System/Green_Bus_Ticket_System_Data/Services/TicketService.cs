@@ -12,6 +12,7 @@ namespace Green_Bus_Ticket_System_Data.Services
     public interface ITicketService : IEntityService<Ticket>
     {
         Ticket GetTicket(int id);
+        List<Ticket> GetTicketByDateRange(int userId, DateTime beginDate, DateTime endDate);
     }
 
     public class TicketService : EntityService<Ticket>, ITicketService
@@ -28,6 +29,15 @@ namespace Green_Bus_Ticket_System_Data.Services
         public Ticket GetTicket(int id)
         {
             return _repository.FindBy(obj => obj.Id == id).FirstOrDefault();
+        }
+
+        public List<Ticket> GetTicketByDateRange(int userId, DateTime beginDate, DateTime endDate)
+        {
+            return _repository.FindBy(t => 
+            t.Card.UserId == userId 
+            && t.BoughtDated >= beginDate 
+            && t.BoughtDated <= endDate
+            ).ToList();
         }
     }
 }

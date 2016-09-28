@@ -13,7 +13,7 @@ namespace Green_Bus_Ticket_System_Data.Services
     public interface IUserService : IEntityService<User>
     {
         User GetUser(int id);
-        bool isUserExist(string phone);
+        bool IsUserExist(string phone);
         User GetUserByPhone(string phone);
         User AddUser(string phone, string name, string password, int roleId);
 
@@ -35,7 +35,7 @@ namespace Green_Bus_Ticket_System_Data.Services
             return _repository.FindBy(u => u.UserId == id).FirstOrDefault();
         }
 
-        public bool isUserExist(string phone)
+        public bool IsUserExist(string phone)
         {
             User user = GetUserByPhone(phone);
             return user != null;

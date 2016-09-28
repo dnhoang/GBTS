@@ -50,7 +50,7 @@ namespace Green_Bus_Ticket_System.Controllers
                             User user = null;
                             string password = CommonUtils.GeneratePassword(8);
                             //Matching account
-                            if (_userService.isUserExist(phone))
+                            if (_userService.IsUserExist(phone))
                             {
                                 user = _userService.GetUserByPhone(phone);
                                 card.User = user;

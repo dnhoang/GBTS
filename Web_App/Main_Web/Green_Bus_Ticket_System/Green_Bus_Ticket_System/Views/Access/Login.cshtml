@@ -1,0 +1,108 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Green Bus Ticket System - Fast - Cheap - Convenient">
+    <meta name="keywords" content="bus, green, ticket, convenient" />
+    <title>@ViewBag.Title | Green Bus Ticket System</title>
+    <!-- ========== Css Files ========== -->
+    <link href="~/Content/front/css/root.css" rel="stylesheet">
+    <style type="text/css">
+        body {
+            background: #F5F5F5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-form">
+        <form action="index.html">
+            <div class="top">
+                <img src="~/Content/front/logo/gblogo.png" alt="icon" class="icon">
+                <h4>Green Bus Ticket System</h4>
+            </div>
+            <div class="form-area">
+                <div class="alert hidden" id="status"></div>
+                <div class="group">
+                    <input type="number" class="form-control" placeholder="Số điện thoại" id="phone">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div class="group">
+                    <input type="password" class="form-control" placeholder="Mật khẩu" id="password">
+                    <i class="fa fa-key"></i>
+                </div>
+                <button type="button" class="btn btn-default btn-block" id="login">ĐĂNG NHẬP</button>
+            </div>
+        </form>
+    </div>
+
+    <script type="text/javascript" src="~/Content/front/js/jquery.min.js"></script>
+
+    <script>
+
+        $("#login").click(function () {
+            var phone = $("#phone").val();
+            var password = $("#password").val();
+            if (validate()) {
+                $("#login").html('<i class="fa fa-spinner fa-pulse" aria-hidden="true"></i> Logging in...');
+                $.ajax({
+                    url: "/Access/LoginAccount",
+                    method: "POST",
+                    dataType: "json",
+                    data: { phone: phone, password: password },
+                    success: function (data) {
+                        if (data.success) {
+                            $("#status").removeClass("hidden");
+                            $("#status").removeClass("alert-danger");
+                            $("#status").addClass("alert-success");
+                            $("#status").html(data.message);
+                            setTimeout(function () {
+                                window.location = data.url;
+                            }, 500);
+                        } else {
+                            $("#status").removeClass("hidden");
+                            $("#status").removeClass("alert-success");
+                            $("#status").addClass("alert-danger");
+                            $("#status").html(data.message);
+                        }
+                        $("#login").html('ĐĂNG NHẬP');
+                    }
+                });
+            }
+        });
+
+        function validate() {
+            var phone = $("#phone").val();
+            var password = $("#password").val();
+
+            if (phone.trim().length < 10 || phone.trim().length > 11) {
+                $("#status").removeClass("hidden");
+                $("#status").addClass("alert-danger");
+                $("#status").html("Số điện thoại không hợp lệ");
+                return false;
+            }
+
+            if (password.trim().length < 6) {
+                $("#status").removeClass("hidden");
+                $("#status").addClass("alert-danger");
+                $("#status").html("Mât khẩu từ 6-50 ký tự");
+                return false;
+            }
+
+
+            $("#status").addClass("hidden");
+            return true;
+        }
+
+    </script>
+
+</body>
+</html>
