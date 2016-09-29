@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?><!--CoordinatorLayout là Layout sắp xếp các thành phần con của nó theo tọa độ-->
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.example.gbts.navigationdraweractivity.MainActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <!--<include layout="@layout/content_main" />-->
+
+    <FrameLayout
+        android:id="@+id/flContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
+        <!--<include-->
+        <!--layout="@layout/content_main"/>-->
+    </FrameLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_direction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="140dp"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:elevation="5dp"
+        android:visibility="invisible"
+        android:src="@drawable/ic_action_location"
+        app:backgroundTint="@color/fab2_color"
+        android:onClick="clickToDirection"
+        app:pressedTranslationZ="10dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="80dp"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:visibility="invisible"
+        android:elevation="5dp"
+        android:src="@drawable/ic_action_information"
+        app:backgroundTint="@color/fab1_color"
+        app:pressedTranslationZ="10dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:elevation="5dp"
+        android:src="@drawable/ic_action_plus"
+        app:pressedTranslationZ="10dp" />
+    <!--app:srcCompat="@android:drawable/ic_dialog_dialer"-->
+</android.support.design.widget.CoordinatorLayout>
