@@ -26,6 +26,7 @@ namespace Green_Bus_Ticket_System.Controllers
             return View();
         }
 
+        
         [HttpPost]
         public JsonResult LoginAccount(string phone, string password)
         {
@@ -64,6 +65,16 @@ namespace Green_Bus_Ticket_System.Controllers
             return Json(new { success = success, message = message, url = url });
         }
 
+        private bool AuthorizeRequest()
+        {
+            User user = (User)Session["user"];
+            return (user != null && user.RoleId == (int)StatusReference.RoleID.PASSENGER);
+        }
+
+        private User GetCurrentUser()
+        {
+            return (User)Session["user"];
+        }
 
     }
 }

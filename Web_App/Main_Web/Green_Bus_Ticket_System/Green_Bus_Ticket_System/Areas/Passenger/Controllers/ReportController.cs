@@ -73,6 +73,7 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
             return Json(new { success = success, message = message, data = result }, JsonRequestBehavior.AllowGet);
             
         }
+        
 
         private bool AuthorizeRequest()
         {

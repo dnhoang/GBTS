@@ -30,10 +30,27 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
             return View();
         }
 
+        public ActionResult Profiles()
+        {
+            if (!AuthorizeRequest())
+            {
+                return Redirect("/Access/Login");
+            }
+
+            ViewBag.User = GetCurrentUser();
+            return View();
+        }
+
+
         private bool AuthorizeRequest()
         {
             User user = (User)Session["user"];
             return (user != null && user.RoleId == (int)StatusReference.RoleID.PASSENGER);
         }
+        private User GetCurrentUser()
+        {
+            return (User)Session["user"];
+        }
+
     }
 }

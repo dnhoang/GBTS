@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewBag.Title = "Profiles";
+}
+<div class="container-padding">
+    <form class="form-horizontal col-sm-6">
+        <div class="form-group">
+            <label class="col-sm-3 control-label form-label">Số điện thoại</label>
+            <div class="col-sm-9">
+                <label class="control-label form-label"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label form-label">Họ tên</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" id="name">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label form-label">Mật khẩu</label>
+            <div class="col-sm-9">
+                <input type="password" class="form-control" id="password" placeholder="Để trống nếu không muốn đổi mật khẩu">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="button" class="btn btn-default">LƯU THÔNG TIN</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+@section CustomJs{
+    <!-- ================================================
+    Sweet Alert
+    ================================================ -->
+    <script src="~/Content/front/js/sweet-alert/sweet-alert.min.js"></script>
+    <script>
+
+
+        function validate() {
+            var passwordLen = $("#password").val().trim().length;
+            if (passwordLen > 0 && passwordLen < 6) {
+                swal({
+                    title: "",
+                    text: "Mật khẩu từ 6-50 ký tự",
+                    type: "warning"
+                });
+            }
+        }
+    </script>
+}
