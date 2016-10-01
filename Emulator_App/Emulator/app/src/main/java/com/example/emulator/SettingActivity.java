@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.preference.PreferenceActivity;
 
+import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -61,8 +62,17 @@ public class SettingActivity extends AppCompatActivity {
                         System.out.println(id+"!!!!!");
                         saveSetting(id);
                         TextView routeName = (TextView) findViewById(R.id.tvRouteName);
-                        //sharedPreferences=getSharedPreferences(setting, MODE_PRIVATE);
                         routeName.setText(sharedPreferences.getString("name","Chưa chọn tuyến"));
+                        //chua chay
+//                        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//
+//                        View header = navigationView.getHeaderView(0);
+//
+//                        TextView headerLine = (TextView) header.findViewById(R.id.tvHeaderRoute);
+//                        headerLine.setText(sharedPreferences.getString("code","Chưa chọn tuyến"));
+//                        TextView headerName = (TextView) header.findViewById(R.id.tvHeaderRouteName);
+//                        headerName.setText(sharedPreferences.getString("name","Chưa chọn tuyến"));
+
                     }
                 });
     }

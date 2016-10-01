@@ -3,6 +3,8 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="SUCESS">Thanh toán thành công."/n" Thẻ của bạn đã bị trừ</string>
+    <string name="FAIL">Vui lòng kiểm tra số dư của thẻ</string>
     <string name="ok_detection">TAG DETECTED: </string>
     <string name="action_settings">Settings</string>
 

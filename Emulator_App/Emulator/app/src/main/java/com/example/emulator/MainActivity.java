@@ -34,13 +34,16 @@ public class MainActivity extends AppCompatActivity
     IntentFilter writeTagFilters[];
     boolean writeMode;
     Tag mytag;
-    String setting="settingPreference";
+    String setting = "settingPreference";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //Lay thong tin
+
         //NFC
         RelativeLayout sucess = (RelativeLayout) findViewById(R.id.container);
         sucess.setVisibility(View.INVISIBLE);
@@ -52,14 +55,14 @@ public class MainActivity extends AppCompatActivity
         tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
         writeTagFilters = new IntentFilter[]{tagDetected};
         //NFC
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -69,10 +72,28 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        //Lay thong tin
+
+        //View headerView = navigationView.getHeaderView(0);
+        SharedPreferences sharedPreferences=getSharedPreferences(setting,MODE_PRIVATE);
+        View header = navigationView.getHeaderView(0);
+
+        TextView headerLine = (TextView) header.findViewById(R.id.tvHeaderRoute);
+        headerLine.setText(sharedPreferences.getString("code","Chưa chọn tuyến"));
+        TextView headerName = (TextView) header.findViewById(R.id.tvHeaderRouteName);
+        headerName.setText(sharedPreferences.getString("name","Chưa chọn tuyến"));
+
+//        TextView headerLine = (TextView) findViewById(R.id.tvHeaderRoute);
+//        headerLine.setText(sharedPreferences.getString("code","Chưa chọn tuyến"));
+//        TextView headerName = (TextView) findViewById(R.id.tvHeaderRouteName);
+//        headerName.setText(sharedPreferences.getString("name","Chưa chọn tuyến"));
+        //
     }
+
     static String bin2hex(byte[] data) {
         return String.format("%0" + (data.length * 2) + "X", new BigInteger(1, data));
     }
+
     @Override
     protected void onNewIntent(Intent intent) {
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
@@ -83,18 +104,20 @@ public class MainActivity extends AppCompatActivity
             MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.b7);
             mediaPlayer.start();
             String tagid = bin2hex(mytag.getId());
-            Toast.makeText(this, this.getString(R.string.ok_detection) + bin2hex(mytag.getId()), Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, this.getString(R.string.ok_detection) + bin2hex(mytag.getId()), Toast.LENGTH_LONG).show();
             final RelativeLayout success = (RelativeLayout) findViewById(R.id.container);
             final RelativeLayout fail = (RelativeLayout) findViewById(R.id.containerfail);
+            final SharedPreferences sharedPreferences=getSharedPreferences(setting,MODE_PRIVATE);
             //success.setVisibility(View.VISIBLE);
-            if (tagid.equals("DD7F7F81")){
+            if (tagid.equals("DD7F7F81")) {
                 success.setVisibility(View.VISIBLE);
+                float tickketPrice=sharedPreferences.getFloat("price",0);
+                Toast.makeText(this, this.getString(R.string.SUCESS)+ " "+tickketPrice, Toast.LENGTH_SHORT).show();
                 changeLayout(true);
             } else {
                 fail.setVisibility(View.VISIBLE);
                 changeLayout(false);
             }
-
 
 
             //System.out.println("TAG ID" + tagid);
@@ -104,16 +127,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void changeLayout(final boolean result) {
-        final RelativeLayout sucess=(RelativeLayout) findViewById(R.id.container);
-        final RelativeLayout fail=(RelativeLayout) findViewById(R.id.containerfail);
-        CountDownTimer timer = new CountDownTimer(1000, 1000) {
+        final RelativeLayout sucess = (RelativeLayout) findViewById(R.id.container);
+        final RelativeLayout fail = (RelativeLayout) findViewById(R.id.containerfail);
+        CountDownTimer timer = new CountDownTimer(2000, 2000) {
             @Override
             public void onTick(long millisUntilFinished) {
 
             }
+
             @Override
             public void onFinish() {
-                if (result==true){
+                if (result == true) {
                     sucess.setVisibility(View.INVISIBLE);
                 } else {
                     //fail
@@ -124,6 +148,7 @@ public class MainActivity extends AppCompatActivity
         };
         timer.start();
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -164,7 +189,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_manage) {
-            Intent intent=new Intent(this,SettingActivity.class);
+            Intent intent = new Intent(this, SettingActivity.class);
             startActivity(intent);
         }
 
@@ -172,6 +197,7 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     //NFC
     public void onPause() {
         super.onPause();
@@ -181,11 +207,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
-        TextView routeName=(TextView)findViewById(R.id.tvRouteName);
-        SharedPreferences sharedPreferences=getSharedPreferences(setting, MODE_PRIVATE);
-        routeName.setText(sharedPreferences.getString("name","Chưa chọn tuyến"));
-        TextView routeNumber=(TextView)findViewById(R.id.tvRouteNumber);
-        routeNumber.setText(sharedPreferences.getString("code","Chưa chọn tuyến"));
+        TextView routeName = (TextView) findViewById(R.id.tvRouteName);
+        SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+        routeName.setText(sharedPreferences.getString("name", "Chưa chọn tuyến"));
+        TextView routeNumber = (TextView) findViewById(R.id.tvRouteNumber);
+        routeNumber.setText(sharedPreferences.getString("code", "Chưa chọn tuyến"));
         ReadModeOn();
     }
 
