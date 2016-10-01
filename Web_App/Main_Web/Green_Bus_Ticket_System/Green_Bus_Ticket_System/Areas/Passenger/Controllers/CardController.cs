@@ -86,6 +86,31 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
             return null;
         }
 
+        [HttpPost]
+        public JsonResult UpdateCardName(string id, string name)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!AuthorizeRequest())
+            {
+                message = "Bạn chưa đăng nhập";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            Card card = _cardService.GetCard(id);
+            if (card != null)
+            {
+                card.CardName = name;
+                _cardService.Update(card);
+                success = true;
+                message = "Cập nhật tên thẻ thành công";
+            }
+
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult Success()
         {
             return View();

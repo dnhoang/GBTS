@@ -26,6 +26,7 @@ namespace Green_Bus_Ticket_System_Data
         public double Balance { get; set; }
         public int Status { get; set; }
         public Nullable<int> UserId { get; set; }
+        public string CardName { get; set; }
     
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

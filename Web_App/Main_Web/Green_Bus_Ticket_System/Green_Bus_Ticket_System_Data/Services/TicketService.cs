@@ -37,7 +37,7 @@ namespace Green_Bus_Ticket_System_Data.Services
             t.Card.UserId == userId 
             && t.BoughtDated >= beginDate 
             && t.BoughtDated <= endDate
-            ).ToList();
+            ).OrderByDescending(p => p.BoughtDated).ToList();
         }
     }
 }

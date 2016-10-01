@@ -23,6 +23,7 @@ namespace Green_Bus_Ticket_System_Data
         public int Id { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
+        public bool Status { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Ticket> Tickets { get; set; }

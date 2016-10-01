@@ -19,6 +19,7 @@ namespace Green_Bus_Ticket_System.Controllers
         private static readonly ILog log = LogManager.GetLogger("WebLog");
         string apiKey = ConfigurationManager.AppSettings["ApiKey"];
         int minBalance = Int32.Parse(ConfigurationManager.AppSettings["AlertBalance"]);
+        int defaultBalance = Int32.Parse(ConfigurationManager.AppSettings["DefaultBalance"]);
 
         ICardService _cardService;
         ITicketTypeService _ticketTypeService;
@@ -31,6 +32,42 @@ namespace Green_Bus_Ticket_System.Controllers
             _ticketTypeService = ticketTypeService;
             _ticketService = ticketService;
             _busRouteService = busRouteService;
+        }
+        //GET: AddCard
+        public JsonResult AddCard(string key, string cardId)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            
+            if (_cardService.IsCardExist(cardId))
+            {
+                success = false;
+                message = "Thẻ này đã tồn tại trên hệ thống";
+            }
+            else
+            {
+                Card card = new Card();
+                card.CardId = cardId;
+                card.CardName = "Thẻ " + cardId;
+                card.Balance = defaultBalance;
+                card.RegistrationDate = DateTime.Now;
+                card.Status = (int) StatusReference.CardStatus.NON_ACTIVATED;
+                _cardService.Create(card);
+
+                success = true;
+                message = "Thêm thẻ vào hệ thống thành công";
+            }
+
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+
         }
 
         //GET: GetAllTiketType
@@ -63,6 +100,39 @@ namespace Green_Bus_Ticket_System.Controllers
 
             return Json(new { success = success, message = message, data = ticketTypes }, JsonRequestBehavior.AllowGet);
 
+        }
+
+        //GET: GetBusRouteByCode
+        public JsonResult GetBusRouteByCode(string key, string routeCode)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            BusRoute busRoute = _busRouteService.GetBusRouteByCode(routeCode);
+            Object route = new { };
+
+            if(busRoute == null)
+            {
+                success = false;
+                message = "Tuyến xe không tồn tại.";
+            }else
+            {
+                success = true;
+                route = new
+                {
+                    Id = busRoute.Id,
+                    Code = busRoute.Code,
+                    Name = busRoute.Name
+                };
+            }
+            return Json(new { success = success, message = message, data = route }, JsonRequestBehavior.AllowGet);
         }
 
         //GET: GetAllBusRoutes

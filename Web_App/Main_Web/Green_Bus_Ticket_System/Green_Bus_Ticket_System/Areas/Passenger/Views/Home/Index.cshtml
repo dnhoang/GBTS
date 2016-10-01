@@ -1,7 +1,84 @@
 ﻿
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Bảng điều khiển";
+    List<Green_Bus_Ticket_System_Data.Card> cards = (List<Green_Bus_Ticket_System_Data.Card>) ViewBag.Cards;
 }
 
-<h2>Index</h2>
+  <!-- Start Row -->
+<div class="row padding-t-20">
+    <div class="col-md-12">
+        <!-- Start Quick Menu -->
+        <ul class="panel quick-menu clearfix">
+            <li class="col-sm-3">
+                <a href="/Passenger/Card/"><i class="fa fa-credit-card"></i>THẺ CỦA BẠN</a>
+            </li>
+            <li class="col-sm-3">
+                <a href="/Passenger/Report/"><i class="fa fa-line-chart"></i>BÁO CÁO CHI TIÊU</a>
+            </li>
+            <li class="col-sm-3">
+                <a href="/Passenger/Bus"><i class="fa fa-bus"></i>TÌM XE BUÝT</a>
+            </li>
+            <li class="col-sm-3">
+                <a href="/Passenger/Home/Profiles"><i class="fa fa-cogs"></i>TÀI KHOẢN</a>
+            </li>
+        </ul>
+        <!-- End Quick Menu -->
+    </div>
+</div>
+<!-- End Row -->
+<div class="row">
+    <div class="col-md-6">
+        <h4>HOẠT ĐỘNG THÁNG NÀY</h4>
+        <!-- Start Today Activity -->
+        <div class="panel panel-widget hboder">
+            <div class="panel-body">
+                <ul class="widget-inline-list clearfix">
+                    <li class="col-6"><h3 class="activity-title hcolor-red">@ViewBag.TicketNum Vé</h3><i class="fa fa-ticket"></i> VÉ ĐÃ MUA</li>
+                    <li class="col-6"><h3 class="activity-title hcolor-green">@ViewBag.Total.ToString("#,##0") đ</h3><i class="fa fa-money"></i> ĐÃ CHI TIÊU</li>
+                </ul>
+                <div id="todayactivity" class="chart-on-bottom"></div>
+            </div>
+        </div>
+        <!-- End Today Activity -->
+    </div>
+    <!-- End Left -->
+    <!-- Start Right -->
+    <div class="col-md-6">
+        <h4>THẺ CỦA BẠN</h4>
+        @foreach (var item in cards)
+        {
+            <div class="panel panel-default dash-card">
+                <div class="panel-title">
+                    @if (item.CardName == null || item.CardName.Length == 0)
+                    {
+                        <i class="fa fa-credit-card titleicon"></i>@item.CardId
+                    }
+                    else
+                    {
+                        <i class="fa fa-credit-card titleicon"></i>@item.CardName
+                    }
+                    <ul class="panel-tools">
+                        @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.ACTIVATED)
+                        {
+                            <li><span class="label label-success">ĐÃ KÍCH HOẠT</span></li>
+                        }
+                        else
+                        {
+                            <li><span class="label label-danger">KHÓA</span></li>
+                        }
 
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <p class="pull-left">Mã thẻ: @item.CardId</p>
+                    <p class="pull-right">Số dư: @item.Balance.ToString("#,##0") đ</p>
+                </div>
+            </div>
+        }
+        
+        
+    </div>
+    <!-- End Right -->
+
+</div>
+<!-- End Row -->

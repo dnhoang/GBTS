@@ -47,8 +47,17 @@
                         <tr>
                             <td>@item.BoughtDated.ToString("dd/MM/yyyy hh:mm:ss tt")</td>
                             <td>@item.BusRoute.Code</td>
-                            <td>@item.CardId</td>
-                            <td>@item.Total đ</td>
+                            
+                                @if (item.Card.CardName != null && item.Card.CardName.Length > 0)
+                                {
+                                    <td>@item.Card.CardName</td>
+                                }
+                                else
+                                {
+                                    <td>@item.Card.CardId</td>
+                                }
+                            
+                            <td>@item.Total.ToString("#,##0") đ</td>
                         </tr>
                     }
                 </tbody>
@@ -112,7 +121,9 @@
                 $('#date-picker-begin').data("daterangepicker").setEndDate(newBeginDate);
             });
 
-            $('#report-table').DataTable();
+            $('#report-table').DataTable({
+                "order": []
+            });
 
             $("#get-report").click(function () {
                 var beginDate = $('#date-picker-begin').val();
@@ -127,7 +138,8 @@
                         if (data.success) {
                             $('#report-table').DataTable().destroy();
                             $('#report-table').DataTable({
-                                data: data.data
+                                data: data.data,
+                                "order": []
                             });
                         } else {
                             swal({

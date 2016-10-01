@@ -51,8 +51,10 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
             }
             else
             {
+                String current = DateTime.Now.ToString("hh:mm:ss tt");
+                
                 DateTime begin = DateTime.ParseExact(beginDate + " 00:00:00 AM", "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
-                DateTime end = DateTime.ParseExact(endDate + " 00:00:00 AM", "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
+                DateTime end = DateTime.ParseExact(endDate + " " + current, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
 
                 List<Ticket> tickets = _ticketService.GetTicketByDateRange(
                     GetCurrentUser().UserId, begin, end);
@@ -63,7 +65,7 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
                     List<string> oneTicket = new List<string>();
                     oneTicket.Add(item.BoughtDated.ToString("dd/MM/yyyy hh:mm:ss tt"));
                     oneTicket.Add(item.BusRoute.Code);
-                    oneTicket.Add(item.CardId);
+                    oneTicket.Add((item.Card.CardName == null || item.Card.CardName.Length == 0) ? item.CardId : item.Card.CardName);
                     oneTicket.Add(item.Total.ToString() + " đ");
                     result.Add(oneTicket);
                 }

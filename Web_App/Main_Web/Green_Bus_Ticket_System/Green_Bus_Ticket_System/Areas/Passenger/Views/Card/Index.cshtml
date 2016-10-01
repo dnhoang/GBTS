@@ -1,5 +1,5 @@
-﻿
-@{
+﻿@{
+  
     ViewBag.Title = "Thẻ của bạn";
     List<Green_Bus_Ticket_System_Data.Card> cards =
         (List<Green_Bus_Ticket_System_Data.Card>)ViewBag.Cards;
@@ -19,6 +19,7 @@
             <thead>
                 <tr>
                     <td>MÃ THẺ</td>
+                    <td>TÊN THẺ</td>
                     <td>NGÀY ĐĂNG KÝ</td>
                     <td>SỐ DƯ</td>
                     <td>TRẠNG THÁI</td>
@@ -31,8 +32,17 @@
 
                     <tr>
                         <td>@item.CardId</td>
+                        <td>@if (item.CardName != null)
+                        {
+                            <input type="text" class="form-control cardname" id="@item.CardId" value="@item.CardName"/>
+                        }
+                        else
+                        {
+                            <input type="text" class="form-control cardname" id="@item.CardId" value="" />
+                        }
+                        </td>
                         <td>@item.RegistrationDate.ToShortDateString()</td>
-                        <td>@item.Balance đ</td>
+                        <td>@item.Balance.ToString("#,##0") đ</td>
 
                         @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.ACTIVATED)
                         {
@@ -76,7 +86,7 @@
                                     <select class="selectpicker" name="item_number">
                                         @foreach (Green_Bus_Ticket_System_Data.CreditPlan item in creditPlans)
                                         {
-                                            <option value="@item.Id">@item.Name (@item.Price đ)</option>
+                                            <option value="@item.Id">@item.Name (@item.Price.ToString("#,##0") đ)</option>
                                         }
                                     </select>
                                 </div>
@@ -104,14 +114,37 @@
         {
             @Html.Raw("priceData["+ item.Id  +"] = " + Math.Round((decimal)(item.Price / rate), 2) + ";");
         }
+
         $(".addcredit").click(function () {
             var id = this.id;
             $("#custom").val(id);
             $("#paymentModal").modal("show");
         });
+
         $(".selectpicker").change(function () {
             var id = $(this).val();
             $("#amount").val(priceData[id]);
-        })
+        });
+
+        var timer = null;
+        $(".cardname").keyup(function () {
+            var id = this.id;
+            var name = $(this).val();
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                if (name.trim().length > 0) {
+                    $.ajax({
+                        url: "/Card/UpdateCardName",
+                        method: "POST",
+                        dataType: "json",
+                        data: { id: id, name: name },
+                        success: function () {
+                            //Do something
+                        }
+                    });
+                }
+                
+            }, 1000);
+        });
     </script>
 }

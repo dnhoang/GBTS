@@ -55,6 +55,7 @@ namespace Green_Bus_Ticket_System.Controllers
                                 user = _userService.GetUserByPhone(phone);
                                 card.User = user;
                                 card.Status = (int)StatusReference.CardStatus.ACTIVATED;
+                                card.RegistrationDate = DateTime.Now;
                                 _cardService.Update(card);
                                 responseMessage = "Kich hoat the thanh cong, the da duoc them vao tai khoan " + phone;
                             }
@@ -63,6 +64,7 @@ namespace Green_Bus_Ticket_System.Controllers
                                 user = _userService.AddUser(phone, null, password, (int)StatusReference.RoleID.PASSENGER);
                                 card.User = user;
                                 card.Status = (int)StatusReference.CardStatus.ACTIVATED;
+                                card.RegistrationDate = DateTime.Now;
                                 _cardService.Update(card);
                                 responseMessage = "Kich hoat the thanh cong. Tai khoan: " + phone + ". Mat khau: " + password;
                             }

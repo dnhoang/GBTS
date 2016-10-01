@@ -40,6 +40,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 if (user.Password.Equals(hashedPassword))
                 {
                     Session["user"] = user;
+                    Session.Timeout = 60;
                     success = true;
                     message = "Đăng nhập thành công!";
                     if (user.RoleId == (int)StatusReference.RoleID.ADMIN)
@@ -63,6 +64,12 @@ namespace Green_Bus_Ticket_System.Controllers
                 message = "Sai điện thoại hoặc mật khẩu!";
             }
             return Json(new { success = success, message = message, url = url });
+        }
+
+        public ActionResult Logout()
+        {
+            Session["user"] = null;
+            return Redirect("/Access/Login");
         }
 
         private bool AuthorizeRequest()

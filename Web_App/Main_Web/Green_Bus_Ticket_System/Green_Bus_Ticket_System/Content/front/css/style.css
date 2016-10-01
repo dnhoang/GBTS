@@ -281,7 +281,7 @@ Top
 ================================================================================= */
 #top {
   height: 60px;
-  background: #337ab7;
+  background: #26a65b;
   color: #fff;
   width: 100%;
   position: fixed;
@@ -525,7 +525,7 @@ Sidebar
 }
 .sidebar-panel li a {
   display: block;
-  color: rgba(255, 255, 255, 0.6);
+  color: #fff;
   padding: 9px 20px 9px 54px;
   margin-left: -20px;
   margin-right: -20px;
@@ -542,7 +542,7 @@ Sidebar
   left: 20px;
   top: 8px;
   display: block;
-  color: rgba(255, 255, 255, 0.6);
+  color: #fff;
   font-size: 19px;
   border-radius: 3px;
   text-align: center;
@@ -4116,4 +4116,27 @@ Widgets
     font-weight: 500;
     font-size: 15px;
     padding-top: 5px;
+}
+.hboder{
+    border: 1px solid #e5e5e5;
+}
+
+.dash-card{
+    padding-bottom: 0px;
+}
+
+.dash-card .panel-title{
+    padding: 10px 20px;
+}
+
+.activity-title{
+    font-weight: 600;
+    font-size: 30px;
+}
+
+.hcolor-red{
+    color: #ef4836;
+}
+.hcolor-green{
+    color: #26a65b;
 }
