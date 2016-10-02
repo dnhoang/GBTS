@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -39,7 +40,8 @@ import sample.dto.TicketType;
 public class SettingActivity extends AppCompatActivity {
     ArrayList<BusRoute> list = new ArrayList<BusRoute>();
     ArrayList<TicketType> listType = new ArrayList<TicketType>();
-    String setting="settingPreference";
+    ArrayList<String> ticketTypeName = new ArrayList<String>();
+    String setting = "settingPreference";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,22 +49,53 @@ public class SettingActivity extends AppCompatActivity {
 
         //addPreferencesFromResource(R.xml.setting_preferences);
         setContentView(R.layout.activity_setting);
+        //Spinner
+        final Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        //Get all ticket type
+        try {
+            getAllTicketType();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, ticketTypeName));
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+                for (TicketType ticketType : listType
+                        ) {
+                    if (spinner.getSelectedItem().toString().equals(ticketType.getName())) {
+                        TextView price = (TextView) findViewById(R.id.tvPrice);
+                        price.setText(ticketType.getPrice());
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        //SharedPreference
         final SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
 
         TextView routeName = (TextView) findViewById(R.id.tvRouteName);
-        routeName.setText(sharedPreferences.getString("name","Chưa chọn tuyến"));
-        Button btSave=(Button) findViewById(R.id.btSave);
+        routeName.setText(sharedPreferences.getString("name", "Chưa chọn tuyến"));
+        Button btSave = (Button) findViewById(R.id.btSave);
         btSave.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View arg0) {
                         EditText edtRoute = (EditText) findViewById(R.id.edtRoute);
-                        String route = edtRoute.getText().toString();
-                        int id = Integer.parseInt(route);
-                        System.out.println(id+"!!!!!");
-                        saveSetting(id);
-                        TextView routeName = (TextView) findViewById(R.id.tvRouteName);
-                        routeName.setText(sharedPreferences.getString("name","Chưa chọn tuyến"));
+                        String code = edtRoute.getText().toString();
+
+                        String ticketType = spinner.getSelectedItem().toString();
+                        System.out.println(ticketType + "!!!!!");
+                        try {
+                            saveSetting(code, ticketType);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                         //chua chay
 //                        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 //
@@ -84,7 +117,7 @@ public class SettingActivity extends AppCompatActivity {
 //
 //        fragmentTransaction.addToBackStack(null);
 //        fragmentTransaction.commit();
-//        final Spinner spinner = (Spinner) findViewById(R.id.spLine);
+
 //        //JSON
 
 
@@ -103,26 +136,9 @@ public class SettingActivity extends AppCompatActivity {
 //
 //                }
 //            };
-//            spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, codeList));
+
 //            //JSON TicketType
-//            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                @Override
-//                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//
-//                    for (BusRoute route:list
-//                            ) {
-//                        if (Integer.parseInt(spinner.getSelectedItem().toString())==route.getId()){
-//                            TextView routeName=(TextView)findViewById(R.id.tvRouteName);
-//                            routeName.setText(route.getName());
-//                        }
-//                    }
-//                }
-//
-//                @Override
-//                public void onNothingSelected(AdapterView<?> parent) {
-//
-//                }
-//            });
+
 //
 //            data=object.getJSONArray("data");
 //            ArrayList<TicketType> ticketTypeArrayListlist=new ArrayList<TicketType>();
@@ -141,8 +157,10 @@ public class SettingActivity extends AppCompatActivity {
 //            }
 //            //End JSON TICKET TYPE
 
-
-    public TicketType getTicketType(int id) {
+    public void getAllTicketType() throws IOException {
+        //URL url = new URL("http://domain.com/Api/GetAllTicketType?key=gbts_2016_capstone");
+        //BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()));
+        //String json_ticketType=bufferedReader.readLine();
         String json_ticketType = "\n" +
                 "{\n" +
                 "\"success\": true,\n" +
@@ -168,80 +186,84 @@ public class SettingActivity extends AppCompatActivity {
                 "}";
         try {
             JSONObject object = (JSONObject) new JSONTokener(json_ticketType).nextValue();
-            JSONArray data = object.getJSONArray("data");
+            Boolean success=object.getBoolean("success");
+            if (success){
+                JSONArray data = object.getJSONArray("data");
+                for (int i = 0; i < data.length(); i++) {
+                    JSONObject json_data = data.getJSONObject(i);
 
+                    TicketType ticketType = new TicketType();
+                    ticketType.setId(json_data.getString("Id"));
+                    //Get name list
+                    String ticketName = json_data.getString("Name");
+                    //
+                    ticketType.setName(json_data.getString("Name"));
+                    ticketType.setDescription(json_data.getString("Description"));
+                    ticketType.setPrice(json_data.getString("Price"));
+                    ticketType.setStatus(json_data.getString("Status"));
+                    ticketType.setTickets(json_data.getString("Tickets"));
+                    listType.add(ticketType);
+                    ticketTypeName.add(ticketName);
 
-            for (int i = 0; i < data.length(); i++) {
-                JSONObject json_data = data.getJSONObject(i);
-
-                TicketType ticketType = new TicketType();
-                ticketType.setId(json_data.getInt("Id"));
-
-                ticketType.setName(json_data.getString("Name"));
-                ticketType.setDescription(json_data.getString("Description"));
-                ticketType.setPrice(Float.parseFloat(json_data.getString("Price")));
-                ticketType.setStatus(json_data.getString("Status"));
-                ticketType.setTickets(json_data.getString("Tickets"));
-                listType.add(ticketType);
-
-
-            }
-            for (TicketType type : listType
-                    ) {
-                if (id == type.getId()) {
-                    return type;
                 }
             }
+
+
 
         } catch (JSONException e) {
 
         }
+
+    }
+
+    public TicketType getTicketTypeByName(String name) {
+
+        for (TicketType type : listType
+                ) {
+            if (name.equals(type.getName())) {
+                return type;
+            }
+        }
         return null;
     }
 
-    public BusRoute getRoute(int id) {
-        String json = "{\n" +
+    public BusRoute getRouteByCode(String code) throws IOException {
+        //Get result from API by Code then store on json string
+        //URL url=new URL("http://domain.com/Api/GetBusRouteByCode?key=gbts_2016_capstone&routeCode="+code);
+        //BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()));
+        //String json=bufferedReader.readLine();
+        String json = "\n" +
+                "{\n" +
                 "\"success\": true,\n" +
                 "\"message\": \"\",\n" +
-                "\"data\": [\n" +
-                "{\n" +
+                "\"data\": {\n" +
                 "\"Id\": 1,\n" +
                 "\"Code\": \"01\",\n" +
-                "\"Name\": \"Bến Thành - Bến xe Chợ Lớn\",\n" +
-                "\"Tickets\": []\n" +
-                "},\n" +
-                "{\n" +
-                "\"Id\": 2,\n" +
-                "\"Code\": \"02\",\n" +
-                "\"Name\": \"\\tBến Thành - Bến xe Miền Tây\",\n" +
-                "\"Tickets\": []\n" +
+                "\"Name\": \"Bến Thành - Bến xe Chợ Lớn\"\n" +
                 "}\n" +
-                "]\n" +
                 "}";
-
+        //Put data into DTO and return
+        //System.out.println(code+"!!!!");
         try {
             JSONObject object = (JSONObject) new JSONTokener(json).nextValue();
-            JSONArray data = object.getJSONArray("data");
-
-
-            for (int i = 0; i < data.length(); i++) {
-                JSONObject json_data = data.getJSONObject(i);
-
+            Boolean success=object.getBoolean("success");
+            if (success){
+                JSONObject data = object.getJSONObject("data");
+                //System.out.println(code+"Sau data");
+//            JSONObject json_data = data.getJSONObject(0);
                 BusRoute busRoute = new BusRoute();
-                busRoute.setId(json_data.getInt("Id"));
-                busRoute.setCode(json_data.getString("Code"));
-                busRoute.setName(json_data.getString("Name"));
-                busRoute.setTickets(json_data.getString("Tickets"));
-                list.add(busRoute);
+                System.out.println(data.getString("Name"));
+                busRoute.setId(data.getString("Id"));
+                busRoute.setCode(data.getString("Code"));
+                busRoute.setName(data.getString("Name"));
+                //System.out.println(busRoute.getName()+"!!!!");
+                return busRoute;
+            }
+            else {
+                return null;
+            }
 
 
-            }
-            for (BusRoute route : list
-                    ) {
-                if (id == route.getId()) {
-                    return route;
-                }
-            }
 
         } catch (JSONException e) {
 
@@ -249,25 +271,29 @@ public class SettingActivity extends AppCompatActivity {
         return null;
     }
 
-    public void saveSetting(int id) {
+    public void saveSetting(String code, String ticketTypeName) throws IOException {
         SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        EditText edtRoute = (EditText) findViewById(R.id.edtRoute);
-
-        BusRoute dto = getRoute(id);
-        TicketType dtoType = getTicketType(id);
-        if (dto != null) {
-            editor.putInt("id", dto.getId());
-            editor.putString("code", dto.getCode());
-            editor.putString("name", dto.getName());
-            editor.putString("tickets", dto.getTickets());
-            editor.putString("typeName", dtoType.getName());
-            editor.putString("description", dtoType.getDescription());
-            editor.putFloat("price", dtoType.getPrice());
-            editor.putString("status", dtoType.getStatus());
-            editor.putString("ticket", dtoType.getTickets());
+        //EditText edtRoute = (EditText) findViewById(R.id.edtRoute);
+        //System.out.println(code);
+        BusRoute busRoute = getRouteByCode(code);
+        //System.out.println(busRoute.getName());
+        if (busRoute != null) {
+            TicketType ticketType = getTicketTypeByName(ticketTypeName);
+            editor.putString("id", busRoute.getId());
+            editor.putString("code", busRoute.getCode());
+            editor.putString("name", busRoute.getName());
+            editor.putString("ticketTypeId", ticketType.getId());
+            editor.putString("typeName", ticketType.getName());
+            editor.putString("description", ticketType.getDescription());
+            editor.putString("price", ticketType.getPrice());
+            //editor.putString("status", ticketType.getStatus());
+            //editor.putString("ticket", ticketType.getTickets());
         }
         editor.commit();
+        TextView routeName = (TextView) findViewById(R.id.tvRouteName);
+        routeName.setText(busRoute.getName());
+
     }
 
     public static String readAll(Reader rd) throws IOException {
@@ -293,11 +319,6 @@ public class SettingActivity extends AppCompatActivity {
         }
     }
 
-    public void clickToSave() {
-        //saveSetting();
 
-        SharedPreferences sharedPreferences=getSharedPreferences(setting, MODE_PRIVATE);
-        //routeName.setText(sharedPreferences.getString("name","Chưa chọn tuyến"));
-    }
 }
 

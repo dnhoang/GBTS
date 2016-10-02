@@ -40,6 +40,23 @@
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textSize="18sp" />
 
+    <TextView
+        android:text="Chọn loại tuyến"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvPrice" />
+
     <Button
         android:text="Lưu cài đặt"
         android:layout_width="match_parent"

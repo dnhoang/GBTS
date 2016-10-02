@@ -5,16 +5,16 @@ package sample.dto;
  */
 
 public class BusRoute {
-    private int id;
+    private String id;
     private String code;
     private String name;
-    private String tickets;
 
-    public int getId() {
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -34,11 +34,4 @@ public class BusRoute {
         this.name = name;
     }
 
-    public String getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(String tickets) {
-        this.tickets = tickets;
-    }
 }
