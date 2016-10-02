@@ -5,26 +5,18 @@ package sample.dto;
  */
 
 public class TicketType {
-    private int id;
+    private String id;
     private String name;
     private String description;
-    private float price;
+    private String price;
     private String status;
     private String tickets;
 
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -44,8 +36,13 @@ public class TicketType {
         this.description = description;
     }
 
+    public String getPrice() {
+        return price;
+    }
 
-
+    public void setPrice(String price) {
+        this.price = price;
+    }
 
     public String getStatus() {
         return status;

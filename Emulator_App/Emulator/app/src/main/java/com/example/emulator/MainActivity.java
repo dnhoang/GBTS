@@ -21,11 +21,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
+import java.net.URL;
+
+import sample.dto.TicketResult;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,6 +51,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //this.requestWindowFeature(Window.FE);
+        //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -75,13 +89,13 @@ public class MainActivity extends AppCompatActivity
         //Lay thong tin
 
         //View headerView = navigationView.getHeaderView(0);
-        SharedPreferences sharedPreferences=getSharedPreferences(setting,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
         View header = navigationView.getHeaderView(0);
 
         TextView headerLine = (TextView) header.findViewById(R.id.tvHeaderRoute);
-        headerLine.setText(sharedPreferences.getString("code","Chưa chọn tuyến"));
+        headerLine.setText(sharedPreferences.getString("code", "Chưa chọn tuyến"));
         TextView headerName = (TextView) header.findViewById(R.id.tvHeaderRouteName);
-        headerName.setText(sharedPreferences.getString("name","Chưa chọn tuyến"));
+        headerName.setText(sharedPreferences.getString("name", "Chưa chọn tuyến"));
 
 //        TextView headerLine = (TextView) findViewById(R.id.tvHeaderRoute);
 //        headerLine.setText(sharedPreferences.getString("code","Chưa chọn tuyến"));
@@ -107,16 +121,30 @@ public class MainActivity extends AppCompatActivity
             //Toast.makeText(this, this.getString(R.string.ok_detection) + bin2hex(mytag.getId()), Toast.LENGTH_LONG).show();
             final RelativeLayout success = (RelativeLayout) findViewById(R.id.container);
             final RelativeLayout fail = (RelativeLayout) findViewById(R.id.containerfail);
-            final SharedPreferences sharedPreferences=getSharedPreferences(setting,MODE_PRIVATE);
+            final SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+            String cardId = bin2hex(mytag.getId());
+            String ticketTypeId = sharedPreferences.getString("ticketTypeId", "");
+            String routeCode = sharedPreferences.getString("code", "");
+            TicketResult ticketResult = new TicketResult();
+
             //success.setVisibility(View.VISIBLE);
-            if (tagid.equals("DD7F7F81")) {
-                success.setVisibility(View.VISIBLE);
-                float tickketPrice=sharedPreferences.getFloat("price",0);
-                Toast.makeText(this, this.getString(R.string.SUCESS)+ " "+tickketPrice, Toast.LENGTH_SHORT).show();
-                changeLayout(true);
-            } else {
-                fail.setVisibility(View.VISIBLE);
-                changeLayout(false);
+            try {
+                ticketResult = verifyTicket(cardId, ticketTypeId, routeCode);
+                if (ticketResult != null) {
+                    if (ticketResult.getSuccess()) {
+                        success.setVisibility(View.VISIBLE);
+                        //float tickketPrice=sharedPreferences.getFloat("price",0);
+                        //Toast.makeText(this, this.getString(R.string.SUCESS)+ " "+tickketPrice, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, ticketResult.getMessage(), Toast.LENGTH_SHORT).show();
+                        changeLayout(true);
+                    } else {
+                        fail.setVisibility(View.VISIBLE);
+                        Toast.makeText(this, ticketResult.getMessage(), Toast.LENGTH_SHORT).show();
+                        changeLayout(false);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
 
@@ -124,6 +152,29 @@ public class MainActivity extends AppCompatActivity
 
         }
 
+    }
+
+    private TicketResult verifyTicket(String cardId, String ticketTypeId, String routeCode) throws IOException {
+        //URL url=new URL("http://domain.com/Api/SellTicket?key=gbts_2016_capstone&cardId="+cardId+"&ticketTypeId="+ticketTypeId+"&routeCode="+routeCode);
+        //BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()));
+        //String json=bufferedReader.readLine();
+        String json = "\n" +
+                "{\n" +
+                "\"success\": true,\n" +
+                "\"message\": \"Mua vé thành công.\"\n" +
+                "}";
+        try {
+            JSONObject object = (JSONObject) new JSONTokener(json).nextValue();
+            Boolean result = object.getBoolean("success");
+            String message = object.getString("message");
+            TicketResult ticketResult = new TicketResult();
+            ticketResult.setSuccess(result);
+            ticketResult.setMessage(message);
+            return ticketResult;
+        } catch (JSONException e) {
+
+        }
+        return null;
     }
 
     private void changeLayout(final boolean result) {
@@ -211,7 +262,9 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
         routeName.setText(sharedPreferences.getString("name", "Chưa chọn tuyến"));
         TextView routeNumber = (TextView) findViewById(R.id.tvRouteNumber);
-        routeNumber.setText(sharedPreferences.getString("code", "Chưa chọn tuyến"));
+        routeNumber.setText("Tuyến "+sharedPreferences.getString("code", "Chưa chọn tuyến"));
+        TextView price = (TextView) findViewById(R.id.tvPrice);
+        price.setText("Giá vé: "+sharedPreferences.getString("price", "")+" đồng");
         ReadModeOn();
     }
 

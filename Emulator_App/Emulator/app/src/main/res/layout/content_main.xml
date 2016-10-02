@@ -23,6 +23,7 @@
         android:text=" Vui lòng chạm thẻ vào đây"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPrice"
         android:id="@+id/tvHeaderRouteName"
         android:textSize="36sp"
         android:gravity="center"
@@ -41,15 +42,21 @@
         android:textSize="24sp" />
 
     <TextView
-        android:text="Sài Gòn - Thạnh Lộc"
+        android:text=""
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvRouteNumber"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="17dp"
         android:id="@+id/tvRouteName"
         android:textSize="24sp" />
-
+    <TextView
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvRouteName"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/tvPrice"
+        android:textSize="18sp" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -57,7 +64,7 @@
         android:background="#14D63E"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:onClick="clickToBack">
+        >
 
 
     </RelativeLayout>
