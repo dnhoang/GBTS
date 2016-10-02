@@ -18,7 +18,7 @@ namespace Green_Bus_Ticket_System_Utils
         }
         public static string GlobalingingPhone(string vietnamPhone)
         {
-            if (vietnamPhone[0].Equals("0"))
+            if (vietnamPhone.StartsWith("0"))
                 return "+84" + vietnamPhone.Substring(1);
 
             return vietnamPhone;
