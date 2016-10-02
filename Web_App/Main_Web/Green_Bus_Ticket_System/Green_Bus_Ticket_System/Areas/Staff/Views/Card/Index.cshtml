@@ -1,0 +1,257 @@
+﻿@{
+
+    ViewBag.Title = "Quản lý thẻ";
+    List<Green_Bus_Ticket_System_Data.Card> cards =
+        (List<Green_Bus_Ticket_System_Data.Card>)ViewBag.Cards;
+
+}
+@section CustomHeader{
+    <button class="btn btn-success pull-right" id="addButton"><i class="fa fa-plus"></i> THÊM THẺ MỚI</button>
+}
+<div class="container-padding">
+    
+    @if (cards.Count <= 0)
+    {
+        <p>Không có thẻ nào!</p>
+    }
+    else
+    {
+        <table id="card-table" class="table display">
+            <thead>
+                <tr>
+                    <th>MÃ THẺ</th>
+                    <th>NGÀY ĐĂNG KÝ</th>
+                    <th>CHỦ SỞ HỮU</th>
+                    <th>SỐ DƯ</th>
+                    <th>TRẠNG THÁI</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="data">
+                @foreach (Green_Bus_Ticket_System_Data.Card item in cards)
+                {
+
+                    <tr>
+                        <td>@item.CardId</td>
+                        <td>@item.RegistrationDate.ToString("dd/MM/yyyy")</td>
+                        @if (item.User != null)
+                        {
+                            <td>@item.User.PhoneNumber</td>
+                        }
+                        else
+                        {
+                            <td>Chưa có</td>
+                        }
+
+                        <td>@item.Balance.ToString("#,##0") đ</td>
+
+                        @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.ACTIVATED)
+                        {
+                            <td><span class="statuslable" id="@item.CardId"><span class="label label-success">ĐÃ KÍCH HOẠT</span></span></td>
+                            <td><button type="button" class="btn btn-danger lockcard" id="@item.CardId"><i class="fa fa-lock"></i> KHÓA THẺ</button></td>
+
+                        }
+                        else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.BLOCKED)
+                        {
+                            <td><span class="statuslable" id="@item.CardId"><span class="label label-danger">KHÓA</span></span></td>
+                            <td><button type="button" class="btn btn-primary unlockcard" id="@item.CardId"><i class="fa fa-unlock"></i> MỞ KHÓA</button></td>
+                        }
+                        else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.NON_ACTIVATED)
+                        {
+                            <td><span class="label label-primary">CHƯA KÍCH HOẠT</span></td>
+                            <td></td>
+                        }
+                        
+
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>MÃ THẺ</th>
+                    <th>NGÀY ĐĂNG KÝ</th>
+                    <th>CHỦ SỞ HỮU</th>
+                    <th>SỐ DƯ</th>
+                    <th>TRẠNG THÁI</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+
+        <!-- Modal -->
+        <div class="modal fade" id="addCardModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Thêm thẻ</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label for="add-cardId" class="form-label">Mã thẻ</label>
+                                <input type="text" class="form-control" id="add-cardId">
+                            </div>
+                            <div class="form-group">
+                                <label for="add-balance" class="form-label">Số dư</label>
+                                <input type="number" class="form-control" id="add-balance" value="15000">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal">HỦY</button>
+                        <button type="button" class="btn btn-default" id="save">LƯU</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+          <!-- End Moda Code -->
+
+    }
+</div>
+
+@section CustomJs{
+    <!-- ================================================
+    Data Tables
+    ================================================ -->
+    <script src="~/Content/front/js/datatables/datatables.min.js"></script>
+
+    <!-- ================================================
+    Sweet Alert
+    ================================================ -->
+    <script src="~/Content/front/js/sweet-alert/sweet-alert.min.js"></script>
+    <script>
+
+        $('#card-table').DataTable({
+            "order": []
+        });
+
+
+        $("#addButton").click(function () {
+            var cardId = $("#add-cardId").val("");
+            var balance = $("#add-balance").val("15000");
+            $("#addCardModal").modal("show");
+        });
+        $(document).on("click", ".lockcard", function () {
+            var id = this.id;
+            var card = $(this);
+            
+            
+            $.ajax({
+                url: "/Staff/Card/LockCard",
+                method: "GET",
+                dataType: "json",
+                data: { id: id },
+                success: function (data) {
+                    if (data.success) {
+                        card.html('<i class="fa fa-unlock"></i> MỞ KHÓA');
+                        card.addClass("btn-primary unlockcard");
+                        card.removeClass("btn-danger lockcard");
+                        $(".statuslable#" + id).html('<span class="label label-danger">KHÓA</span>');
+                    }
+                }
+            });
+        });
+
+        $(document).on("click", ".unlockcard", function () {
+            var id = this.id;
+            var card = $(this);
+
+
+            $.ajax({
+                url: "/Staff/Card/UnLockCard",
+                method: "GET",
+                dataType: "json",
+                data: { id: id },
+                success: function (data) {
+                    if (data.success) {
+                        card.html('<i class="fa fa-lock"></i> KHÓA THẺ');
+                        card.removeClass("btn-primary unlockcard");
+                        card.addClass("btn-danger lockcard");
+                        $(".statuslable#" + id).html('<span class="label label-success">ĐÃ KÍCH HOẠT</span>');
+                    }
+                }
+            });
+        });
+
+        $("#save").click(function () {
+            if (validate()) {
+                var cardId = $("#add-cardId").val().trim();
+                var balance = $("#add-balance").val().trim();
+                $.ajax({
+                    url: "/Staff/Card/AddCard",
+                    method: "GET",
+                    dataType: "json",
+                    data: { cardId: cardId, balance: balance },
+                    success: function (data) {
+                        if (data.success) {
+                            $("#addCardModal").modal("hide");
+                            reloadData();
+                        } else {
+                            swal({
+                                title: "",
+                                text: data.message,
+                                type: "error"
+                            });
+                        }
+                    }
+                });
+            }
+        });
+
+        function validate() {
+            var cardId = $("#add-cardId").val().trim().length;
+            var tmpBalance = $("#add-balance").val().trim();
+            var balance = Number(tmpBalance);
+
+            if (cardId < 6 || cardId > 250) {
+                swal({
+                    title: "",
+                    text: "Mã thẻ từ 6-250 ký tự!",
+                    type: "warning"
+                });
+                return false;
+            }
+
+            if (balance < 0 || balance > 10000000) {
+                swal({
+                    title: "",
+                    text: "Số dư từ 0-10000000đ",
+                    type: "warning"
+                });
+                return false;
+            }
+
+            return true;
+        }
+
+        function reloadData() {
+            $.ajax({
+                url: "/Staff/Card/GetCards",
+                dataType: "json",
+                data: {},
+                method: "GET",
+                success: function (data) {
+                    if (data.success) {
+                        $('#card-table').DataTable().destroy();
+                        $('#card-table').DataTable({
+                            data: data.data,
+                            "order": []
+                        });
+                    } else {
+                        swal({
+                            text: data.message,
+                            type: "error",
+                        });
+                    }
+
+                }
+            });
+        }
+
+
+    </script>
+}

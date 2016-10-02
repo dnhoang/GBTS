@@ -4140,3 +4140,6 @@ Widgets
 .hcolor-green{
     color: #26a65b;
 }
+.page-header {
+    overflow: auto;
+}

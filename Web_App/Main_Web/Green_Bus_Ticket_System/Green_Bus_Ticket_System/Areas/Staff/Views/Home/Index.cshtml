@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "Bảng điều khiển";
+}
+
+<!-- Start Row -->
+<div class="row padding-t-20">
+    <div class="col-md-12">
+        <!-- Start Quick Menu -->
+        <ul class="panel quick-menu clearfix">
+            <li class="col-sm-4">
+                <a href="/Staff/Card/"><i class="fa fa-credit-card"></i>QUẢN LÝ THẺ</a>
+            </li>
+            <li class="col-sm-4">
+                <a href="/Staff/Passenger"><i class="fa fa-users"></i>QUẢN LÝ HÀNH KHÁCH</a>
+            </li>
+            <li class="col-sm-4">
+                <a href="/Staff/Home/Profiles"><i class="fa fa-cogs"></i>TÀI KHOẢN</a>
+            </li>
+        </ul>
+        <!-- End Quick Menu -->
+    </div>
+</div>
+<!-- End Row -->
+<div class="row">
+    <div class="col-md-12">
+        <h4>THỐNG KÊ NHANH</h4>
+        <!-- Start Today Activity -->
+        <div class="panel panel-widget hboder">
+            <div class="panel-body">
+                <ul class="widget-inline-list clearfix">
+                    <li class="col-6"><h3 class="activity-title hcolor-red">@ViewBag.CardNum THẺ</h3><i class="fa fa-credit-card"></i> ĐÃ KÍCH HOẠT</li>
+                    <li class="col-6"><h3 class="activity-title hcolor-green">@ViewBag.AccountNum TÀI KHOẢN</h3><i class="fa fa-users"></i> ĐANG HOẠT ĐỘNG</li>
+                </ul>
+                <div id="todayactivity" class="chart-on-bottom"></div>
+            </div>
+        </div>
+        <!-- End Today Activity -->
+    </div>
+    <!-- End Left -->
+
+</div>
+<!-- End Row -->

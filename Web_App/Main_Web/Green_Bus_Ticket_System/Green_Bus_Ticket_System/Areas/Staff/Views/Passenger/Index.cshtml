@@ -1,0 +1,188 @@
+﻿
+@{
+    ViewBag.Title = "Quản lý hành khách";
+
+    List<Green_Bus_Ticket_System_Data.User> users =
+        (List<Green_Bus_Ticket_System_Data.User>)ViewBag.Users;
+
+}
+
+<div class="container-padding">
+
+    @if (users.Count <= 0)
+    {
+        <p>Không có hành khách nào!</p>
+    }
+    else
+    {
+        <table id="user-table" class="table display">
+            <thead>
+                <tr>
+                    <th>SỐ ĐIỆN THOẠI</th>
+                    <th>HỌ TÊN</th>
+                    <th>TRẠNG THÁI</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Green_Bus_Ticket_System_Data.User item in users)
+                {
+
+                    <tr>
+                        <td>@item.PhoneNumber</td>
+                        <td class="fullname" id="@item.PhoneNumber">@item.Fullname</td>
+
+                        @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.UserStatus.ACTIVATED)
+                        {
+                            <td><span class="label label-success">ĐANG HOẠT ĐỘNG</span></td>
+
+                        }
+                        else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.UserStatus.DEACTIVATED)
+                        {
+                            <td><span class="label label-danger">ĐANG BỊ KHÓA</span></td>
+                        }
+                        <td><button type="button" class="btn btn-primary edit" id="@item.PhoneNumber"><i class="fa fa-pencil-square-o"></i> CHỈNH SỬA</button></td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>SỐ ĐIỆN THOẠI</th>
+                    <th>HỌ TÊN</th>
+                    <th>TRẠNG THÁI</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+
+        <!-- Modal -->
+        <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" style="width: 800px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Chỉnh sửa thông tin khách hàng</h4>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+          <!-- End Moda Code -->
+
+    }
+</div>
+
+@section CustomJs{
+    <!-- ================================================
+    Data Tables
+    ================================================ -->
+    <script src="~/Content/front/js/datatables/datatables.min.js"></script>
+
+    <!-- ================================================
+    Sweet Alert
+    ================================================ -->
+    <script src="~/Content/front/js/sweet-alert/sweet-alert.min.js"></script>
+    <script>
+
+        $('#user-table').DataTable({
+            "order": []
+        });
+
+
+        $(".edit").click(function () {
+            $("#userModal .modal-body").html("");
+            getUser(this.id);
+
+        });
+
+        $(document).on("click", ".lockcard", function () {
+            var id = this.id;
+            var card = $(this);
+
+
+            $.ajax({
+                url: "/Staff/Card/LockCard",
+                method: "GET",
+                dataType: "json",
+                data: { id: id },
+                success: function (data) {
+                    if (data.success) {
+                        card.html('<i class="fa fa-unlock"></i> MỞ KHÓA');
+                        card.addClass("btn-primary unlockcard");
+                        card.removeClass("btn-danger lockcard");
+                        $(".statuslable#" + id).html('<span class="label label-danger">KHÓA</span>');
+                    }
+                }
+            });
+        });
+
+        $(document).on("click", ".unlockcard", function () {
+            var id = this.id;
+            var card = $(this);
+
+
+            $.ajax({
+                url: "/Staff/Card/UnLockCard",
+                method: "GET",
+                dataType: "json",
+                data: { id: id },
+                success: function (data) {
+                    if (data.success) {
+                        card.html('<i class="fa fa-lock"></i> KHÓA THẺ');
+                        card.removeClass("btn-primary unlockcard");
+                        card.addClass("btn-danger lockcard");
+                        $(".statuslable#" + id).html('<span class="label label-success">ĐÃ KÍCH HOẠT</span>');
+                    }
+                }
+            });
+        });
+
+
+        $(document).on("click", ".save", function () {
+                var name = $("#edit-name").val().trim();
+                var phone = this.id;
+                var button = $(this);
+                $.ajax({
+                    url: "/Staff/Passenger/UpdateName",
+                    method: "GET",
+                    dataType: "json",
+                    data: { phone: phone, name: name },
+                    success: function (data) {
+                        if (data.success) {
+                            button.html('<i class="fa fa-check"></i> ĐÃ LƯU');
+                            setTimeout(function () {
+                                button.html('<i class="fa fa-floppy-o"></i> LƯU');
+                            }, 500);
+                            $(".fullname#" + phone).html(name);
+                        } else {
+                            swal({
+                                title: "",
+                                text: data.message,
+                                type: "error"
+                            });
+                        }
+                    }
+                });
+        });
+
+        function getUser(phone) {
+            $.ajax({
+                url: "/Staff/Passenger/GetUser",
+                method: "GET",
+                dataType: "html",
+                data: { phone: phone },
+                success: function (data) {
+
+                    $("#userModal .modal-body").html(data);
+                    $("#userModal").modal("show");
+
+                }
+            });
+        }
+
+    </script>
+}
+

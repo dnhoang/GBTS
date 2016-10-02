@@ -41,7 +41,7 @@
                             <input type="text" class="form-control cardname" id="@item.CardId" value="" />
                         }
                         </td>
-                        <td>@item.RegistrationDate.ToShortDateString()</td>
+                        <td>@item.RegistrationDate.ToString("dd/MM/yyyy")</td>
                         <td>@item.Balance.ToString("#,##0") đ</td>
 
                         @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.ACTIVATED)
@@ -51,7 +51,7 @@
                         }
                         else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.BLOCKED)
                         {
-                            <td><span class="label label-danger">TẠM KHÓA</span></td>
+                            <td><span class="label label-danger">KHÓA</span></td>
                             <td><button type="button" class="btn disabled"><i class="fa fa-paypal"></i> NẠP TIỀN</button></td>
                         }
 
@@ -94,7 +94,7 @@
 
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-white" data-dismiss="modal">HỦY</button>
                             <button type="submit" class="btn btn-default">THANH TOÁN</button>
                         </div>
                     </form>
@@ -134,7 +134,7 @@
             timer = setTimeout(function () {
                 if (name.trim().length > 0) {
                     $.ajax({
-                        url: "/Card/UpdateCardName",
+                        url: "/Passenger/Card/UpdateCardName",
                         method: "POST",
                         dataType: "json",
                         data: { id: id, name: name },

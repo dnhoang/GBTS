@@ -130,7 +130,7 @@
                 var endDate = $('#date-picker-end').val();
 
                 $.ajax({
-                    url: "/Report/GetReport",
+                    url: "/Passenger/Report/GetReport",
                     dataType: "json",
                     data: { beginDate: beginDate, endDate: endDate },
                     method: "GET",

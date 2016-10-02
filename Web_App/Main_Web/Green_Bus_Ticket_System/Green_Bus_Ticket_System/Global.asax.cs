@@ -8,6 +8,9 @@ using System.Web.Routing;
 using Autofac.Integration.Mvc;
 using Autofac;
 using log4net.Config;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
+using System.Configuration;
 
 namespace Green_Bus_Ticket_System
 {
@@ -34,6 +37,14 @@ namespace Green_Bus_Ticket_System
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
             XmlConfigurator.Configure();
+
+            string storageConn = ConfigurationManager.AppSettings["StorageConnection"];
+            CloudStorageAccount account = CloudStorageAccount.Parse(storageConn);
+
+            CloudQueueClient client = account.CreateCloudQueueClient();
+            CloudQueue queue = client.GetQueueReference("gbtscardbalance");
+            queue.CreateIfNotExists();
+
         }
     }
 }

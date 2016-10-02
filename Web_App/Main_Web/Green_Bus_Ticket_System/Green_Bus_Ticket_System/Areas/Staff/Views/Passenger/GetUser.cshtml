@@ -1,0 +1,65 @@
+﻿@{
+    Green_Bus_Ticket_System_Data.User user = (Green_Bus_Ticket_System_Data.User)ViewBag.User;
+}
+@if (ViewBag.Message != null)
+{
+    <p>@ViewBag.Message</p>
+}
+else
+{
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-2 control-label form-label">Số điện thoại</label>
+            <div class="col-sm-10">
+                <label class="col-sm-3 form-label">@user.PhoneNumber</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label form-label">Họ tên</label>
+            <div class="col-sm-4">
+                <input type="text" id="edit-name" class="form-control" value="@user.Fullname">
+            </div>
+            <div class="col-sm-4">
+                <button type="button" class="btn btn-default save" id="@user.PhoneNumber"><i class="fa fa-floppy-o"></i> LƯU</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label form-label">Thẻ hiện có</label>
+            <div class="col-sm-10">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <td>MÃ THẺ</td>
+                            <td>SỐ DƯ</td>
+                            <td>TRẠNG THÁI</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Green_Bus_Ticket_System_Data.Card item in user.Cards)
+                        {
+
+                            <tr>
+                                <td>@item.CardId</td>
+                                <td>@item.Balance.ToString("#,##0") đ</td>
+
+                                @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.ACTIVATED)
+                                {
+                                    <td><span class="statuslable" id="@item.CardId"><span class="label label-success">ĐÃ KÍCH HOẠT</span></span></td>
+                                    <td><button type="button" class="btn btn-danger lockcard" id="@item.CardId"><i class="fa fa-lock"></i> KHÓA THẺ</button></td>
+
+                                }
+                                else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.BLOCKED)
+                                {
+                                    <td><span class="statuslable" id="@item.CardId"><span class="label label-danger">KHÓA</span></span></td>
+                                    <td><button type="button" class="btn btn-primary unlockcard" id="@item.CardId"><i class="fa fa-unlock"></i> MỞ KHÓA</button></td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+}

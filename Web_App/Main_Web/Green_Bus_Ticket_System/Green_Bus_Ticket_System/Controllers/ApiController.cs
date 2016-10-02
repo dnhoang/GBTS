@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
 using System.Globalization;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 
 namespace Green_Bus_Ticket_System.Controllers
 {
@@ -21,6 +23,7 @@ namespace Green_Bus_Ticket_System.Controllers
         string apiKey = ConfigurationManager.AppSettings["ApiKey"];
         int minBalance = Int32.Parse(ConfigurationManager.AppSettings["AlertBalance"]);
         int defaultBalance = Int32.Parse(ConfigurationManager.AppSettings["DefaultBalance"]);
+        string storageConn = ConfigurationManager.AppSettings["StorageConnection"];
 
         ICardService _cardService;
         ITicketTypeService _ticketTypeService;
@@ -217,7 +220,7 @@ namespace Green_Bus_Ticket_System.Controllers
                         //Check balance is running out & if user have installed mobile app
                         if (card.Balance <= minBalance && card.User.NotificationCode != null)
                         {
-                            SendNotification("");
+                            SendNotification(card.User.NotificationCode);
                         }
                     }
                 }
@@ -537,9 +540,46 @@ namespace Green_Bus_Ticket_System.Controllers
             return Json(new { success = success, message = message, data = report }, JsonRequestBehavior.AllowGet);
 
         }
-        private void SendNotification(string message)
+
+        //GET: RegisterNotificationToken
+        public JsonResult RegisterNotificationToken(string key, string phone, string token)
         {
-            //Add to cloud queue
+            string message = "";
+            bool success = false;
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            User user = _userService.GetUserByPhone(phone);
+            if (user != null)
+            {
+                user.NotificationCode = token;
+                _userService.Update(user);
+                success = true;
+                message = "Đăng ký token thành công";
+            }
+            else
+            {
+                success = false;
+                message = "Số điện thoại không tồn tại trên hệ thống.";
+            }
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+        }
+        private void SendNotification(string code)
+        {
+            CloudStorageAccount account = CloudStorageAccount.Parse(storageConn);
+
+            CloudQueueClient client = account.CreateCloudQueueClient();
+            CloudQueue queue = client.GetQueueReference("gbtscardbalance");
+            queue.CreateIfNotExists();
+
+            CloudQueueMessage message = new CloudQueueMessage(code);
+
+            queue.AddMessage(message);
         } 
        
     }

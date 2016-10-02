@@ -17,10 +17,10 @@ namespace Green_Bus_Ticket_System_Utils
 
         public enum RoleID : int
         {
-            ADMIN = 0,
-            MANAGER = 1,
-            STAFF = 2,
-            PASSENGER = 3
+            ADMIN = 1,
+            MANAGER = 2,
+            STAFF = 3,
+            PASSENGER = 4
         };
 
         public enum UserStatus : int
