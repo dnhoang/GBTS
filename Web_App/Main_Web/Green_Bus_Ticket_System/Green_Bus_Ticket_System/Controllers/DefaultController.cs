@@ -6,12 +6,12 @@ using System.Web.Mvc;
 
 namespace Green_Bus_Ticket_System.Controllers
 {
-    public class HomeController : Controller
+    public class DefaultController : Controller
     {
         // GET: Home
         public ActionResult Index()
         {
-            return View();
+            return Redirect("/Access/Login");
         }
     }
 }

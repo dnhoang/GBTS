@@ -9,6 +9,7 @@ namespace Green_Bus_Ticket_System
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+            app.MapSignalR();
         }
     }
 }

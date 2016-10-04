@@ -31,11 +31,11 @@ namespace AutoHandler
 
             //await Task.WhenAll(task1, task2);
 
-            await SendNotification();
+            await SendBalanceNotification();
 
         }
 
-        static async Task SendNotification()
+        static async Task SendBalanceNotification()
         {
             string storageConn = ConfigurationManager.AppSettings["StorageConnection"];
 
@@ -53,11 +53,14 @@ namespace AutoHandler
                     CloudQueueMessage message = queue.GetMessage();
                     if (message != null)
                     {
-                        string code = message.AsString;
+                        string token = message.AsString;
 
-                        SendToFireBase(code);
+                        string title = "Green Bus";
+                        string notification = "Thẻ của bạn sắp hết tiền, vui lòng nạp thêm.";
 
-                        Console.WriteLine("Send message to " + code);
+                        SendToFireBase(token, title, notification);
+
+                        Console.WriteLine("Send message to " + token);
                         queue.DeleteMessage(message);
                     }
                 }
@@ -69,7 +72,7 @@ namespace AutoHandler
             }
         }
 
-        static void SendToFireBase(string code)
+        static void SendToFireBase(string token, string title, string message)
         {
             WebRequest tRequest;
             tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
@@ -85,9 +88,7 @@ namespace AutoHandler
             tRequest.Headers.Add(string.Format("Sender: id={0}", senderId));
 
 
-            string RegArr = code;
-            string title = "Green Bus";
-            string message = "Thẻ của bạn sắp hết tiền, vui lòng nạp thêm.";
+            string RegArr = token;
 
             string postData = "{ \"registration_ids\": [ \"" + RegArr + "\" ],\"data\": {\"message\": \"" + message + "\",\"body\": \"" + message + "\",\"title\": \"" + title + "\",\"collapse_key\":\"" + message + "\"}}";
 

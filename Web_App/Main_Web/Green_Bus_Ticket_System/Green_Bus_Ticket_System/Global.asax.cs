@@ -42,8 +42,12 @@ namespace Green_Bus_Ticket_System
             CloudStorageAccount account = CloudStorageAccount.Parse(storageConn);
 
             CloudQueueClient client = account.CreateCloudQueueClient();
-            CloudQueue queue = client.GetQueueReference("gbtscardbalance");
-            queue.CreateIfNotExists();
+
+            CloudQueue cardBalanceQueue = client.GetQueueReference("gbtscardbalance");
+            cardBalanceQueue.CreateIfNotExists();
+
+            CloudQueue newCardQueue = client.GetQueueReference("gbtsnewcard");
+            newCardQueue.CreateIfNotExists();
 
         }
     }

@@ -114,6 +114,8 @@
 </div>
 
 @section CustomJs{
+    <script src="~/Scripts/jquery.signalR-2.2.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
     <!-- ================================================
     Data Tables
     ================================================ -->
@@ -124,6 +126,18 @@
     ================================================ -->
     <script src="~/Content/front/js/sweet-alert/sweet-alert.min.js"></script>
     <script>
+        var userPhone = '@ViewBag.UserPhone';
+
+        var listener = $.connection.cardHub;
+        listener.client.autoFill = function (phone, cardId) {
+            if (phone == userPhone) {
+                $("#add-cardId").val(cardId);
+            }
+        };
+
+        $.connection.hub.start().done(function () {
+
+        });
 
         $('#card-table').DataTable({
             "order": []

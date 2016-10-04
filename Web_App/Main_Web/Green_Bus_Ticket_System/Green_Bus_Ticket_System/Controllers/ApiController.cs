@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using System.Globalization;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
+using Microsoft.AspNet.SignalR;
 
 namespace Green_Bus_Ticket_System.Controllers
 {
@@ -76,6 +77,35 @@ namespace Green_Bus_Ticket_System.Controllers
 
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
 
+        }
+
+        public JsonResult RequestAddCard(string key, string phone, string cardId)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            if(cardId !=null && cardId.Length > 0)
+            {
+                var hubContext = GlobalHost.ConnectionManager.GetHubContext<CardHub>();
+                hubContext.Clients.All.autoFill(phone, cardId);
+                success = true;
+                message = "Server đã nhận thông tin thẻ.";
+            }
+            else
+            {
+                success = false;
+                message = "Mã thẻ không hợp lệ";
+            }
+
+
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
         //GET: GetAllTiketType

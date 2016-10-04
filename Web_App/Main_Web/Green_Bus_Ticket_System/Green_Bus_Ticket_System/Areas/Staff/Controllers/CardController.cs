@@ -32,11 +32,12 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
             {
                 return Redirect("/Access/Login");
             }
-
+            ViewBag.UserPhone = GetCurrentUser().PhoneNumber;
             ViewBag.Cards = _cardService.GetAll().OrderByDescending(c=>c.RegistrationDate).ToList();
             return View();
         }
 
+        
         public JsonResult LockCard(string id)
         {
             string message = "";

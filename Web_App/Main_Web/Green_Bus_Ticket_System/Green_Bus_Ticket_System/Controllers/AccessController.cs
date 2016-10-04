@@ -23,6 +23,10 @@ namespace Green_Bus_Ticket_System.Controllers
         // GET: Access/Login
         public ActionResult Login()
         {
+            if (AuthorizeRequest())
+            {
+                return Redirect(GetAuthorizedUrl(GetCurrentUser()));
+            }
             return View();
         }
 
@@ -43,14 +47,8 @@ namespace Green_Bus_Ticket_System.Controllers
                     Session.Timeout = 60;
                     success = true;
                     message = "Đăng nhập thành công!";
-                    if (user.RoleId == (int)StatusReference.RoleID.ADMIN)
-                        url = "/Admin/Home/";
-                    else if (user.RoleId == (int)StatusReference.RoleID.MANAGER)
-                        url = "/Manager/Home/";
-                    else if (user.RoleId == (int)StatusReference.RoleID.STAFF)
-                        url = "/Staff/Home/";
-                    else if (user.RoleId == (int)StatusReference.RoleID.PASSENGER)
-                        url = "/Passenger/Home/";                    
+                    
+                    url = GetAuthorizedUrl(user);                    
                 }
                 else
                 {
@@ -72,10 +70,25 @@ namespace Green_Bus_Ticket_System.Controllers
             return Redirect("/Access/Login");
         }
 
+        private string GetAuthorizedUrl(User user)
+        {
+            string url = "/Access/Login";
+            if (user.RoleId == (int)StatusReference.RoleID.ADMIN)
+                url = "/Admin/Home/";
+            else if (user.RoleId == (int)StatusReference.RoleID.MANAGER)
+                url = "/Manager/Home/";
+            else if (user.RoleId == (int)StatusReference.RoleID.STAFF)
+                url = "/Staff/Home/";
+            else if (user.RoleId == (int)StatusReference.RoleID.PASSENGER)
+                url = "/Passenger/Home/";
+
+            return url;
+        }
+
         private bool AuthorizeRequest()
         {
             User user = (User)Session["user"];
-            return (user != null && user.RoleId == (int)StatusReference.RoleID.PASSENGER);
+            return (user != null);
         }
 
         private User GetCurrentUser()
