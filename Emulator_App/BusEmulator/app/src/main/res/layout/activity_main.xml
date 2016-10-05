@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.example.busemulator.MainActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <TextView
+        android:text=" Vui lòng chạm thẻ vào đây"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPrice"
+        android:id="@+id/tvHeaderRouteName"
+        android:paddingTop="64dp"
+        android:textSize="36sp"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="152dp"
+        android:textAlignment="center" />
+
+    <TextView
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="64dp"
+        android:id="@+id/tvRouteNumber"
+        android:textSize="24sp"
+        android:textAlignment="center" />
+
+    <TextView
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvRouteNumber"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/tvRouteName"
+        android:textSize="24sp"
+        android:textAlignment="center" />
+    <TextView
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvRouteName"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/tvPrice"
+        android:textSize="18sp"
+        android:textAlignment="center" />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="80dp"
+        android:src="@drawable/nfc_logo"
+        android:id="@+id/imageView"
+        android:layout_gravity="center"
+
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/tvHeaderRouteName"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        app:srcCompat="@android:drawable/ic_menu_manage"
+        app:backgroundTint="@android:color/darker_gray"
+        android:layout_marginRight="19dp"
+        android:layout_marginBottom="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="19dp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/container"
+        android:background="#14D63E"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        >
+        <TextView
+            android:text="Mua vé thành công"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView4"
+
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="197dp"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textColor="@android:color/background_light"
+            android:textSize="36sp"
+            android:textStyle="normal|bold"
+            android:textAlignment="center" />
+        <TextView
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvSuccessPrice"
+            android:layout_below="@id/textView4"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textColor="@android:color/background_light"
+            android:textAlignment="center" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:background="#ff0000"
+        android:id="@+id/containerfail">
+
+        <TextView
+            android:text="Mua vé không thành công"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView3"
+
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="197dp"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textColor="@android:color/background_light"
+            android:textSize="36sp"
+            android:textStyle="normal|bold"
+            android:textAlignment="center" />
+        <TextView
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvFailMessage"
+            android:layout_below="@id/textView3"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textColor="@android:color/background_light"
+            android:textAlignment="center" />
+    </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>
