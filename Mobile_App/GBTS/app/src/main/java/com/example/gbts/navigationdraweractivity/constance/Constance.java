@@ -5,5 +5,8 @@ package com.example.gbts.navigationdraweractivity.constance;
  */
 
 public class Constance {
-    public static String APT_LOGIN ="http://172.20.10.3:1185/Api/Login?key=gbts_2016_capstone";
+    public static String API_LOGIN =
+            "http://grinbuz.com//Api/Login?key=gbts_2016_capstone";
+    public static String API_NOTIFICATION =
+            "http://grinbuz.com/Api/RegisterNotificationToken?key=gbts_2016_capstone";
 }

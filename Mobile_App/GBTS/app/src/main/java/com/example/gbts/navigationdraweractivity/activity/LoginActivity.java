@@ -1,11 +1,12 @@
 package com.example.gbts.navigationdraweractivity.activity;
 
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,10 +16,11 @@ import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.enity.Message;
-import com.example.gbts.navigationdraweractivity.service.JSONParser;
+import com.example.gbts.navigationdraweractivity.fragment.AccountInfo;
+import com.example.gbts.navigationdraweractivity.fragment.ActivateAccount;
+import com.example.gbts.navigationdraweractivity.fragment.DetailsInfo;
+import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
@@ -26,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     //define controls
     Message message;
     EditText edtPhone, edtPass;
-    Button btnLogin;
+    Button btnLogin, btnActive;
 
     //JSON Node Names
     private static final String TAG_SUCCESS = "success";
@@ -36,16 +38,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-//                .detectAll()
-//                .penaltyLog()
-//                .build();
-//        StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_login);
         getSupportActionBar().hide();
 
         //initalise controle
         btnLogin = (Button) findViewById(R.id.btnLogin);
+        btnActive = (Button) findViewById(R.id.btnActive);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,6 +51,17 @@ public class LoginActivity extends AppCompatActivity {
 //                new JSONParse().execute();
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
+            }
+        });
+
+
+        final FragmentManager manager = getFragmentManager();
+        final ActivateAccount account = new ActivateAccount();
+        btnActive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                account.show(manager, "Activate Account");
+
             }
         });
 
@@ -83,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
         protected JSONObject doInBackground(String... params) {
             JSONParser jParser = new JSONParser();
 
-            String strURL = Constance.APT_LOGIN + "&phone=" + phone + "&password=" + pwd;
+            String strURL = Constance.API_LOGIN + "&phone=" + phone + "&password=" + pwd;
 
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrl(strURL);
@@ -99,6 +108,11 @@ public class LoginActivity extends AppCompatActivity {
             boolean success = jsonObject.optBoolean(TAG_SUCCESS);
 
             if (success) {
+                SharedPreferences preferences = getSharedPreferences("Info", MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("Phonenumber", phone);
+                editor.commit();
+
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
             } else {

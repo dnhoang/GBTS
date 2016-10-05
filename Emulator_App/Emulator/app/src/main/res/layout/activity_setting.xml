@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_setting"
     android:orientation="vertical"
@@ -15,13 +16,29 @@
 
     android:weightSum="1">
 
-
+    <TextView
+        android:text="Nhập địa chỉ máy chủ"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="18sp" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/edtHost" />
     <TextView
         android:text="Nhập tuyến"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tvHeaderRouteName"
-        android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="18sp" />
 
     <EditText
         android:layout_width="match_parent"
@@ -37,25 +54,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tvRouteName"
-        android:textAppearance="@style/TextAppearance.AppCompat"
-        android:textSize="18sp" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="16sp"
+        android:textStyle="normal|italic" />
 
     <TextView
-        android:text="Chọn loại tuyến"
+        android:text="Chọn loại vé"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView"
-        android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="18sp" />
+
 
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/spinner" />
+        android:spinnerMode="dialog"
+        android:id="@+id/spinnerTick"
+        />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tvPrice" />
+
+        android:id="@+id/tvPrice"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="16sp"
+        android:textStyle="normal|italic" />
 
     <Button
         android:text="Lưu cài đặt"

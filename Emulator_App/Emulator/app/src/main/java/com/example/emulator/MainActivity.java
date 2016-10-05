@@ -1,17 +1,17 @@
 package com.example.emulator;
 
 import android.app.PendingIntent;
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.os.StrictMode;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,8 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,8 +34,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
+import Util.Utility;
 import sample.dto.TicketResult;
 
 public class MainActivity extends AppCompatActivity
@@ -47,15 +48,24 @@ public class MainActivity extends AppCompatActivity
     boolean writeMode;
     Tag mytag;
     String setting = "settingPreference";
+    String hostAddress = "http://grinbuz.com/";
+    RelativeLayout successTicket;
+    RelativeLayout failTicket;
+
+    //
+    String cardId;
+    String ticketTypeId;
+    String routeCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //this.requestWindowFeature(Window.FE);
-        //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        toolbar.hideOverflowMenu();
+//        setSupportActionBar(toolbar);
         //Lay thong tin
 
         //NFC
@@ -79,10 +89,10 @@ public class MainActivity extends AppCompatActivity
 //        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.setDrawerListener(toggle);
+//        toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -110,59 +120,130 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onNewIntent(Intent intent) {
+
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
             //con tien
+            if (Utility.isNetworkConnected(MainActivity.this)) {
+                //het tien
+                mytag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
-            //het tien
-            mytag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.b7);
-            mediaPlayer.start();
-            String tagid = bin2hex(mytag.getId());
-            //Toast.makeText(this, this.getString(R.string.ok_detection) + bin2hex(mytag.getId()), Toast.LENGTH_LONG).show();
-            final RelativeLayout success = (RelativeLayout) findViewById(R.id.container);
-            final RelativeLayout fail = (RelativeLayout) findViewById(R.id.containerfail);
-            final SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
-            String cardId = bin2hex(mytag.getId());
-            String ticketTypeId = sharedPreferences.getString("ticketTypeId", "");
-            String routeCode = sharedPreferences.getString("code", "");
-            TicketResult ticketResult = new TicketResult();
 
-            //success.setVisibility(View.VISIBLE);
+                final SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+                cardId = bin2hex(mytag.getId());
+                ticketTypeId = sharedPreferences.getString("ticketTypeId", "");
+                routeCode = sharedPreferences.getString("code", "");
+                String[] params = {cardId, ticketTypeId, routeCode};
+                //TicketResult ticketResult = new TicketResult();
+                new VerifyTicket().execute(params);
+
+
+            } else {
+                Toast.makeText(this, "Không thể kết nối với máy chủ!", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+//Verify ticket Async
+    }
+
+    private class VerifyTicket extends AsyncTask<String, String, JSONObject> {
+        private ProgressDialog pDialog;
+        String cardId, ticketTypeId, routeCode;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+            ticketTypeId = sharedPreferences.getString("ticketTypeId", "");
+            EditText edtCode = (EditText) findViewById(R.id.edtRoute);
+            //code = edtCode.getText().toString();
+
+            pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("Loading data ...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            Utility jParser = new Utility();
+            cardId = params[0];
+            ticketTypeId = params[1];
+            routeCode = params[2];
+            String strURL = hostAddress + "/Api/SellTicket?key=gbts_2016_capstone&cardId=" + cardId + "&ticketTypeId=" + ticketTypeId + "&routeCode=" + routeCode;
+
+            // Getting JSON from URL
+            JSONObject json = jParser.getJSONFromUrl(strURL);
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            final SharedPreferences sharedPreferences=getSharedPreferences(setting,MODE_PRIVATE);
+            super.onPostExecute(jsonObject);
+            // Hide dialog
+            pDialog.dismiss();
+            boolean success = false;
+            //check success
             try {
-                ticketResult = verifyTicket(cardId, ticketTypeId, routeCode);
-                if (ticketResult != null) {
-                    if (ticketResult.getSuccess()) {
-                        success.setVisibility(View.VISIBLE);
-                        //float tickketPrice=sharedPreferences.getFloat("price",0);
-                        //Toast.makeText(this, this.getString(R.string.SUCESS)+ " "+tickketPrice, Toast.LENGTH_SHORT).show();
-                        Toast.makeText(this, ticketResult.getMessage(), Toast.LENGTH_SHORT).show();
-                        changeLayout(true);
-                    } else {
-                        fail.setVisibility(View.VISIBLE);
-                        Toast.makeText(this, ticketResult.getMessage(), Toast.LENGTH_SHORT).show();
-                        changeLayout(false);
-                    }
-                }
-            } catch (IOException e) {
+                success = jsonObject.getBoolean("success");
+            } catch (JSONException e) {
                 e.printStackTrace();
+            }
+            if (success) {
+
+                System.out.println("SUCCESS!");
+                successTicket = (RelativeLayout) findViewById(R.id.container);
+                successTicket.setVisibility(View.VISIBLE);
+                MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
+                mediaPlayer.start();
+                String message = null;
+                try {
+                    message = jsonObject.getString("message");
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                final TextView tvSuccessPrice=(TextView) findViewById(R.id.tvSuccessPrice);
+                tvSuccessPrice.setText("Thẻ của bạn đã bị trừ "+sharedPreferences.getString("price","0")+ " đồng");
+                changeLayout(true);
+            } else {
+                failTicket = (RelativeLayout) findViewById(R.id.containerfail);
+                failTicket.setVisibility(View.VISIBLE);
+                MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
+                mediaPlayer.start();
+
+                String message = null;
+                try {
+                    message = jsonObject.getString("message");
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                changeLayout(false);
             }
 
 
-            //System.out.println("TAG ID" + tagid);
-
         }
-
     }
 
     private TicketResult verifyTicket(String cardId, String ticketTypeId, String routeCode) throws IOException {
-        //URL url=new URL("http://domain.com/Api/SellTicket?key=gbts_2016_capstone&cardId="+cardId+"&ticketTypeId="+ticketTypeId+"&routeCode="+routeCode);
-        //BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()));
-        //String json=bufferedReader.readLine();
-        String json = "\n" +
-                "{\n" +
-                "\"success\": true,\n" +
-                "\"message\": \"Mua vé thành công.\"\n" +
-                "}";
+        URL url = new URL("http://172.20.10.2:1185/Api/SellTicket?key=gbts_2016_capstone&cardId=" + cardId + "&ticketTypeId=" + ticketTypeId + "&routeCode=" + routeCode);
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            stringBuilder.append(line).append("\n");
+        }
+        bufferedReader.close();
+        urlConnection.disconnect();
+        String json = stringBuilder.toString();
+//        String json = "\n" +
+//                "{\n" +
+//                "\"success\": false,\n" +
+//                "\"message\": \"Mua vé thành công.\"\n" +
+//                "}";
         try {
             JSONObject object = (JSONObject) new JSONTokener(json).nextValue();
             Boolean result = object.getBoolean("success");
@@ -178,11 +259,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void changeLayout(final boolean result) {
+
         final RelativeLayout sucess = (RelativeLayout) findViewById(R.id.container);
         final RelativeLayout fail = (RelativeLayout) findViewById(R.id.containerfail);
+
         CountDownTimer timer = new CountDownTimer(2000, 2000) {
             @Override
             public void onTick(long millisUntilFinished) {
+
 
             }
 
@@ -262,9 +346,9 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
         routeName.setText(sharedPreferences.getString("name", "Chưa chọn tuyến"));
         TextView routeNumber = (TextView) findViewById(R.id.tvRouteNumber);
-        routeNumber.setText("Tuyến "+sharedPreferences.getString("code", "Chưa chọn tuyến"));
+        routeNumber.setText("Tuyến " + sharedPreferences.getString("code", "Chưa chọn tuyến"));
         TextView price = (TextView) findViewById(R.id.tvPrice);
-        price.setText("Giá vé: "+sharedPreferences.getString("price", "")+" đồng");
+        price.setText("Giá vé: " + sharedPreferences.getString("price", "") + " đồng");
         ReadModeOn();
     }
 

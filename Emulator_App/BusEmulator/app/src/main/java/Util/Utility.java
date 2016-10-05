@@ -1,5 +1,7 @@
-package com.example.gbts.navigationdraweractivity.service;
+package Util;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -13,20 +15,23 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by truon on 10/3/2016.
+ * Created by ducdmse61486 on 10/4/2016.
  */
 
-public class JSONParser {
+public class Utility {
 
     static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";
 
     // constructor
-    public JSONParser() {
+    public Utility() {
 
     }
-
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return (cm.getActiveNetworkInfo() != null) && cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
     public JSONObject getJSONFromUrl(String apiUrl) {
         // Making HTTP request
         try {
@@ -34,9 +39,9 @@ public class JSONParser {
 
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
-            urlConnection.setRequestProperty("User-Agent", "");
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setDoInput(true);
+//            urlConnection.setRequestProperty("User-Agent", "");
+//            urlConnection.setRequestMethod("POST");
+//            urlConnection.setDoInput(true);
             urlConnection.connect();
 
             if (urlConnection != null) {
@@ -58,7 +63,7 @@ public class JSONParser {
                     urlConnection.disconnect();
                 }
             } else {
-                System.out.println("urlConnection null ");
+                //System.out.println("urlConnection null ");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -75,4 +80,3 @@ public class JSONParser {
 
     }
 }
-

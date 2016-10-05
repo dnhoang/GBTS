@@ -3,6 +3,7 @@ package com.example.gbts.navigationdraweractivity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -11,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,12 +21,15 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
+import com.example.gbts.navigationdraweractivity.asyntask.FireBaseIDTask;
 import com.example.gbts.navigationdraweractivity.fragment.AccountInfo;
 import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
 import com.example.gbts.navigationdraweractivity.fragment.FragmentDirection;
 import com.example.gbts.navigationdraweractivity.fragment.GmapFragment;
 import com.example.gbts.navigationdraweractivity.fragment.MainContent;
 import com.example.gbts.navigationdraweractivity.fragment.Profile;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -47,6 +52,14 @@ public class MainActivity extends AppCompatActivity
         toolbar.setTitle("Xe bus thông minh");
         setSupportActionBar(toolbar);
 
+        //NOTIFICATION
+        FirebaseMessaging.getInstance().subscribeToTopic("GBTS");
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Log.d("MainActivitytq token", token);
+        SharedPreferences preferences = getSharedPreferences("Info", MODE_PRIVATE);
+        String phoneInfo = preferences.getString("Phonenumber", "Chào mừng bạn đến với thế giới hệ thống xe bus thông minh!!");
+        Log.d("MainActivitytq p", phoneInfo);
+        new FireBaseIDTask().execute(phoneInfo, token);
 
         //Set Default first Fragment MainContain
         if (savedInstanceState == null) {
@@ -62,6 +75,7 @@ public class MainActivity extends AppCompatActivity
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         }
+
 
 
         // FloatingAction Button
