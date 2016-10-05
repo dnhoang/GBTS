@@ -65,7 +65,7 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
                 if (payment_status.Equals("Completed") && card!=null)
                 {
                     CreditPlan creditPlan = _creditPlanService.GetCreditPlan(item_number);
-                    decimal total = Math.Round((decimal)((float)creditPlan.Price / GetRate()), 2);
+                    decimal total = ConvertToUSD(creditPlan.Price);
                     if(total == mc_gross)
                     {
                         PaymentTransaction payment = new PaymentTransaction();
@@ -111,7 +111,77 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult PayPaltoken(int creditPlanId, string cardId)
+        {
+            Session["CurrentSectionPayment"] = Guid.NewGuid();
+
+            CreditPlan plan = _creditPlanService.GetCreditPlan(creditPlanId);
+
+
+            if (plan != null && cardId!=null)
+            {
+                PayPalOrder objPay = new PayPalOrder();
+                objPay.Amount = ConvertToUSD(plan.Price);
+                objPay.CreditPlanId = creditPlanId;
+                objPay.CreditPlanName = plan.Name;
+                objPay.CardId = cardId;
+                PayPalRedirect redirect = PayPal.ExpressCheckout(objPay);
+                return Json(redirect.Token, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(new { }, JsonRequestBehavior.AllowGet);
+
+        }
+
+
+        public ActionResult DoCheckoutPayment(string token, string payerID)
+        {
+            bool success = false;
+            string creditPlan = "";
+            string cardId = "";
+            string transactionId = "";
+            bool result = PayPal.DoCheckoutPayment(token, payerID, ref creditPlan, ref transactionId);
+            if (result)
+            {
+                cardId = Session["CurrentCardId"].ToString();
+
+                if (cardId != null)
+                {
+                    CreditPlan plan = _creditPlanService.GetCreditPlan(Int32.Parse(creditPlan));
+                    Card card = _cardService.GetCard(cardId);
+
+                    card.Balance = card.Balance + plan.Price;
+                    _cardService.Update(card);
+
+                    PaymentTransaction payment = new PaymentTransaction();
+                    payment.CardId = cardId;
+                    payment.CreditPlanId = plan.Id;
+                    payment.PaymentDate = DateTime.Now;
+                    payment.Total = plan.Price;
+                    payment.TransactionId = transactionId;
+                    _paymentService.Create(payment);
+
+                    Session["CurrentCardId"] = null;
+
+                    success = true;
+                }
+            }
+
+            if (success)
+            {
+                return Redirect("/Passenger/Card/Success");
+            }
+            else
+            {
+                return Redirect("/Passenger/Card/Fail");
+            }
+        }
+
         public ActionResult Success()
+        {
+            return View();
+        }
+        public ActionResult Fail()
         {
             return View();
         }
@@ -129,6 +199,11 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
         private int GetRate()
         {
             return 22500;
+        }
+
+        private decimal ConvertToUSD(int vnd)
+        {
+            return Math.Round((decimal)((float)vnd / GetRate()), 2);
         }
     }
 }

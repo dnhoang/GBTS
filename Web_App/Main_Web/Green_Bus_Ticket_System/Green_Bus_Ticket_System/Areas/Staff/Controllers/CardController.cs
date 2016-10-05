@@ -37,7 +37,15 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
             return View();
         }
 
-        
+        public ActionResult SearhCard(string term)
+        {
+            List<Card> cards = _cardService.GetAll().Where(c => c.CardId.ToLower().Contains(term.ToLower()) || (c.User != null && c.User.PhoneNumber.Contains(term))).ToList();
+            ViewBag.Cards = cards;
+            return PartialView();
+        }
+
+
+
         public JsonResult LockCard(string id)
         {
             string message = "";
@@ -163,6 +171,7 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
 
         }
 
+        
         private bool AuthorizeRequest()
         {
             User user = (User)Session["user"];

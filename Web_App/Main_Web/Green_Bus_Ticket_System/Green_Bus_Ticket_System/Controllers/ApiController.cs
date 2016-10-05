@@ -31,14 +31,19 @@ namespace Green_Bus_Ticket_System.Controllers
         ITicketService _ticketService;
         IBusRouteService _busRouteService;
         IUserService _userService;
+        ICreditPlanService _creditPlanService;
+        IPaymentTransactionService _paymentTransactionService;
         public ApiController(ICardService cardService, ITicketTypeService ticketTypeService,
-            ITicketService ticketService, IBusRouteService busRouteService, IUserService userService)
+            ITicketService ticketService, IBusRouteService busRouteService, IUserService userService,
+            ICreditPlanService creditPlanService, IPaymentTransactionService paymentTransactionService)
         {
             _cardService = cardService;
             _ticketTypeService = ticketTypeService;
             _ticketService = ticketService;
             _busRouteService = busRouteService;
             _userService = userService;
+            _creditPlanService = creditPlanService;
+            _paymentTransactionService = paymentTransactionService;
 
         }
 
@@ -55,7 +60,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
             }
 
-            
+
             if (_cardService.IsCardExist(cardId))
             {
                 success = false;
@@ -68,7 +73,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 card.CardName = "Thẻ " + cardId;
                 card.Balance = defaultBalance;
                 card.RegistrationDate = DateTime.Now;
-                card.Status = (int) StatusReference.CardStatus.NON_ACTIVATED;
+                card.Status = (int)StatusReference.CardStatus.NON_ACTIVATED;
                 _cardService.Create(card);
 
                 success = true;
@@ -91,7 +96,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
             }
 
-            if(cardId !=null && cardId.Length > 0)
+            if (cardId != null && cardId.Length > 0)
             {
                 var hubContext = GlobalHost.ConnectionManager.GetHubContext<CardHub>();
                 hubContext.Clients.All.autoFill(phone, cardId);
@@ -108,6 +113,170 @@ namespace Green_Bus_Ticket_System.Controllers
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetCardInfo(string key, string cardId)
+        {
+            string message = "";
+            bool success = false;
+            Object result = null;
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            if (!_cardService.IsCardExist(cardId))
+            {
+                success = false;
+                message = "Mã thẻ không tồn tại.";
+            }
+            else
+            {
+                Card card = _cardService.GetCard(cardId);
+                result = new
+                {
+                    CardId = card.CardId,
+                    CardName = card.CardName,
+                    Balance = card.Balance,
+                    RegistrationDate = card.RegistrationDate.ToString("dd/MM/yyyy"),
+                    Status = card.Status
+                };
+
+                success = true;
+            }
+
+            return Json(new { success = success, message = message, data = result }, JsonRequestBehavior.AllowGet);
+
+
+        }
+
+        public JsonResult AddCardBalance(string key, string cardId, int creditPlanId, string transactionId)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            CreditPlan plan = _creditPlanService.GetCreditPlan(creditPlanId);
+
+            if (!_cardService.IsCardExist(cardId))
+            {
+                success = false;
+                message = "Mã thẻ không tồn tại.";
+            }
+            else if(plan == null)
+            {
+                success = false;
+                message = "Mã gói nạp không tồn tại.";
+            }
+            else if (transactionId == null)
+            {
+                success = false;
+                message = "Mã giao dịch từ Paypal không hợp lệ.";
+            }
+            else
+            {
+                Card card = _cardService.GetCard(cardId);
+                
+                card.Balance = card.Balance + plan.Price;
+                _cardService.Update(card);
+
+                PaymentTransaction payment = new PaymentTransaction();
+                payment.CardId = cardId;
+                payment.CreditPlanId = creditPlanId;
+                payment.TransactionId = transactionId;
+                payment.PaymentDate = DateTime.Now;
+                payment.Total = plan.Price;
+                _paymentTransactionService.Create(payment);
+
+                success = true;
+                message = "Cập nhật số dư thành công";
+            }
+
+            return Json(new { success = success, message = message}, JsonRequestBehavior.AllowGet);
+
+
+        }
+
+        //GET: GetUserInfo
+
+        public JsonResult GetStaffInfo(string key, string phone)
+        {
+            string message = "";
+            bool success = false;
+            Object result = new { };
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            if (_userService.IsUserExist(phone))
+            {
+                User user = _userService.GetUserByPhone(phone);
+
+                if(user.Status == (int)StatusReference.UserStatus.DEACTIVATED)
+                {
+                    success = false;
+                    message = "Tài khoản đang bị khóa.";
+                }
+                else
+                {
+                    result = new
+                    {
+                        UserId = user.UserId,
+                        PhoneNumber = user.PhoneNumber,
+                        Fullname = user.Fullname
+                    };
+                    success = true;
+                }
+            }
+            else
+            {
+                success = false;
+                message = "Số điện thoại không tồn tại.";
+            }
+
+            return Json(new { success = success, message = message, data = result }, JsonRequestBehavior.AllowGet);
+        }
+
+        //GET: GetAllCreditPlan
+        public JsonResult GetAllCreditPlan(string key)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            IEnumerable<CreditPlan> tmpCreditPlans = _creditPlanService.GetAll()
+                .Where(t => t.Status == (int)StatusReference.CreditPlansStatus.ACTIVATED).ToList();
+
+            IEnumerable<Object> creditPlans = tmpCreditPlans.Select(
+                c => new
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    Price = c.Price
+                }
+            );
+
+            success = true;
+
+            return Json(new { success = success, message = message, data = creditPlans }, JsonRequestBehavior.AllowGet);
+
+        }
         //GET: GetAllTiketType
         public JsonResult GetAllTicketType(string key)
         {
@@ -156,11 +325,12 @@ namespace Green_Bus_Ticket_System.Controllers
             BusRoute busRoute = _busRouteService.GetBusRouteByCode(routeCode);
             Object route = new { };
 
-            if(busRoute == null)
+            if (busRoute == null)
             {
                 success = false;
                 message = "Tuyến xe không tồn tại.";
-            }else
+            }
+            else
             {
                 success = true;
                 route = new
@@ -223,14 +393,15 @@ namespace Green_Bus_Ticket_System.Controllers
 
                 if (card == null) message = "Thẻ không tồn tại.";
                 else if (card.Status == (int)StatusReference.CardStatus.BLOCKED) message = "Thẻ đang bị tạm khóa.";
-                else if(ticketType == null) message = "Loại vé không tồn tại.";
+                else if (ticketType == null) message = "Loại vé không tồn tại.";
                 else if (busRoute == null) message = "Tuyến xe không tồn tại.";
                 else
                 {
-                    if(card.Balance < ticketType.Price)
+                    if (card.Balance < ticketType.Price)
                     {
                         message = "Không đủ số dư để mua vé.";
-                    }else
+                    }
+                    else
                     {
                         card.Balance = card.Balance - ticketType.Price;
                         _cardService.Update(card);
@@ -255,7 +426,7 @@ namespace Green_Bus_Ticket_System.Controllers
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 log.Error(e.Message);
                 message = "Hệ thống đang bận, thử lại sau.";
@@ -281,7 +452,7 @@ namespace Green_Bus_Ticket_System.Controllers
             if (_userService.IsUserExist(phone))
             {
                 User user = _userService.GetUserByPhone(phone);
-                if(user.RoleId != (int)StatusReference.RoleID.PASSENGER)
+                if (user.RoleId != (int)StatusReference.RoleID.PASSENGER)
                 {
                     success = false;
                     message = "Ứng dụng chỉ dành cho hành khách.";
@@ -300,7 +471,7 @@ namespace Green_Bus_Ticket_System.Controllers
                         message = "Sai điện thoại hoặc mật khẩu!";
                     }
                 }
-                
+
             }
             else
             {
@@ -400,7 +571,7 @@ namespace Green_Bus_Ticket_System.Controllers
 
             if (user != null)
             {
-                
+
                 user.Fullname = fullname;
                 if (password.Trim().Length > 0)
                 {
@@ -467,7 +638,7 @@ namespace Green_Bus_Ticket_System.Controllers
 
                         success = true;
                         message = "Kích hoạt thành công, thông tin tài khoản sẽ được gửi qua SMS";
-                        
+
                         string SmsMessage = "Kich hoat the thanh cong. Tai khoan: " + phone + ". Mat khau: " + password;
                         SMSMessage.SendSMS(CommonUtils.GlobalingingPhone(phone), SmsMessage);
                     }
@@ -513,7 +684,7 @@ namespace Green_Bus_Ticket_System.Controllers
                     }
                 );
             }
-            
+
 
             success = true;
 
@@ -542,7 +713,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 DateTime end = DateTime.ParseExact(endDate + " " + current, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
 
                 User user = _userService.GetUserByPhone(phone);
-                if(user != null)
+                if (user != null)
                 {
                     List<Ticket> tickets = _ticketService.GetTicketByDateRange(user.UserId, begin, end);
 
@@ -555,10 +726,10 @@ namespace Green_Bus_Ticket_System.Controllers
                             Total = t.Total.ToString("#,##0") + " đ"
                         }
                     );
-                    
+
                     success = true;
                 }
-                
+
             }
             catch (FormatException e)
             {
@@ -599,6 +770,8 @@ namespace Green_Bus_Ticket_System.Controllers
             }
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
+
+
         private void SendNotification(string code)
         {
             CloudStorageAccount account = CloudStorageAccount.Parse(storageConn);
@@ -610,7 +783,7 @@ namespace Green_Bus_Ticket_System.Controllers
             CloudQueueMessage message = new CloudQueueMessage(code);
 
             queue.AddMessage(message);
-        } 
-       
+        }
+
     }
 }

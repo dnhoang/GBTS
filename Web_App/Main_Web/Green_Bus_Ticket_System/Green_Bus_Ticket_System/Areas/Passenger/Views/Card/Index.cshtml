@@ -69,17 +69,7 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title">Nạp tiền vào thẻ</h4>
                     </div>
-                    <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
                         <div class="modal-body">
-                            <input type="hidden" name="cmd" value="_xclick">
-                            <input type="hidden" name="business" value="@ViewBag.Receiver">
-                            <input type="hidden" name="item_name" value="BGTS Add Credit">
-                            <input type="hidden" name="amount" value="@Math.Round((decimal)(creditPlans[0].Price / rate), 2)" id="amount">
-                            <input type="hidden" name="custom" value="" id="custom">
-                            <input type="hidden" name="return" value="@ViewBag.Return">
-                            <input type="hidden" name="notify_url" value="@ViewBag.Notify">
-                            <input type="hidden" name="cancel_return" value="@ViewBag.Cancel">
-
                             <div class="form-group">
                                 <label class="col-sm-4 control-label form-label text-right">Gói nạp tiền</label>
                                 <div class="col-sm-8">
@@ -95,9 +85,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-white" data-dismiss="modal"><i class="fa fa-times"></i> HỦY</button>
-                            <button type="submit" class="btn btn-default"><i class="fa fa-send-o"></i> THANH TOÁN</button>
+                            <button type="button" class="btn btn-default" id="paypal"><i class="fa fa-send-o"></i> THANH TOÁN</button>
                         </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -108,22 +97,13 @@
 </div>
 
 @section CustomJs{
+    <script src="//www.paypalobjects.com/api/checkout.js" async></script>
     <script>
-        var priceData = [];
-        @foreach (Green_Bus_Ticket_System_Data.CreditPlan item in creditPlans)
-        {
-            @Html.Raw("priceData["+ item.Id  +"] = " + Math.Round((decimal)(item.Price / rate), 2) + ";");
-        }
+        var currentCard = 0;
 
         $(".addcredit").click(function () {
-            var id = this.id;
-            $("#custom").val(id);
+            currentCard = this.id;
             $("#paymentModal").modal("show");
-        });
-
-        $(".selectpicker").change(function () {
-            var id = $(this).val();
-            $("#amount").val(priceData[id]);
         });
 
         var timer = null;
@@ -143,8 +123,38 @@
                         }
                     });
                 }
-                
+
             }, 1000);
         });
+
+        window.paypalCheckoutReady = function () {
+            paypal.checkout.setup("@Green_Bus_Ticket_System_Utils.PayPalSettings.MerchantAccountID", {
+                environment: '@Green_Bus_Ticket_System_Utils.PayPalSettings.Environment',
+                click: function (event) {
+                    event.preventDefault();
+                    paypal.checkout.initXO();
+                    $.support.cors = true;
+                    $.ajax({
+                        url: '/Passenger/Card/PayPaltoken',
+                        type: "GET",
+                        data: { creditPlanId: $(".selectpicker").val(), cardId: currentCard },
+                        async: true,
+                        crossDomain: true,
+                        //Load the minibrowser with the redirection url in the success handler
+                        success: function (token) {
+                            var url = paypal.checkout.urlPrefix + token;
+                            //Loading Mini browser with redirect url, true for async AJAX calls
+                            paypal.checkout.startFlow(url);
+                        },
+                        error: function (responseData, textStatus, errorThrown) {
+                            alert("Something going wrong ");
+                            //Gracefully Close the minibrowser in case of AJAX errors
+                            paypal.checkout.closeFlow();
+                        }
+                    });
+                },
+                button: ['paypal']
+            });
+        }
     </script>
 }

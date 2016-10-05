@@ -9,12 +9,27 @@
     <button class="btn btn-success pull-right" id="addButton"><i class="fa fa-plus"></i> THÊM THẺ MỚI</button>
 }
 <div class="container-padding">
+    <div class="col col-md-12 gb-padding text-center">
+        <div class="form-inline hform">
+            <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-credit-card"></i></div>
+                <input type="text" class="form-control" id="term" placeholder="Nhập số điện thoại hoặc mã thẻ">
+            </div>
+            <button type="button" class="btn btn-default" id="search"><i class="fa fa-search"></i></button>
+        </div>
+    </div>
+    <div class="col-md-12" id="card-list">
+        
+
+
+    </div>
+
     
     @if (cards.Count <= 0)
     {
         <p>Không có thẻ nào!</p>
     }
-    else
+    else if(false)
     {
         <table id="card-table" class="table display">
             <thead>
@@ -61,7 +76,7 @@
                             <td><span class="label label-primary">CHƯA KÍCH HOẠT</span></td>
                             <td></td>
                         }
-                        
+
 
                     </tr>
                 }
@@ -78,40 +93,42 @@
             </tfoot>
         </table>
 
-        <!-- Modal -->
-        <div class="modal fade" id="addCardModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Thêm thẻ</h4>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="form-inline">
-                            <div class="form-group">
-                                <label for="add-cardId" class="form-label">Mã thẻ</label>
-                                <input type="text" class="form-control" id="add-cardId">
-                            </div>
-                            <div class="form-group">
-                                <label for="add-balance" class="form-label">Số dư</label>
-                                <input type="number" class="form-control" id="add-balance" value="15000">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-white" data-dismiss="modal">HỦY</button>
-                        <button type="button" class="btn btn-default" id="save">LƯU</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-          <!-- End Moda Code -->
+        
 
     }
+    <!-- Modal -->
+    <div class="modal fade" id="addCardModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Thêm thẻ</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="add-cardId" class="form-label">Mã thẻ</label>
+                            <input type="text" class="form-control" id="add-cardId">
+                        </div>
+                        <div class="form-group">
+                            <label for="add-balance" class="form-label">Số dư</label>
+                            <input type="number" class="form-control" id="add-balance" value="15000">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">HỦY</button>
+                    <button type="button" class="btn btn-default" id="save">LƯU</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- End Moda Code -->
 </div>
+
 
 @section CustomJs{
     <script src="~/Scripts/jquery.signalR-2.2.1.min.js"></script>
@@ -143,6 +160,28 @@
             "order": []
         });
 
+        $("#search").click(function () {
+            var term = $("#term").val().trim();
+            if (term.length > 0) {
+                $.ajax({
+                    url: "/Staff/Card/SearhCard",
+                    dataType: "html",
+                    data: { term: term },
+                    method: "GET",
+                    success: function (data) {
+                        $("#card-list").html(data);
+                    }
+                });
+            }
+        });
+
+        $('#term').keypress(function (e) {
+            var key = e.which;
+            if (key == 13)
+            {
+                $("#search").trigger("click");
+            }
+        });
 
         $("#addButton").click(function () {
             var cardId = $("#add-cardId").val("");
@@ -152,8 +191,8 @@
         $(document).on("click", ".lockcard", function () {
             var id = this.id;
             var card = $(this);
-            
-            
+
+
             $.ajax({
                 url: "/Staff/Card/LockCard",
                 method: "GET",
@@ -164,7 +203,7 @@
                         card.html('<i class="fa fa-unlock"></i> MỞ KHÓA');
                         card.addClass("btn-primary unlockcard");
                         card.removeClass("btn-danger lockcard");
-                        $(".statuslable#" + id).html('<span class="label label-danger">KHÓA</span>');
+                        $(".statuslable#" + id).html('<span class="red">KHÓA</span>');
                     }
                 }
             });
@@ -185,7 +224,7 @@
                         card.html('<i class="fa fa-lock"></i> KHÓA THẺ');
                         card.removeClass("btn-primary unlockcard");
                         card.addClass("btn-danger lockcard");
-                        $(".statuslable#" + id).html('<span class="label label-success">ĐÃ KÍCH HOẠT</span>');
+                        $(".statuslable#" + id).html('<span class="green">ĐÃ KÍCH HOẠT</span>');
                     }
                 }
             });
@@ -203,7 +242,16 @@
                     success: function (data) {
                         if (data.success) {
                             $("#addCardModal").modal("hide");
-                            reloadData();
+                            //reloadData();
+                            swal({
+                                title: "",
+                                text: "Thêm thẻ thành công!",
+                                type: "success"
+                            });
+
+                            $("#term").val(cardId);
+                            $("#search").trigger("click");
+
                         } else {
                             swal({
                                 title: "",

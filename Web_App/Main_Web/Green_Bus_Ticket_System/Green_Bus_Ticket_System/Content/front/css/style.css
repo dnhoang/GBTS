@@ -4143,3 +4143,19 @@ Widgets
 .page-header {
     overflow: auto;
 }
+
+.red{
+    color: red;
+}
+
+.green{
+    color: green;
+}
+
+@media (min-width: 768px) {
+    .hform .input-group {
+        display: inline-table;
+        vertical-align: middle;
+        min-width: 300px;
+    }
+}

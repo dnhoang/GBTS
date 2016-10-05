@@ -1,3 +1,4 @@
+E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\obj\Debug\Green_Bus_Ticket_System.csprojResolveAssemblyReference.cache
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\ApplicationInsights.config
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\roslyn\csc.exe
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
@@ -32,6 +33,8 @@ E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Mic
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.AspNet.Identity.Core.dll
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.AspNet.Identity.EntityFramework.dll
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.AspNet.Identity.Owin.dll
+E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.AspNet.SignalR.Core.dll
+E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.AspNet.SignalR.SystemWeb.dll
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.Azure.KeyVault.Core.dll
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.Data.Edm.dll
@@ -73,6 +76,8 @@ E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Mic
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.AI.Web.xml
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.AI.WindowsServer.xml
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.ApplicationInsights.xml
+E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.AspNet.SignalR.Core.xml
+E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.AspNet.SignalR.SystemWeb.xml
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.Azure.KeyVault.Core.xml
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.Data.Edm.xml
@@ -147,10 +152,5 @@ E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\ko\
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\ru\System.Spatial.resources.dll
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\zh-Hans\System.Spatial.resources.dll
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\zh-Hant\System.Spatial.resources.dll
-E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\obj\Debug\Green_Bus_Ticket_System.csprojResolveAssemblyReference.cache
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\obj\Debug\Green_Bus_Ticket_System.dll
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\obj\Debug\Green_Bus_Ticket_System.pdb
-E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.AspNet.SignalR.Core.dll
-E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.AspNet.SignalR.SystemWeb.dll
-E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.AspNet.SignalR.Core.xml
-E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Microsoft.AspNet.SignalR.SystemWeb.xml

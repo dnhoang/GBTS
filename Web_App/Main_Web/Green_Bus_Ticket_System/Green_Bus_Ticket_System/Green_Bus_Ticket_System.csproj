@@ -375,6 +375,7 @@
     <Content Include="Content\front\js\summernote\summernote.min.js" />
     <Content Include="Content\front\js\sweet-alert\sweet-alert.min.js" />
     <Content Include="Content\front\logo\gblogo.png" />
+    <Content Include="Content\front\logo\notification_error.png" />
     <Content Include="Content\front\logo\success-icon-10.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -414,6 +415,8 @@
     <Content Include="Areas\Staff\Views\Passenger\Index.cshtml" />
     <Content Include="Areas\Staff\Views\Passenger\GetUser.cshtml" />
     <Content Include="Areas\Staff\Views\Home\Profiles.cshtml" />
+    <Content Include="Areas\Passenger\Views\Card\Fail.cshtml" />
+    <Content Include="Areas\Staff\Views\Card\SearhCard.cshtml" />
     <None Include="Properties\PublishProfiles\GBTS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

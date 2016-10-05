@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "Nạp tiền vào thẻ";
+}
+
+<div class="container-padding text-center">
+    <img src="~/Content/front/logo/notification_error.png" />
+    <h2>THANH TOÁN THẤT BẠI</h2>
+    <p>Thanh toán nạp tiền của bạn không thành công! Vui lòng liện hệ 19001000</p>
+</div>
+
+@section CustomJs{
+    <script>
+        setTimeout(function() {
+            window.location = "/Passenger/Card/";
+        }, 2000);
+    </script>
+}
