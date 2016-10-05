@@ -1,4 +1,4 @@
-package com.example.gbts.navigationdraweractivity.service;
+package com.example.gbts.navigationdraweractivity.utils;
 
 import android.util.Log;
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_"
+    android:id="@+id/linearLayout_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#69F0AE"
@@ -117,6 +117,23 @@
                     android:background="@drawable/buttonshape"
                     android:onClick="clickToLogin"
                     android:text="Đăng Nhập"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp" />
+
+            </TableRow>
+            <TableRow
+                android:id="@+id/tableRow4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/btnActive"
+                    android:background="@drawable/buttonshape"
+                    android:onClick="clickToLogin"
+                    android:text="Kích Hoạt"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp" />
 
