@@ -14,6 +14,15 @@ public class BusRoute {
         return id;
     }
 
+    public BusRoute(String id, String code, String name) {
+        this.id = id;
+        this.code = code;
+        this.name = name;
+    }
+
+    public BusRoute() {
+    }
+
     public void setId(String id) {
         this.id = id;
     }
