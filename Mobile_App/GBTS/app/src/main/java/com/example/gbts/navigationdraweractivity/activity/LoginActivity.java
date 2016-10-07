@@ -21,6 +21,7 @@ import com.example.gbts.navigationdraweractivity.fragment.ActivateAccount;
 import com.example.gbts.navigationdraweractivity.fragment.DetailsInfo;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
@@ -112,10 +113,18 @@ public class LoginActivity extends AppCompatActivity {
             boolean success = jsonObject.optBoolean(TAG_SUCCESS);
 
             if (success) {
-                SharedPreferences preferences = getSharedPreferences("Info", MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("Phonenumber", phone);
-                editor.commit();
+                try {
+                    String fullname=jsonObject.getString("Fullname");
+                    SharedPreferences preferences = getSharedPreferences("Info", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("Phonenumber", phone);
+                    editor.putString("Password",pwd);
+                    editor.putString("Fullname",fullname);
+                    editor.commit();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
 
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 //                Intent intent = new Intent(LoginActivity.this, ActivateCardActivity.class);

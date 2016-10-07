@@ -30,7 +30,7 @@ public class ActivateCardActivity extends AppCompatActivity {
     Tag tag;
     String setting = "Info";
 
-    String hostAddress = "http://grinbuz.com";
+    String hostAddress = "https://grinbuz.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

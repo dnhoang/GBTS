@@ -80,7 +80,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:background="@drawable/textviewshape"
-                    android:hint="   Nhập Số Điện Thoại...">
+                    android:hint="   Nhập Số Điện Thoại..."
+                    android:inputType="phone">
 
                     <requestFocus />
                 </EditText>
