@@ -35,7 +35,7 @@
                 android:text="Mã thẻ" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/txtCardID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -55,7 +55,7 @@
                 android:text="Ngày Đăng Ký " />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/txtRegistrationDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -74,8 +74,8 @@
                 android:layout_height="wrap_content"
                 android:text="Trạng thái" />
 
-            <TextView
-                android:id="@+id/textView6"
+            +<TextView
+                android:id="@+id/txtStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -95,7 +95,7 @@
                 android:text="Số dư" />
 
             <TextView
-                android:id="@+id/textView8"
+                android:id="@+id/txtBalance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#F44336"
