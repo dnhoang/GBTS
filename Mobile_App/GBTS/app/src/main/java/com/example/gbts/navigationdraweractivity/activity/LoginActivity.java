@@ -55,18 +55,21 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
-        final FragmentManager manager = getFragmentManager();
-        final ActivateAccount account = new ActivateAccount();
-        btnActive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                account.show(manager, "Activate Account");
-
-            }
-        });
+//        final FragmentManager manager = getFragmentManager();
+//        final ActivateAccount account = new ActivateAccount();
+//        btnActive.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                account.show(manager, "Activate Account");
+//
+//            }
+//        });
 
     }
-
+    public void clickToActivateCard(View view){
+        Intent intent=new Intent(this,ActivateCardActivity.class);
+        startActivity(intent);
+    }
     //ASYNC TASK
     private class JSONParse extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
@@ -115,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                 editor.commit();
 
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                Intent intent = new Intent(LoginActivity.this, ActivateCardActivity.class);
                 startActivity(intent);
             } else {
                 Toast.makeText(getApplicationContext(), "Sai điện thoại hoặc mật khẩu!", Toast.LENGTH_LONG).show();

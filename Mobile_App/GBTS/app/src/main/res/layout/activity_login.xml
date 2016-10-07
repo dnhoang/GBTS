@@ -132,7 +132,7 @@
                 <Button
                     android:id="@+id/btnActive"
                     android:background="@drawable/buttonshape"
-                    android:onClick="clickToLogin"
+                    android:onClick="clickToActivateCard"
                     android:text="Kích Hoạt"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp" />
