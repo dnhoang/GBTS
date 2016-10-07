@@ -6,19 +6,12 @@
     android:gravity="center_horizontal">
 
 
-    <TextView
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Account Details"
-        android:textSize="30dp"
-        android:padding="15dp"/>
-
     <TableLayout
         android:id="@+id/tableLayout1"
         android:layout_width="280dp"
         android:layout_height="260dp"
         android:collapseColumns="5"
+        android:layout_marginTop="15dp"
         android:background="@drawable/background_table"
         android:padding="20dp">
 

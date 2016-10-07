@@ -9,4 +9,6 @@ public class Constance {
             "http://grinbuz.com//Api/Login?key=gbts_2016_capstone";
     public static String API_NOTIFICATION =
             "http://grinbuz.com/Api/RegisterNotificationToken?key=gbts_2016_capstone";
+    public static String API_GETALLCARD =
+            "http://grinbuz.com/Api/GetAllCard?key=gbts_2016_capstone";
 }

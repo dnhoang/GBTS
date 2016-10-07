@@ -45,13 +45,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d("Truongtq msg", "Message data payload: " + remoteMessage.getData());
         }
 
-        // Check if message contains a notification payload.
-//        if (remoteMessage.getData() != null) {
-//
-//            showNotification(remoteMessage.getData().get("body"), remoteMessage.getData().get("title"));
-//
-//            Log.d("Truongtq msg", "Message Notification Body: " + remoteMessage.getData().get("body"));
-//        }
+//         Check if message contains a notification payload.
+        if (remoteMessage.getData() != null) {
+
+            showNotification(remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle());
+
+            Log.d("Truongtq msg", "Message Notification Body: " + remoteMessage.getNotification().getBody());
+        }
 //        showNotification(remoteMessage.getData().get("body"), remoteMessage.getData().get("title"));
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
@@ -70,7 +70,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notifications)
-                .setContentTitle(title)
+//                .setContentTitle(title)
+                .setContentTitle("GBTS")
                 .setContentText(messageBody)
                 .setAutoCancel(true)
                 .setSound(sound)

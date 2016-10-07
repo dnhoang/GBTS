@@ -48,9 +48,9 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                new JSONParse().execute();
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
+                new JSONParse().execute();
+//                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                startActivity(intent);
             }
         });
 
@@ -93,6 +93,7 @@ public class LoginActivity extends AppCompatActivity {
             JSONParser jParser = new JSONParser();
 
             String strURL = Constance.API_LOGIN + "&phone=" + phone + "&password=" + pwd;
+//            String strURL = Constance.API_LOGIN + "&phone=01212184802&password=123456";
 
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrl(strURL);

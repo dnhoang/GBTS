@@ -11,6 +11,10 @@
             android:icon="@drawable/ic_action_user"
             android:title="Thông Tin Tài khoản" />
         <item
+            android:id="@+id/nav_payment"
+            android:icon="@drawable/ic_payment"
+            android:title="Thông Tin Tài khoản" />
+        <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/icon_action_editprofile"
             android:title="Thông tin cá nhân" />

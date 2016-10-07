@@ -24,6 +24,7 @@ import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
 import com.example.gbts.navigationdraweractivity.asyntask.FireBaseIDTask;
 import com.example.gbts.navigationdraweractivity.fragment.AccountInfo;
 import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
+import com.example.gbts.navigationdraweractivity.fragment.DetailsInfo;
 import com.example.gbts.navigationdraweractivity.fragment.FragmentDirection;
 import com.example.gbts.navigationdraweractivity.fragment.GmapFragment;
 import com.example.gbts.navigationdraweractivity.fragment.MainContent;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Xe bus thông minh");
@@ -56,8 +58,12 @@ public class MainActivity extends AppCompatActivity
         FirebaseMessaging.getInstance().subscribeToTopic("GBTS");
         String token = FirebaseInstanceId.getInstance().getToken();
         Log.d("MainActivitytq token", token);
+
+        //Store phone number
         SharedPreferences preferences = getSharedPreferences("Info", MODE_PRIVATE);
         String phoneInfo = preferences.getString("Phonenumber", "Chào mừng bạn đến với thế giới hệ thống xe bus thông minh!!");
+
+
         Log.d("MainActivitytq p", phoneInfo);
         new FireBaseIDTask().execute(phoneInfo, token);
 
@@ -182,6 +188,7 @@ public class MainActivity extends AppCompatActivity
             switch (id) {
                 case R.id.nav_card:
                     toolbar.setTitle("Thẻ của bạn");
+//                    fragmentClass = DetailsInfo.class;
                     fragmentClass = CreditCard.class;
                     break;
                 case R.id.nav_profile:
@@ -190,6 +197,10 @@ public class MainActivity extends AppCompatActivity
                     break;
                 case R.id.nav_user:
                     toolbar.setTitle("Thông tin tài khoản");
+                    fragmentClass = AccountInfo.class;
+                    break;
+                case R.id.nav_payment:
+                    toolbar.setTitle("Nạp tiền vào tài khoản");
                     fragmentClass = AccountInfo.class;
                     break;
                 case R.id.nav_gmaps:

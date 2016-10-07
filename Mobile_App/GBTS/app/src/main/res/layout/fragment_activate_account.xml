@@ -6,19 +6,36 @@
 
     <LinearLayout
         android:layout_width="300dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center"
+        android:layout_height="400dp"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"
-        android:orientation="vertical"
-        android:padding="5dp">
+        android:background="@drawable/background_table"
+        android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:text="Kích Hoạt Tài Khoản"
+            android:textColor="#fff"
+            android:textSize="30dp" />
+
+
+        <ImageView
+            android:id="@+id/iconNFC"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_nfc_logo"/>
         <EditText
             android:id="@+id/edtInputPhoneNumber"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="50dp"
-            android:background="@drawable/background_table"
+            android:background="#fff"
             android:hint="Vui lòng nhập số điện thoại.."
             android:padding="5dp" />
 
@@ -26,9 +43,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
             android:padding="5dp"
-            android:textColor="#F44336"
-            android:text="Vui lòng áp thẻ để kích hoạt" />
+            android:text="Vui lòng áp thẻ để kích hoạt"
+            android:textColor="#F44336" />
 
 
     </LinearLayout>
