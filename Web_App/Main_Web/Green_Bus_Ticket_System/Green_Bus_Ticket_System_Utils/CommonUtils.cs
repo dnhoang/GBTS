@@ -9,6 +9,22 @@ namespace Green_Bus_Ticket_System_Utils
 {
     public static class CommonUtils
     {
+        public static string GetCurrentRate()
+        {
+            try
+            {
+                string endPoint = @"http://free.currencyconverterapi.com/api/v3/convert";
+                var client = new RestClient(endPoint);
+                var json = client.MakeRequest("?q=USD_VND");
+
+                return json;
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
+            
+        }
         public static string VietnamingPhone(string globalPhone)
         {
             if (globalPhone.Contains("+84"))

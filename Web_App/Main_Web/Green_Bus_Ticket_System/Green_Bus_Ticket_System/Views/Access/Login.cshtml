@@ -17,7 +17,9 @@
     <link href="~/Content/front/css/root.css" rel="stylesheet">
     <style type="text/css">
         body {
-            background: #F5F5F5;
+            background-image: url('../../Content/front/bg.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
         }
     </style>
 </head>
@@ -47,7 +49,12 @@
     <script type="text/javascript" src="~/Content/front/js/jquery.min.js"></script>
 
     <script>
-
+        $('#password').keypress(function (e) {
+            var key = e.which;
+            if (key == 13) {
+                $("#login").trigger("click");
+            }
+        });
         $("#login").click(function () {
             var phone = $("#phone").val();
             var password = $("#password").val();

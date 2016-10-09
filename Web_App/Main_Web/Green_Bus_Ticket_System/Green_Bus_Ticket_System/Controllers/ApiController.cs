@@ -15,6 +15,7 @@ using System.Globalization;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.AspNet.SignalR;
+using Newtonsoft.Json.Linq;
 
 namespace Green_Bus_Ticket_System.Controllers
 {
@@ -45,6 +46,30 @@ namespace Green_Bus_Ticket_System.Controllers
             _creditPlanService = creditPlanService;
             _paymentTransactionService = paymentTransactionService;
 
+        }
+
+        public JsonResult GetRate(string key)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            string json = CommonUtils.GetCurrentRate();
+            float rate = 22500;
+            if (json != null)
+            {
+                var obj = JObject.Parse(json);
+               rate = (float)obj["results"]["USD_VND"]["val"];
+                success = true;
+            }
+
+            return Json(new { success = success, message = message, data = new { Rate = rate  } }, JsonRequestBehavior.AllowGet);
         }
 
         //GET: AddCard
@@ -441,6 +466,7 @@ namespace Green_Bus_Ticket_System.Controllers
         {
             bool success = false;
             string message = "";
+            Object result = new { };
 
             if (!apiKey.Equals(key))
             {
@@ -457,6 +483,11 @@ namespace Green_Bus_Ticket_System.Controllers
                     success = false;
                     message = "Ứng dụng chỉ dành cho hành khách.";
                 }
+                else if(user.Status == (int)StatusReference.UserStatus.DEACTIVATED)
+                {
+                    success = false;
+                    message = "Tài khoản của bạn đang bị khóa.";
+                }
                 else
                 {
                     var hashedPassword = CommonUtils.HashPassword(password);
@@ -464,6 +495,11 @@ namespace Green_Bus_Ticket_System.Controllers
                     {
                         success = true;
                         message = "Đăng nhập thành công!";
+                        result = new
+                        {
+                            PhoneNumber = user.PhoneNumber,
+                            Fullname = user.Fullname
+                        };
                     }
                     else
                     {
@@ -478,7 +514,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 success = false;
                 message = "Sai điện thoại hoặc mật khẩu!";
             }
-            return Json(new { success = success, message = message });
+            return Json(new { success = success, message = message, data = result });
         }
 
         //GET: RequestPasswordToken
@@ -630,18 +666,26 @@ namespace Green_Bus_Ticket_System.Controllers
                     }
                     else
                     {
-                        user = _userService.AddUser(phone, null, password, (int)StatusReference.RoleID.PASSENGER);
-                        card.User = user;
-                        card.Status = (int)StatusReference.CardStatus.ACTIVATED;
-                        card.RegistrationDate = DateTime.Now;
-                        _cardService.Update(card);
+                        if(phone != null && phone.Trim().Length > 0) { 
+                            user = _userService.AddUser(phone, null, password, (int)StatusReference.RoleID.PASSENGER);
+                            card.User = user;
+                            card.Status = (int)StatusReference.CardStatus.ACTIVATED;
+                            card.RegistrationDate = DateTime.Now;
+                            _cardService.Update(card);
 
-                        success = true;
-                        message = "Kích hoạt thành công, thông tin tài khoản sẽ được gửi qua SMS";
+                            success = true;
+                            message = "Kích hoạt thành công, thông tin tài khoản sẽ được gửi qua SMS";
 
-                        string SmsMessage = "Kich hoat the thanh cong. Tai khoan: " + phone + ". Mat khau: " + password;
-                        SMSMessage.SendSMS(CommonUtils.GlobalingingPhone(phone), SmsMessage);
+                            string SmsMessage = "Kich hoat the thanh cong. Tai khoan: " + phone + ". Mat khau: " + password;
+                            SMSMessage.SendSMS(CommonUtils.GlobalingingPhone(phone), SmsMessage);
+                        }
+                        else
+                        {
+                            success = false;
+                            message = "Số điện thoại không được rỗng!";
+                        }
                     }
+
                 }
 
             }

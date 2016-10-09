@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="RestClient.cs" />
     <Compile Include="JsonResponse.cs" />
     <Compile Include="Notification.cs" />
     <Compile Include="Paypal.cs" />

@@ -37,6 +37,13 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
             return View();
         }
 
+        public ActionResult SearchPassenger(string term)
+        {
+            List<User> users = _userService.GetAll().Where(u => (u.RoleId == (int)StatusReference.RoleID.PASSENGER) && (u.PhoneNumber.Contains(term) || (u.Fullname != null && u.Fullname.ToLower().Contains(term.ToLower())))).ToList();
+            ViewBag.Users = users;
+            return PartialView();
+        }
+
         public ActionResult GetUser(string phone)
         {
 

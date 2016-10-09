@@ -4159,3 +4159,20 @@ Widgets
         min-width: 300px;
     }
 }
+
+.quick-menu a .fa {
+    color: #218f4f;
+}
+.login-form form {
+    background: rgba(255, 255, 255, 0.77);
+    border: 2px solid #ffffff;
+    border-radius: 5px;
+}
+.login-form form .top {
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    padding: 10px 0;
+}
+.login-form form .form-area {
+    padding: 20px 40px;
+}

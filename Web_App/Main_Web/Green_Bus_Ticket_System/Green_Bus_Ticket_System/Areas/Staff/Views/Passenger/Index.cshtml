@@ -7,9 +7,31 @@
 
 }
 
+
+
 <div class="container-padding">
 
-    @if (users.Count <= 0)
+    <div class="col col-md-12 gb-padding text-center">
+        <div class="form-inline hform">
+            <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-user"></i></div>
+                <input type="text" class="form-control" id="term" placeholder="Nhập số điện thoại hoặc họ tên">
+            </div>
+            <button type="button" class="btn btn-default" id="search"><i class="fa fa-search"></i></button>
+        </div>
+    </div>
+    <div class="col-md-12" id="user-list">
+
+
+
+    </div>
+
+
+
+
+@if (false)
+{
+    if (users.Count <= 0)
     {
         <p>Không có hành khách nào!</p>
     }
@@ -55,24 +77,27 @@
             </tfoot>
         </table>
 
-        <!-- Modal -->
-        <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog" style="width: 800px;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Chỉnh sửa thông tin khách hàng</h4>
-                    </div>
-                    <div class="modal-body">
+        
+    }
+}
 
-                    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" style="width: 800px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Chỉnh sửa thông tin khách hàng</h4>
+                </div>
+                <div class="modal-body">
+
                 </div>
             </div>
         </div>
+    </div>
 
-          <!-- End Moda Code -->
+    <!-- End Moda Code -->
 
-    }
 </div>
 
 @section CustomJs{
@@ -91,8 +116,29 @@
             "order": []
         });
 
+        $("#search").click(function () {
+            var term = $("#term").val().trim();
+            if (term.length > 0) {
+                $.ajax({
+                    url: "/Staff/Passenger/SearchPassenger",
+                    dataType: "html",
+                    data: { term: term },
+                    method: "GET",
+                    success: function (data) {
+                        $("#user-list").html(data);
+                    }
+                });
+            }
+        });
 
-        $(".edit").click(function () {
+        $('#term').keypress(function (e) {
+            var key = e.which;
+            if (key == 13) {
+                $("#search").trigger("click");
+            }
+        });
+
+        $(document).on("click", ".edit", function () {
             $("#userModal .modal-body").html("");
             getUser(this.id);
 
