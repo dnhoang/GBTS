@@ -2,8 +2,8 @@ package com.example.gbts.navigationdraweractivity.fragment;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,8 +16,10 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.R;
+import com.example.gbts.navigationdraweractivity.activity.PaypalActivity;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 
@@ -27,7 +29,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 ;
 
@@ -81,6 +82,7 @@ public class CreditCard extends Fragment {
             super.onPostExecute(jsonObject);
             try {
                 // Getting JSON Array from URL
+                int checkPurchase;
                 jsonArray = jsonObject.getJSONArray("data");
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -95,65 +97,59 @@ public class CreditCard extends Fragment {
                     int status = object.optInt(TAG_CARD_STATUS);
 
                     String strStatus = "";
-                    if (status == 1) {
+                    if (status == 0) {
+                        strStatus = "Chưa kích hoạt";
+                    } else if (status == 1) {
                         strStatus = "Ðã kích hoạt";
                     } else {
-                        strStatus = "Chưa kích hoạt";
+                        strStatus = "Thẻ khoá";
                     }
 
                     // Adding value HashMap key => value
                     HashMap<String, String> map = new HashMap<>();
+                    map.put(TAG_CARD_ID, cardID);
                     map.put(TAG_CARD_NAME, name);
+                    map.put(TAG_REGISTRATION_DATE, registrationDate);
+                    map.put(TAG_BALANCE, balance + "");
                     map.put(TAG_CARD_STATUS, strStatus);
                     listCard.add(map);
                     Log.d("CreditCardtq listCard2", listCard.size() + "");
-
-                    ListAdapter adapter = new SimpleAdapter(getActivity(), listCard,
-                            R.layout.custom_listview_cardnfc,
-                            new String[]{TAG_CARD_NAME, TAG_CARD_STATUS}, new int[]{R.id.txtCardName, R.id.txtStatus});
-                    listView = (ListView) getView().findViewById(R.id.listViewCard);
-                    listView.setAdapter(adapter);
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-//                            final FragmentManager manager = getFragmentManager();
-//                            final DetailsInfo detailsInfo = new DetailsInfo();
-//                            detailsInfo.show(manager, "Details Account");
-
-
-                            DetailsInfo detailsInfo = new DetailsInfo();
-                            /** Creating a bundle object to store the position of the selected Card */
-                            Bundle b = new Bundle();
-                            /** Storing the position in the bundle object */
-                            b.putInt("position", position);
-                            detailsInfo.setArguments(b);
-                            /** Getting FragmentManager object */
-                            FragmentManager fragmentManager = getFragmentManager();
-
-                            /** Starting a FragmentTransaction */
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            DetailsInfo tPrev = (DetailsInfo) fragmentManager.findFragmentById(R.layout.custom_detail_listview_card);
-                            /** If the previously created fragment object still exists, then that has to be removed */
-                            if (tPrev != null) {
-                                fragmentTransaction.remove(tPrev);
-
-                                /** Opening the fragment object */
-                            }
-                            detailsInfo.show(fragmentTransaction, "time_dialog");
-//                            listCard.get(position).get(TAG_CARD_NAME);
-
-
-//
-//                            final FragmentManager manager = getFragmentManager();
-//                            final List<DetailsInfo> detailsInfo = new ArrayList<>();
-//                            detailsInfo.get(position).show(manager,"Empty item");
-
-//                            Toast.makeText(getActivity(), "You click at " + listCard.get(position).get(TAG_CARD_NAME), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
                 }
+                ListAdapter adapter = new SimpleAdapter(getActivity(), listCard,
+                        R.layout.custom_listview_cardnfc,
+                        new String[]{TAG_CARD_NAME, TAG_BALANCE, TAG_CARD_STATUS}, new int[]{R.id.txtCardName, R.id.txtCDBalance, R.id.txtStatus});
+                listView = (ListView) getView().findViewById(R.id.listViewCard);
+                listView.setAdapter(adapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                        HashMap<String, String> card = listCard.get(position);
+                        Log.d("TRUONGTQ map ", card.get(TAG_CARD_STATUS) + "");
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TAG_CARD_ID, card.get(TAG_CARD_ID));
+                        bundle.putString(TAG_CARD_NAME, card.get(TAG_CARD_NAME));
+                        bundle.putString(TAG_REGISTRATION_DATE, card.get(TAG_REGISTRATION_DATE));
+                        bundle.putString(TAG_BALANCE, card.get(TAG_BALANCE));
+                        bundle.putString(TAG_CARD_STATUS, card.get(TAG_CARD_STATUS));
+
+                        CreditCardDetails creditCardDetails = new CreditCardDetails();
+                        creditCardDetails.setArguments(bundle);
+                        if (card.get(TAG_CARD_STATUS).equals("Thẻ khoá")) {
+                            Toast.makeText(getActivity(), "Thẻ của bạn đã bị khoá xin vui lòng liên nhân viên ", Toast.LENGTH_SHORT).show();
+                        } else {
+                            final FragmentManager manager = getFragmentManager();
+                            creditCardDetails.show(manager, "Details Account");
+                        }
+                        Toast.makeText(getActivity(), "You click at " + listCard.get(position).get(TAG_CARD_NAME), Toast.LENGTH_SHORT).show();
+
+                        //SEND cardId to Paypal Activity
+
+
+                    }
+                });
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

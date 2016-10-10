@@ -16,9 +16,7 @@ import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.enity.Message;
-import com.example.gbts.navigationdraweractivity.fragment.AccountInfo;
 import com.example.gbts.navigationdraweractivity.fragment.ActivateAccount;
-import com.example.gbts.navigationdraweractivity.fragment.DetailsInfo;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 
 import org.json.JSONObject;

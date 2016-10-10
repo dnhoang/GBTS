@@ -51,8 +51,8 @@ public class DataAdapter extends BaseAdapter {
             holder.txtBusRoute = (TextView) convertView.findViewById(R.id.txtBusroute);
             holder.txtBusRoute.setPadding(20, 10,10 , 10);
             System.out.println("ADAPTER txtBusRoute " + holder.txtBusRoute);
-            holder.txtPrice = (TextView) convertView.findViewById(R.id.txtPrice);
-            holder.txtPrice.setPadding(20, 10,10 , 10);
+//            holder.txtPrice = (TextView) convertView.findViewById(R.id.txtPrice);
+//            holder.txtPrice.setPadding(20, 10,10 , 10);
             System.out.println("ADAPTER txtPrice " + holder.txtPrice);
             if (position == 0) {
                 convertView.setTag(holder);

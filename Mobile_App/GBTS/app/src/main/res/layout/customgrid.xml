@@ -29,7 +29,7 @@
                 android:text="Tuyến xe" />
 
             <TextView
-                android:id="@+id/txtPrice"
+                android:id="@+id/txtPricex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

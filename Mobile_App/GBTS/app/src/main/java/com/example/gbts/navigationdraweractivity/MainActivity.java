@@ -1,5 +1,6 @@
 package com.example.gbts.navigationdraweractivity;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -24,8 +25,9 @@ import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
 import com.example.gbts.navigationdraweractivity.asyntask.FireBaseIDTask;
 import com.example.gbts.navigationdraweractivity.fragment.AccountInfo;
 import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
-import com.example.gbts.navigationdraweractivity.fragment.DetailsInfo;
 import com.example.gbts.navigationdraweractivity.fragment.FragmentDirection;
+import com.example.gbts.navigationdraweractivity.fragment.GetAllButRoute;
+import com.example.gbts.navigationdraweractivity.fragment.GetReport;
 import com.example.gbts.navigationdraweractivity.fragment.GmapFragment;
 import com.example.gbts.navigationdraweractivity.fragment.MainContent;
 import com.example.gbts.navigationdraweractivity.fragment.Profile;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity
     FloatingActionButton fab, fab_search, fab_direction;
     Animation FabOpen, FabClose, FabClockwise, FabantiClockwise;
     boolean isOpen = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +69,6 @@ public class MainActivity extends AppCompatActivity
 
         Log.d("MainActivitytq p", phoneInfo);
         new FireBaseIDTask().execute(phoneInfo, token);
-
-        //Set Default first Fragment MainContain
         if (savedInstanceState == null) {
             Fragment fragment = null;
             Class fragmentClass = null;
@@ -77,12 +78,9 @@ public class MainActivity extends AppCompatActivity
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         }
-
-
 
         // FloatingAction Button
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -119,6 +117,7 @@ public class MainActivity extends AppCompatActivity
         //Show Fragment
         final FragmentManager manager = getFragmentManager();
         final FragmentDirection direction = new FragmentDirection();
+        final GetAllButRoute getAllButRoute = new GetAllButRoute();
 
         fab_direction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +125,12 @@ public class MainActivity extends AppCompatActivity
                 direction.show(manager, "FragmentDirection");
             }
         });
-
+        fab_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getAllButRoute.show(manager, "Fragment Get Busroute");
+            }
+        });
 
         // Find our drawer view
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -139,6 +143,11 @@ public class MainActivity extends AppCompatActivity
         //NavigationView and NavigationItemSelectedListener
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
     }
 
     @Override
@@ -183,26 +192,28 @@ public class MainActivity extends AppCompatActivity
             startActivity(newAct);
         } else {
             // Create a new fragment and specify the fragment to show based on nav item clicked
-            Fragment fragment = null;
+            Fragment fragment = new Fragment();
             Class fragmentClass = null;
             switch (id) {
                 case R.id.nav_card:
                     toolbar.setTitle("Thẻ của bạn");
-//                    fragmentClass = DetailsInfo.class;
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("", "");
+//                    fragment.setArguments(bundle);
                     fragmentClass = CreditCard.class;
                     break;
                 case R.id.nav_profile:
                     toolbar.setTitle("Thông tin cá nhân");
                     fragmentClass = Profile.class;
                     break;
-                case R.id.nav_user:
+                case R.id.nav_getReport:
                     toolbar.setTitle("Thông tin tài khoản");
-                    fragmentClass = AccountInfo.class;
+                    fragmentClass = GetReport.class;
                     break;
-                case R.id.nav_payment:
-                    toolbar.setTitle("Nạp tiền vào tài khoản");
-                    fragmentClass = AccountInfo.class;
-                    break;
+//                case R.id.nav_payment:
+//                    toolbar.setTitle("Nạp tiền vào tài khoản");
+//                    fragmentClass = AccountInfo.class;
+//                    break;
                 case R.id.nav_gmaps:
                     toolbar.setTitle("Bản đồ");
                     fragmentClass = GmapFragment.class;
