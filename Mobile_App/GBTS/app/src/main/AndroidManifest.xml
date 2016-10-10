@@ -50,7 +50,6 @@
 
         <activity android:name=".activity.CreditPlanActivity" />
         <activity android:name=".activity.PaypalActivity" />
-        <activity android:name=".activity.ConfirmationActivity"></activity>
 
         <activity android:name=".activity.ActivateCardActivity"
             android:label="Kích hoạt thẻ">

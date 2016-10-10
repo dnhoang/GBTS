@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,27 +27,11 @@ import org.json.JSONObject;
  * Created by truon on 9/22/2016.
  */
 
-public class Profile extends Fragment implements View.OnClickListener {
+public class Profile extends Fragment {
+    final String TAG = "Profile";
     String preference = "Info";
     String hostAddress = "https://grinbuz.com";
-    @Override
-    public void onClick(View v) {
-        EditText edtNewPassword = (EditText) v.findViewById(R.id.edtNewPassword);
-        EditText edtOldPassword = (EditText) v.findViewById(R.id.edtOldPassword);
-        EditText edtConfirmPassword = (EditText) v.findViewById(R.id.edtConfirmPassword);
-        String oldPassword = edtOldPassword.getText().toString().trim();
-        String newPassword = edtNewPassword.getText().toString().trim();
-        String confirmPassword = edtConfirmPassword.getText().toString().trim();
-        if (checkPassword(oldPassword, newPassword, confirmPassword)) {
-            SharedPreferences sharedPreferences = getActivity().getSharedPreferences(preference, Context.MODE_PRIVATE);
-            if (oldPassword.equals(sharedPreferences.getString("Password", ""))) {
 
-
-                new UpdateProfile().execute();
-            }
-
-        }
-    }
 
     @Nullable
     @Override
@@ -54,15 +39,38 @@ public class Profile extends Fragment implements View.OnClickListener {
             container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        EditText edtFullName = (EditText) view.findViewById(R.id.edtFullName);
-//        EditText edtNewPassword = (EditText) view.findViewById(R.id.edtNewPassword);
-//        EditText edtOldPassword = (EditText) view.findViewById(R.id.edtOldPassword);
-//        EditText edtConfirmPassword = (EditText) view.findViewById(R.id.edtConfirmPassword);
-        Button btUpdate = (Button) view.findViewById(R.id.btnUpdateProfile);
+        final EditText edtFullName = (EditText) view.findViewById(R.id.edtFullName);
+
+        final EditText edtNewPassword = (EditText) view.findViewById(R.id.edtNewPassword);
+        final EditText edtOldPassword = (EditText) view.findViewById(R.id.edtOldPassword);
+        final EditText edtConfirmPassword = (EditText) view.findViewById(R.id.edtConfirmPassword);
+        final Button btUpdate = (Button) view.findViewById(R.id.btnUpdateProfile);
 
         final SharedPreferences sharedPreferences = getActivity().getSharedPreferences(preference, Context.MODE_PRIVATE);
-        edtFullName.setText(sharedPreferences.getString("Fullname",""));
-        btUpdate.setOnClickListener(this);
+        edtFullName.setText(sharedPreferences.getString("Fullname", ""));
+        Log.d(TAG, "fullname" + sharedPreferences.getString("Fullname", ""));
+
+        btUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String oldPassword = edtOldPassword.getText().toString().trim();
+                String newPassword = edtNewPassword.getText().toString().trim();
+                String confirmPassword = edtConfirmPassword.getText().toString().trim();
+                if (oldPassword.equals("") && newPassword.equals("") && confirmPassword.equals("")) {
+                    String password = sharedPreferences.getString("Password", "");
+                    String[] params = {password};
+                    new UpdateProfile().execute(params);
+                } else if (checkPassword(oldPassword, newPassword, confirmPassword)) {
+                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences(preference, Context.MODE_PRIVATE);
+                    if (oldPassword.equals(sharedPreferences.getString("Password", ""))) {
+
+                        String[] params = {newPassword};
+                        new UpdateProfile().execute(params);
+                    }
+
+                }
+            }
+        });
 
         return view;
     }
@@ -84,16 +92,15 @@ public class Profile extends Fragment implements View.OnClickListener {
     private class UpdateProfile extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
         String phone, fullname, password;
-       SharedPreferences sharedPreferences = getActivity().getSharedPreferences(preference, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(preference, Context.MODE_PRIVATE);
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            EditText edtNewPassword = (EditText) getView().findViewById(R.id.edtNewPassword);
+            EditText edtFullname = (EditText) getView().findViewById(R.id.edtFullName);
 
             phone = sharedPreferences.getString("Phonenumber", "");
-            fullname = sharedPreferences.getString("Fullname", "");
-            password = edtNewPassword.getText().toString();
+            fullname = edtFullname.getText().toString().trim();
             pDialog = new ProgressDialog(getActivity());
             pDialog.setMessage("Cập nhật thông tin ...");
             pDialog.setIndeterminate(false);
@@ -104,14 +111,14 @@ public class Profile extends Fragment implements View.OnClickListener {
         @Override
         protected JSONObject doInBackground(String... params) {
             JSONParser jParser = new JSONParser();
-            phone = params[0];
-            fullname = params[1];
-            password = params[2];
+
+            password = params[0];
             //thay hostAddress thanh grinbuz
             String strURL = hostAddress + "/Api/UpdateProfile?key=gbts_2016_capstone&phone=" + phone + "&fullname=" + fullname + "&password=" + password;
 
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrl(strURL);
+            Log.d(TAG, json.toString());
             return json;
         }
 
@@ -131,9 +138,9 @@ public class Profile extends Fragment implements View.OnClickListener {
                 e.printStackTrace();
             }
             if (success) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("Password", password);
                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
             } else {
                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
             }

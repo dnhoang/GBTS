@@ -1,12 +1,12 @@
 package com.example.gbts.navigationdraweractivity.activity;
 
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,14 +16,13 @@ import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.enity.Message;
-import com.example.gbts.navigationdraweractivity.fragment.ActivateAccount;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
-
+    private final String TAG = "LoginActivity";
     //define controls
     Message message;
     EditText edtPhone, edtPass;
@@ -48,27 +47,15 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 new JSONParse().execute();
-//                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                startActivity(intent);
             }
         });
-
-
-//        final FragmentManager manager = getFragmentManager();
-//        final ActivateAccount account = new ActivateAccount();
-//        btnActive.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                account.show(manager, "Activate Account");
-//
-//            }
-//        });
-
     }
-    public void clickToActivateCard(View view){
-        Intent intent=new Intent(this,ActivateCardActivity.class);
+
+    public void clickToActivateCard(View view) {
+        Intent intent = new Intent(this, ActivateCardActivity.class);
         startActivity(intent);
     }
+
     //ASYNC TASK
     private class JSONParse extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
@@ -109,23 +96,23 @@ public class LoginActivity extends AppCompatActivity {
             pDialog.dismiss();
             //check success
             boolean success = jsonObject.optBoolean(TAG_SUCCESS);
-
+            Log.d(TAG, "jsonObject " + jsonObject.toString());
             if (success) {
+                JSONObject data = null;
                 try {
-                    String fullname=jsonObject.getString("Fullname");
+                    data = jsonObject.getJSONObject("data");
+                    String fullname = data.getString("Fullname");
+                    Log.d(TAG, "fullname " + fullname);
                     SharedPreferences preferences = getSharedPreferences("Info", MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString("Phonenumber", phone);
-                    editor.putString("Password",pwd);
-                    editor.putString("Fullname",fullname);
+                    editor.putString("Password", pwd);
+                    editor.putString("Fullname", fullname);
                     editor.commit();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                Intent intent = new Intent(LoginActivity.this, ActivateCardActivity.class);
                 startActivity(intent);
             } else {
                 Toast.makeText(getApplicationContext(), "Sai điện thoại hoặc mật khẩu!", Toast.LENGTH_LONG).show();

@@ -7,16 +7,12 @@
             android:icon="@drawable/ic_action_card"
             android:title="Thẻ Của Bạn" />
         <item
-            android:id="@+id/nav_user"
-            android:icon="@drawable/ic_action_user"
-            android:title="Thông Tin Tài khoản" />
-        <item
             android:id="@+id/nav_getReport"
             android:icon="@drawable/ic_action_report"
-            android:title="Báo cáo tài chính" />
+            android:title="Báo cáo chi tiêu" />
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/icon_action_editprofile"
+            android:icon="@drawable/ic_action_user"
             android:title="Thông tin cá nhân" />
         <item
             android:id="@+id/nav_gmaps"

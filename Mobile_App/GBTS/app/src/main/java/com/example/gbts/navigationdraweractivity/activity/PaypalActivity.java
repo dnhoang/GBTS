@@ -163,7 +163,6 @@ public class PaypalActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_PAYMENT) {
@@ -194,6 +193,9 @@ public class PaypalActivity extends AppCompatActivity {
                         String creditPlanId = bundle.getInt("creditPlanID") + "";
                         Log.d(TAG, "creditPlanId " + creditPlanId);
 
+                        String creditPlanPrice = bundle.getInt("creditPlanPrice") + "";
+                        Log.d(TAG, "creditPlanPrice " + creditPlanPrice);
+
                         JSONObject jsonObj = new JSONObject(confirm.toJSONObject().toString());
                         String transactionId = jsonObj.getJSONObject("response").getString("id");
                         Log.d(TAG, "transactionId " + transactionId);
@@ -201,8 +203,11 @@ public class PaypalActivity extends AppCompatActivity {
                         new AddCardBalance().execute(cardId, creditPlanId, transactionId);
 
                         //Starting a new activity for the payment details and also putting the payment details with intent
-                        Intent intent = new Intent(this, MainActivity.class);
+//                        Intent intent = new Intent(this, ConfirmationActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra("afterPay", "1");
                         startActivity(intent);
+
 
                         Toast.makeText(
                                 getApplicationContext(),

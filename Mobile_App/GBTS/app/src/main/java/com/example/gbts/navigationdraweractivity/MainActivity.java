@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity
     Animation FabOpen, FabClose, FabClockwise, FabantiClockwise;
     boolean isOpen = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,8 +145,25 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+    protected void onResume() {
+        super.onResume();
+        Intent intent = getIntent();
+        if (intent.getExtras() != null) {
+            String check = intent.getStringExtra("afterPay");
+            Log.d("Hoangtest: ", check);
+            if (check != null) {
+                Fragment fragment = null;
+                Class fragmentClass = null;
+                fragmentClass = CreditCard.class;
+                try {
+                    fragment = (Fragment) fragmentClass.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+            }
+        }
     }
 
     @Override
@@ -202,18 +218,14 @@ public class MainActivity extends AppCompatActivity
 //                    fragment.setArguments(bundle);
                     fragmentClass = CreditCard.class;
                     break;
-                case R.id.nav_profile:
-                    toolbar.setTitle("Thông tin cá nhân");
-                    fragmentClass = Profile.class;
-                    break;
                 case R.id.nav_getReport:
-                    toolbar.setTitle("Thông tin tài khoản");
+                    toolbar.setTitle("Báo cáo chi tiêu");
                     fragmentClass = GetReport.class;
                     break;
-//                case R.id.nav_payment:
-//                    toolbar.setTitle("Nạp tiền vào tài khoản");
-//                    fragmentClass = AccountInfo.class;
-//                    break;
+                case R.id.nav_profile:
+                    toolbar.setTitle("Thông tin cá nhân ");
+                    fragmentClass = Profile.class;
+                    break;
                 case R.id.nav_gmaps:
                     toolbar.setTitle("Bản đồ");
                     fragmentClass = GmapFragment.class;
