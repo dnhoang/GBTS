@@ -51,7 +51,7 @@
                 <div class="panel-title">
                     @if (item.CardName == null || item.CardName.Length == 0)
                     {
-                        <i class="fa fa-credit-card titleicon"></i>@item.CardId
+                        <i class="fa fa-credit-card titleicon"></i>@item.UniqueIdentifier
                     }
                     else
                     {
@@ -70,7 +70,7 @@
                     </ul>
                 </div>
                 <div class="panel-body">
-                    <p class="pull-left">Mã thẻ: @item.CardId</p>
+                    <p class="pull-left">Mã thẻ: @item.UniqueIdentifier</p>
                     <p class="pull-right">Số dư: @item.Balance.ToString("#,##0") đ</p>
                 </div>
             </div>

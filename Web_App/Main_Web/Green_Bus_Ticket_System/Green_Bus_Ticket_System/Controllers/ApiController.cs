@@ -94,7 +94,7 @@ namespace Green_Bus_Ticket_System.Controllers
             else
             {
                 Card card = new Card();
-                card.CardId = cardId;
+                card.UniqueIdentifier = cardId;
                 card.CardName = "Thẻ " + cardId;
                 card.Balance = defaultBalance;
                 card.RegistrationDate = DateTime.Now;
@@ -138,6 +138,7 @@ namespace Green_Bus_Ticket_System.Controllers
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
+       
         public JsonResult GetCardInfo(string key, string cardId)
         {
             string message = "";
@@ -157,10 +158,10 @@ namespace Green_Bus_Ticket_System.Controllers
             }
             else
             {
-                Card card = _cardService.GetCard(cardId);
+                Card card = _cardService.GetCardByUID(cardId);
                 result = new
                 {
-                    CardId = card.CardId,
+                    CardId = card.UniqueIdentifier,
                     CardName = card.CardName,
                     Balance = card.Balance,
                     RegistrationDate = card.RegistrationDate.ToString("dd/MM/yyyy"),
@@ -206,13 +207,13 @@ namespace Green_Bus_Ticket_System.Controllers
             }
             else
             {
-                Card card = _cardService.GetCard(cardId);
+                Card card = _cardService.GetCardByUID(cardId);
                 
                 card.Balance = card.Balance + plan.Price;
                 _cardService.Update(card);
 
                 PaymentTransaction payment = new PaymentTransaction();
-                payment.CardId = cardId;
+                payment.CardId = card.Id;
                 payment.CreditPlanId = creditPlanId;
                 payment.TransactionId = transactionId;
                 payment.PaymentDate = DateTime.Now;
@@ -412,7 +413,7 @@ namespace Green_Bus_Ticket_System.Controllers
 
             try
             {
-                Card card = _cardService.GetCard(cardId);
+                Card card = _cardService.GetCardByUID(cardId);
                 TicketType ticketType = _ticketTypeService.GetTicketType(ticketTypeId);
                 BusRoute busRoute = _busRouteService.GetBusRouteByCode(routeCode);
 
@@ -432,7 +433,7 @@ namespace Green_Bus_Ticket_System.Controllers
                         _cardService.Update(card);
 
                         Ticket ticket = new Ticket();
-                        ticket.CardId = card.CardId;
+                        ticket.CardId = card.Id;
                         ticket.BusRouteId = busRoute.Id;
                         ticket.TicketTypeId = ticketType.Id;
                         ticket.BoughtDated = DateTime.Now;
@@ -446,7 +447,12 @@ namespace Green_Bus_Ticket_System.Controllers
                         //Check balance is running out & if user have installed mobile app
                         if (card.Balance <= minBalance && card.User.NotificationCode != null)
                         {
-                            SendNotification(card.User.NotificationCode);
+                            string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
+                            if(card.Balance < _creditPlanService.GetMinPlan())
+                            {
+                                msg = "Thẻ " + card.UniqueIdentifier + " đã hết tiền, vui lòng nạp thêm.";
+                            }
+                            SendNotification(card.User.NotificationCode, msg);
                         }
                     }
                 }
@@ -641,7 +647,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
             }
 
-            Card card = _cardService.GetCard(cardId);
+            Card card = _cardService.GetCardByUID(cardId);
             if (card != null)
             {
                 if (card.Status != (int)StatusReference.CardStatus.NON_ACTIVATED)
@@ -720,7 +726,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 cards = tmpCards.Select(
                     c => new
                     {
-                        CardId = c.CardId,
+                        CardId = c.UniqueIdentifier,
                         CardName = c.CardName,
                         RegistrationDate = c.RegistrationDate.ToString("dd/MM/yyyy"),
                         Balance = c.Balance,
@@ -766,7 +772,7 @@ namespace Green_Bus_Ticket_System.Controllers
                         {
                             BoughtDated = t.BoughtDated.ToString("dd/MM/yyyy hh:mm:ss tt"),
                             BusCode = t.BusRoute.Code,
-                            CardName = (t.Card.CardName == null || t.Card.CardName.Length == 0) ? t.CardId : t.Card.CardName,
+                            CardName = (t.Card.CardName == null || t.Card.CardName.Length == 0) ? t.Card.UniqueIdentifier : t.Card.CardName,
                             Total = t.Total.ToString("#,##0") + " đ"
                         }
                     );
@@ -816,7 +822,7 @@ namespace Green_Bus_Ticket_System.Controllers
         }
 
 
-        private void SendNotification(string code)
+        private void SendNotification(string code, string msg)
         {
             CloudStorageAccount account = CloudStorageAccount.Parse(storageConn);
 
@@ -824,7 +830,7 @@ namespace Green_Bus_Ticket_System.Controllers
             CloudQueue queue = client.GetQueueReference("gbtscardbalance");
             queue.CreateIfNotExists();
 
-            CloudQueueMessage message = new CloudQueueMessage(code);
+            CloudQueueMessage message = new CloudQueueMessage(code + "*" + msg);
 
             queue.AddMessage(message);
         }

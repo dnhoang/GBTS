@@ -39,7 +39,7 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
 
         public ActionResult SearchCard(string term)
         {
-            List<Card> cards = _cardService.GetAll().Where(c => c.CardId.ToLower().Contains(term.ToLower()) || (c.User != null && c.User.PhoneNumber.Contains(term))).ToList();
+            List<Card> cards = _cardService.GetAll().Where(c => c.UniqueIdentifier.ToLower().Contains(term.ToLower()) || (c.User != null && c.User.PhoneNumber.Contains(term))).ToList();
             ViewBag.Cards = cards;
             return PartialView();
         }
@@ -58,7 +58,7 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
                 return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
             }
 
-            Card card = _cardService.GetCard(id);
+            Card card = _cardService.GetCardByUID(id);
             if (card != null)
             {
                 card.Status = (int)StatusReference.CardStatus.BLOCKED;
@@ -80,7 +80,7 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
                 return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
             }
 
-            Card card = _cardService.GetCard(id);
+            Card card = _cardService.GetCardByUID(id);
             if (card != null)
             {
                 card.Status = (int)StatusReference.CardStatus.ACTIVATED;
@@ -111,12 +111,43 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
             else
             {
                 Card card = new Card();
-                card.CardId = cardId;
+                card.UniqueIdentifier = cardId;
                 card.Balance = balance;
                 card.RegistrationDate = DateTime.Now;
                 card.CardName = "Thẻ " + cardId;
                 card.Status = (int)StatusReference.CardStatus.NON_ACTIVATED;
                 _cardService.Create(card);
+                success = true;
+
+            }
+
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+
+
+        }
+
+        public JsonResult TransferCard(string oldCard, string newCard)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!AuthorizeRequest())
+            {
+                message = "Bạn chưa đăng nhập";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            if (!_cardService.IsCardExist(oldCard))
+            {
+                message = "Thẻ "+ oldCard + " không tồn tại trên hệ thống!";
+                success = false;
+            }
+            else
+            {
+                Card card = _cardService.GetCardByUID(oldCard);
+                card.UniqueIdentifier = newCard;
+                _cardService.Update(card);
                 success = true;
 
             }
@@ -143,19 +174,19 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
                 foreach (Card item in cards)
                 {
                     List<string> oneCard = new List<string>();
-                    oneCard.Add(item.CardId);
+                    oneCard.Add(item.UniqueIdentifier);
                     oneCard.Add(item.RegistrationDate.ToString("dd/MM/yyyy"));
                     oneCard.Add("Chưa có");
                     oneCard.Add(item.Balance.ToString("#,##0") + " đ");
                     if (item.Status == (int)StatusReference.CardStatus.ACTIVATED)
                     {
-                        oneCard.Add("<span class='statuslable' id='" + item.CardId + "'><span class='label label-success'>ĐÃ KÍCH HOẠT</span></span>");
-                        oneCard.Add("<button type='button' class='btn btn-danger lockcard' id='" + item.CardId + "'><i class='fa fa-lock'></i> KHÓA THẺ</button>");
+                        oneCard.Add("<span class='statuslable' id='" + item.UniqueIdentifier + "'><span class='label label-success'>ĐÃ KÍCH HOẠT</span></span>");
+                        oneCard.Add("<button type='button' class='btn btn-danger lockcard' id='" + item.UniqueIdentifier + "'><i class='fa fa-lock'></i> KHÓA THẺ</button>");
                     }
                     else if (item.Status == (int)StatusReference.CardStatus.BLOCKED)
                     {
-                        oneCard.Add("<span class='statuslable' id='" + item.CardId + "'><span class='label label-danger'>KHÓA</span></span>");
-                        oneCard.Add("<button type='button' class='btn btn-primary unlockcard' id='" + item.CardId + "'><i class='fa fa-unlock'></i> MỞ KHÓA</button>");
+                        oneCard.Add("<span class='statuslable' id='" + item.UniqueIdentifier + "'><span class='label label-danger'>KHÓA</span></span>");
+                        oneCard.Add("<button type='button' class='btn btn-primary unlockcard' id='" + item.UniqueIdentifier + "'><i class='fa fa-unlock'></i> MỞ KHÓA</button>");
                     }
                     else if (item.Status == (int)StatusReference.CardStatus.NON_ACTIVATED)
                     {

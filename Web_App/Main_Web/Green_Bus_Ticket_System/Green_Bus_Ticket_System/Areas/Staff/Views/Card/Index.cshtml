@@ -24,78 +24,6 @@
 
     </div>
 
- @if (false) { 
-    if (cards.Count <= 0)
-    {
-        <p>Không có thẻ nào!</p>
-    }
-    else
-    {
-        <table id="card-table" class="table display">
-            <thead>
-                <tr>
-                    <th>MÃ THẺ</th>
-                    <th>NGÀY ĐĂNG KÝ</th>
-                    <th>CHỦ SỞ HỮU</th>
-                    <th>SỐ DƯ</th>
-                    <th>TRẠNG THÁI</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="data">
-                @foreach (Green_Bus_Ticket_System_Data.Card item in cards)
-                {
-
-                    <tr>
-                        <td>@item.CardId</td>
-                        <td>@item.RegistrationDate.ToString("dd/MM/yyyy")</td>
-                        @if (item.User != null)
-                        {
-                            <td>@item.User.PhoneNumber</td>
-                        }
-                        else
-                        {
-                            <td>Chưa có</td>
-                        }
-
-                        <td>@item.Balance.ToString("#,##0") đ</td>
-
-                        @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.ACTIVATED)
-                        {
-                            <td><span class="statuslable" id="@item.CardId"><span class="label label-success">ĐÃ KÍCH HOẠT</span></span></td>
-                            <td><button type="button" class="btn btn-danger lockcard" id="@item.CardId"><i class="fa fa-lock"></i> KHÓA THẺ</button></td>
-
-                        }
-                        else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.BLOCKED)
-                        {
-                            <td><span class="statuslable" id="@item.CardId"><span class="label label-danger">KHÓA</span></span></td>
-                            <td><button type="button" class="btn btn-primary unlockcard" id="@item.CardId"><i class="fa fa-unlock"></i> MỞ KHÓA</button></td>
-                        }
-                        else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.NON_ACTIVATED)
-                        {
-                            <td><span class="label label-primary">CHƯA KÍCH HOẠT</span></td>
-                            <td></td>
-                        }
-
-
-                    </tr>
-                }
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th>MÃ THẺ</th>
-                    <th>NGÀY ĐĂNG KÝ</th>
-                    <th>CHỦ SỞ HỮU</th>
-                    <th>SỐ DƯ</th>
-                    <th>TRẠNG THÁI</th>
-                    <th></th>
-                </tr>
-            </tfoot>
-        </table>
-
-    }
-
- }
     <!-- Modal -->
     <div class="modal fade" id="addCardModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
@@ -127,6 +55,35 @@
     </div>
 
     <!-- End Moda Code -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="transferCardModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Đổi thẻ</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-inline text-center">
+                        <div class="form-group">
+                            <input type="hidden" id="old-cardId" />
+                            <label for="new-cardId" class="form-label">Mã thẻ mới</label>
+                            <input type="text" class="form-control" id="new-cardId">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">HỦY</button>
+                    <button type="button" class="btn btn-default" id="savetransfer"><i class="fa fa-floppy-o"></i> LƯU</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- End Moda Code -->
 </div>
 
 
@@ -149,11 +106,16 @@
         listener.client.autoFill = function (phone, cardId) {
             if (phone == userPhone) {
                 $("#add-cardId").val(cardId);
+                $("#new-cardId").val(cardId);
             }
         };
 
         $.connection.hub.start().done(function () {
 
+        });
+
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
         });
 
         $('#card-table').DataTable({
@@ -188,6 +150,17 @@
             var balance = $("#add-balance").val("15000");
             $("#addCardModal").modal("show");
         });
+
+        $(document).on("click", ".transfer", function () {
+            var id = this.id;
+            var card = $(this);
+            $("#old-cardId").val("");
+            $("#new-cardId").val("");
+            $("#new-cardId").attr("placeholder", id);
+            $("#old-cardId").val(id);
+            $("#transferCardModal").modal("show");
+        });
+
         $(document).on("click", ".lockcard", function () {
             var id = this.id;
             var card = $(this);
@@ -200,7 +173,8 @@
                 data: { id: id },
                 success: function (data) {
                     if (data.success) {
-                        card.html('<i class="fa fa-unlock"></i> MỞ KHÓA');
+                        card.html('<i class="fa fa-unlock"></i');
+                        card.attr("title", "Mở khóa thẻ");
                         card.addClass("btn-primary unlockcard");
                         card.removeClass("btn-danger lockcard");
                         $(".statuslable#" + id).html('<span class="red">KHÓA</span>');
@@ -221,7 +195,8 @@
                 data: { id: id },
                 success: function (data) {
                     if (data.success) {
-                        card.html('<i class="fa fa-lock"></i> KHÓA THẺ');
+                        card.html('<i class="fa fa-lock"></i>');
+                        card.attr("title", "Khóa thẻ");
                         card.removeClass("btn-primary unlockcard");
                         card.addClass("btn-danger lockcard");
                         $(".statuslable#" + id).html('<span class="green">ĐÃ KÍCH HOẠT</span>');
@@ -242,15 +217,42 @@
                     success: function (data) {
                         if (data.success) {
                             $("#addCardModal").modal("hide");
-                            //reloadData();
+                            
+                            $("#term").val(cardId);
+                            $("#search").trigger("click");
+
+                        } else {
                             swal({
                                 title: "",
-                                text: "Thêm thẻ thành công!",
+                                text: data.message,
+                                type: "error"
+                            });
+                        }
+                    }
+                });
+            }
+        });
+
+        $("#savetransfer").click(function () {
+            if (validateTransfer()) {
+                var newCardId = $("#new-cardId").val().trim();
+                var oldCardId = $("#old-cardId").val().trim();
+                $.ajax({
+                    url: "/Staff/Card/TransferCard",
+                    method: "GET",
+                    dataType: "json",
+                    data: { oldCard: oldCardId, newCard: newCardId },
+                    success: function (data) {
+                        if (data.success) {
+                            $("#transferCardModal").modal("hide");
+
+                            swal({
+                                title: "",
+                                text: "Thay đổi thẻ thành công!",
                                 type: "success"
                             });
 
-                            $("#term").val(cardId);
-                            $("#search").trigger("click");
+                            $(".cardUID#" + oldCardId).html(newCardId);
 
                         } else {
                             swal({
@@ -290,29 +292,22 @@
             return true;
         }
 
-        function reloadData() {
-            $.ajax({
-                url: "/Staff/Card/GetCards",
-                dataType: "json",
-                data: {},
-                method: "GET",
-                success: function (data) {
-                    if (data.success) {
-                        $('#card-table').DataTable().destroy();
-                        $('#card-table').DataTable({
-                            data: data.data,
-                            "order": []
-                        });
-                    } else {
-                        swal({
-                            text: data.message,
-                            type: "error",
-                        });
-                    }
+        function validateTransfer() {
+            var cardId = $("#new-cardId").val().trim().length;
 
-                }
-            });
+            if (cardId < 6 || cardId > 250) {
+                swal({
+                    title: "",
+                    text: "Mã thẻ từ 6-250 ký tự!",
+                    type: "warning"
+                });
+                return false;
+            }
+
+            return true;
         }
+
+        
 
 
     </script>

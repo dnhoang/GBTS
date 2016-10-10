@@ -42,14 +42,6 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
 
             ViewBag.PhoneNumber = GetCurrentUser().PhoneNumber;
 
-            //Hard code here
-            ViewBag.Rate = GetRate();
-            ViewBag.Return = "http://localhost:1185/Passenger/Card/Success";
-            ViewBag.Cancel = "http://localhost:1185/Passenger/Card/";
-            ViewBag.Notify = "http://googlexml.com/paypal/callback.php";
-            ViewBag.Receiver = "dongochoangvn-facilitator@gmail.com";
-
-            
 
             return View();
         }
@@ -61,7 +53,7 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
             string cardId = custom;
             if(cardId != null && cardId.Length > 0)
             {
-                Card card = _cardService.GetCard(cardId);
+                Card card = _cardService.GetCardByUID(cardId);
                 if (payment_status.Equals("Completed") && card!=null)
                 {
                     CreditPlan creditPlan = _creditPlanService.GetCreditPlan(item_number);
@@ -69,7 +61,7 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
                     if(total == mc_gross)
                     {
                         PaymentTransaction payment = new PaymentTransaction();
-                        payment.CardId = cardId;
+                        payment.CardId = card.Id;
                         payment.CreditPlanId = item_number;
                         payment.TransactionId = txn_id;
                         payment.Total = creditPlan.Price;
@@ -99,7 +91,7 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
                 return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
             }
 
-            Card card = _cardService.GetCard(id);
+            Card card = _cardService.GetCardByUID(id);
             if (card != null)
             {
                 card.CardName = name;
@@ -148,13 +140,13 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
                 if (cardId != null)
                 {
                     CreditPlan plan = _creditPlanService.GetCreditPlan(Int32.Parse(creditPlan));
-                    Card card = _cardService.GetCard(cardId);
+                    Card card = _cardService.GetCardByUID(cardId);
 
                     card.Balance = card.Balance + plan.Price;
                     _cardService.Update(card);
 
                     PaymentTransaction payment = new PaymentTransaction();
-                    payment.CardId = cardId;
+                    payment.CardId = card.Id;
                     payment.CreditPlanId = plan.Id;
                     payment.PaymentDate = DateTime.Now;
                     payment.Total = plan.Price;
@@ -169,7 +161,7 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
 
             if (success)
             {
-                return Redirect("/Passenger/Card/Success");
+                return Redirect("/Passenger/Card");
             }
             else
             {
@@ -196,9 +188,19 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
             return (User)Session["user"];
         }
 
-        private int GetRate()
+        private float GetRate()
         {
-            return 22500;
+            float rate;
+            try
+            {
+                rate = float.Parse(CommonUtils.GetCurrentRate());
+            }
+            catch
+            {
+                rate = 22500;
+            }
+            
+            return rate;
         }
 
         private decimal ConvertToUSD(int vnd)

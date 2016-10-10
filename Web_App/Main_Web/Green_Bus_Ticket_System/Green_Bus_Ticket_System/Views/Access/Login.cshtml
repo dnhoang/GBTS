@@ -59,7 +59,7 @@
             var phone = $("#phone").val();
             var password = $("#password").val();
             if (validate()) {
-                $("#login").html('<i class="fa fa-spinner fa-pulse" aria-hidden="true"></i> Logging in...');
+                $("#login").html('<i class="fa fa-spinner fa-pulse" aria-hidden="true"></i> Đang kiểm tra...');
                 $.ajax({
                     url: "/Access/LoginAccount",
                     method: "POST",

@@ -15,7 +15,7 @@ namespace Green_Bus_Ticket_System_Data
     public partial class Ticket
     {
         public int Id { get; set; }
-        public string CardId { get; set; }
+        public int CardId { get; set; }
         public int TicketTypeId { get; set; }
         public int BusRouteId { get; set; }
         public int Total { get; set; }

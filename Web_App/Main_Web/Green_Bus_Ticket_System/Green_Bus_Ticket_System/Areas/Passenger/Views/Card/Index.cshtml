@@ -1,12 +1,10 @@
 ﻿@{
-  
+
     ViewBag.Title = "Thẻ của bạn";
     List<Green_Bus_Ticket_System_Data.Card> cards =
         (List<Green_Bus_Ticket_System_Data.Card>)ViewBag.Cards;
     List<Green_Bus_Ticket_System_Data.CreditPlan> creditPlans =
         (List<Green_Bus_Ticket_System_Data.CreditPlan>)ViewBag.CreditPlans;
-
-    float rate = float.Parse(ViewBag.Rate.ToString());
 }
 <div class="container-padding">
     @if (cards.Count <= 0)
@@ -31,15 +29,19 @@
                 {
 
                     <tr>
-                        <td>@item.CardId</td>
-                        <td>@if (item.CardName != null)
-                        {
-                            <input type="text" class="form-control cardname" id="@item.CardId" value="@item.CardName"/>
-                        }
-                        else
-                        {
-                            <input type="text" class="form-control cardname" id="@item.CardId" value="" />
-                        }
+                        <td>@item.UniqueIdentifier</td>
+                        <td>
+                            <div class="form-inline">
+                                @if (item.CardName != null)
+                                {
+                                    <input type="text" class="form-control cardname" id="@item.UniqueIdentifier" value="@item.CardName" />
+                                }
+                                else
+                                {
+                                    <input type="text" class="form-control cardname" id="@item.UniqueIdentifier" value="" />
+                                }
+                                <button type="button" class="btn btn-primary saveName" id="@item.UniqueIdentifier"><i class="fa fa-floppy-o"></i></button>
+                            </div>
                         </td>
                         <td>@item.RegistrationDate.ToString("dd/MM/yyyy")</td>
                         <td>@item.Balance.ToString("#,##0") đ</td>
@@ -47,7 +49,7 @@
                         @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.ACTIVATED)
                         {
                             <td><span class="label label-success">ĐÃ KÍCH HOẠT</span></td>
-                            <td><button type="button" class="btn btn-success addcredit" id="@item.CardId"><i class="fa fa-paypal"></i> NẠP TIỀN</button></td>
+                            <td><button type="button" class="btn btn-success addcredit" id="@item.UniqueIdentifier"><i class="fa fa-paypal"></i> NẠP TIỀN</button></td>
                         }
                         else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.BLOCKED)
                         {
@@ -69,24 +71,24 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title">Nạp tiền vào thẻ</h4>
                     </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label class="col-sm-4 control-label form-label text-right">Gói nạp tiền</label>
-                                <div class="col-sm-8">
-                                    <select class="selectpicker" name="item_number">
-                                        @foreach (Green_Bus_Ticket_System_Data.CreditPlan item in creditPlans)
-                                        {
-                                            <option value="@item.Id">@item.Name (@item.Price.ToString("#,##0") đ)</option>
-                                        }
-                                    </select>
-                                </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label form-label text-right">Gói nạp tiền</label>
+                            <div class="col-sm-8">
+                                <select class="selectpicker" name="item_number">
+                                    @foreach (Green_Bus_Ticket_System_Data.CreditPlan item in creditPlans)
+                                    {
+                                        <option value="@item.Id">@item.Name (@item.Price.ToString("#,##0") đ)</option>
+                                    }
+                                </select>
                             </div>
+                        </div>
 
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-white" data-dismiss="modal"><i class="fa fa-times"></i> HỦY</button>
-                            <button type="button" class="btn btn-default" id="paypal"><i class="fa fa-send-o"></i> THANH TOÁN</button>
-                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal"><i class="fa fa-times"></i> HỦY</button>
+                        <button type="button" class="btn btn-default" id="paypal"><i class="fa fa-send-o"></i> THANH TOÁN</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -106,12 +108,14 @@
             $("#paymentModal").modal("show");
         });
 
-        var timer = null;
-        $(".cardname").keyup(function () {
+        $(".saveName").click(function () {
             var id = this.id;
-            var name = $(this).val();
-            clearTimeout(timer);
-            timer = setTimeout(function () {
+            var name = $(".cardname#" + id).val();
+            saveCardName(id, name);
+        });
+
+
+        function saveCardName (id, name) {
                 if (name.trim().length > 0) {
                     $.ajax({
                         url: "/Passenger/Card/UpdateCardName",
@@ -119,13 +123,15 @@
                         dataType: "json",
                         data: { id: id, name: name },
                         success: function () {
-                            //Do something
+                            var button = $(".saveName#" + id);
+                            button.html('<i class="fa fa-check"></i> Đã lưu!');
+                            setTimeout(function () {
+                                button.html('<i class="fa fa-floppy-o"></i>');
+                            }, 500);
                         }
                     });
                 }
-
-            }, 1000);
-        });
+        };
 
         window.paypalCheckoutReady = function () {
             paypal.checkout.setup("@Green_Bus_Ticket_System_Utils.PayPalSettings.MerchantAccountID", {

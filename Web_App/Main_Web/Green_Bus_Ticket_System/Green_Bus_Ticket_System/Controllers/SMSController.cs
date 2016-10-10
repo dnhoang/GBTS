@@ -38,7 +38,7 @@ namespace Green_Bus_Ticket_System.Controllers
 
                 if (command.Equals("GB", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    Card card = _cardService.GetCard(cardId);
+                    Card card = _cardService.GetCardByUID(cardId);
                     if (card != null)
                     {
                         if (card.Status != (int)StatusReference.CardStatus.NON_ACTIVATED)

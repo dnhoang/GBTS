@@ -12,15 +12,15 @@
     <div class="col-md-6">
         <div class="panel panel-default dash-card margin-5">
             <div class="panel-title">
-                <i class="fa fa-credit-card titleicon"></i>@item.CardId
+                <i class="fa fa-credit-card titleicon"></i><span class="cardUID" id="@item.UniqueIdentifier">@item.UniqueIdentifier</span>
                 <ul class="panel-tools">
                     @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.ACTIVATED)
                     {
-                        <li><span class="statuslable" id="@item.CardId"><span class="green">ĐÃ KÍCH HOẠT</span></span></li>
+                        <li><span class="statuslable" id="@item.UniqueIdentifier"><span class="green">ĐÃ KÍCH HOẠT</span></span></li>
                     }
                     else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.BLOCKED)
                     {
-                        <li><span class="statuslable" id="@item.CardId"><span class="red">KHÓA</span></span></li>
+                        <li><span class="statuslable" id="@item.UniqueIdentifier"><span class="red">KHÓA</span></span></li>
                     }
                     else
                     {
@@ -38,14 +38,15 @@
                     Số dư: @item.Balance.ToString("#,##0") đ
                 </p>
                 <p class="pull-right padding-t-30">
+                    <button data-toggle="tooltip" title="Đổi thẻ" type="button" class="btn btn-success transfer" id="@item.UniqueIdentifier"><i class="fa fa-magic"></i></button>
                     @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.ACTIVATED)
                     {
-                        <button type="button" class="btn btn-danger lockcard" id="@item.CardId"><i class="fa fa-lock"></i> KHÓA THẺ</button>
+                        <button data-toggle="tooltip" title="Khóa thẻ" type="button" class="btn btn-danger lockcard" id="@item.UniqueIdentifier"><i class="fa fa-lock"></i></button>
 
                     }
                     else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.BLOCKED)
                     {
-                        <button type="button" class="btn btn-primary unlockcard" id="@item.CardId"><i class="fa fa-unlock"></i> MỞ KHÓA</button>
+                        <button data-toggle="tooltip" title="Mở khóa thẻ" type="button" class="btn btn-primary unlockcard" id="@item.UniqueIdentifier"><i class="fa fa-unlock"></i></button>
                     }
                 </p>
 
