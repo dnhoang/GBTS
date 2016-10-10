@@ -28,59 +28,6 @@
 
 
 
-
-@if (false)
-{
-    if (users.Count <= 0)
-    {
-        <p>Không có hành khách nào!</p>
-    }
-    else
-    {
-        <table id="user-table" class="table display">
-            <thead>
-                <tr>
-                    <th>SỐ ĐIỆN THOẠI</th>
-                    <th>HỌ TÊN</th>
-                    <th>TRẠNG THÁI</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (Green_Bus_Ticket_System_Data.User item in users)
-                {
-
-                    <tr>
-                        <td>@item.PhoneNumber</td>
-                        <td class="fullname" id="@item.PhoneNumber">@item.Fullname</td>
-
-                        @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.UserStatus.ACTIVATED)
-                        {
-                            <td><span class="label label-success">ĐANG HOẠT ĐỘNG</span></td>
-
-                        }
-                        else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.UserStatus.DEACTIVATED)
-                        {
-                            <td><span class="label label-danger">ĐANG BỊ KHÓA</span></td>
-                        }
-                        <td><button type="button" class="btn btn-primary edit" id="@item.PhoneNumber"><i class="fa fa-pencil-square-o"></i> CHỈNH SỬA</button></td>
-                    </tr>
-                }
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th>SỐ ĐIỆN THOẠI</th>
-                    <th>HỌ TÊN</th>
-                    <th>TRẠNG THÁI</th>
-                    <th></th>
-                </tr>
-            </tfoot>
-        </table>
-
-        
-    }
-}
-
     <!-- Modal -->
     <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" style="width: 800px;">
@@ -156,9 +103,10 @@
                 data: { id: id },
                 success: function (data) {
                     if (data.success) {
-                        card.html('<i class="fa fa-unlock"></i> MỞ KHÓA');
+                        card.html('<i class="fa fa-unlock"></i>');
                         card.addClass("btn-primary unlockcard");
                         card.removeClass("btn-danger lockcard");
+                        card.attr("title", "Mở khóa thẻ");
                         $(".statuslable#" + id).html('<span class="label label-danger">KHÓA</span>');
                     }
                 }
@@ -177,9 +125,10 @@
                 data: { id: id },
                 success: function (data) {
                     if (data.success) {
-                        card.html('<i class="fa fa-lock"></i> KHÓA THẺ');
+                        card.html('<i class="fa fa-lock"></i>');
                         card.removeClass("btn-primary unlockcard");
                         card.addClass("btn-danger lockcard");
+                        card.attr("title", "Khóa thẻ");
                         $(".statuslable#" + id).html('<span class="label label-success">ĐÃ KÍCH HOẠT</span>');
                     }
                 }
@@ -198,9 +147,9 @@
                     data: { phone: phone, name: name },
                     success: function (data) {
                         if (data.success) {
-                            button.html('<i class="fa fa-check"></i> ĐÃ LƯU');
+                            button.html('<i class="fa fa-check"></i> Đã lưu!');
                             setTimeout(function () {
-                                button.html('<i class="fa fa-floppy-o"></i> LƯU');
+                                button.html('<i class="fa fa-floppy-o"></i>');
                             }, 500);
                             $(".fullname#" + phone).html(name);
                         } else {

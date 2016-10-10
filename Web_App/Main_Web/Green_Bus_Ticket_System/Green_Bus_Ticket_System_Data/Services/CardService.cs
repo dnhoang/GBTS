@@ -12,7 +12,7 @@ namespace Green_Bus_Ticket_System_Data.Services
 {
     public interface ICardService : IEntityService<Card>
     {
-        Card GetCard(string cardId);
+        Card GetCardByUID(string uid);
         Card AddCard(string cardId, int balance);
         IEnumerable<Card> GetCardsByUser(int userId);
         bool IsCardExist(string cardId);
@@ -29,15 +29,15 @@ namespace Green_Bus_Ticket_System_Data.Services
             _repository = repository;
         }
 
-        public Card GetCard(string cardId)
+        public Card GetCardByUID(string uid)
         {
-            return _repository.FindBy(obj => obj.CardId.Equals(cardId)).FirstOrDefault();
+            return _repository.FindBy(obj => obj.UniqueIdentifier.Equals(uid)).FirstOrDefault();
         }
 
         public Card AddCard(string cardId, int balance)
         {
             Card card = new Card();
-            card.CardId = cardId;
+            card.UniqueIdentifier = cardId;
             card.Balance = balance;
             card.Status = (int)StatusReference.CardStatus.NON_ACTIVATED;
             card.RegistrationDate = DateTime.Now;
@@ -53,7 +53,7 @@ namespace Green_Bus_Ticket_System_Data.Services
 
         public bool IsCardExist(string cardId)
         {
-            return GetCard(cardId) != null;
+            return GetCardByUID(cardId) != null;
         }
     }
 }

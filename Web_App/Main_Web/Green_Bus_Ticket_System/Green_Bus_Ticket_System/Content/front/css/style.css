@@ -4176,3 +4176,7 @@ Widgets
 .login-form form .form-area {
     padding: 20px 40px;
 }
+.btn .fa {
+    font-size: 15px;
+    margin-right: 0px;
+}

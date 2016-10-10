@@ -48,15 +48,16 @@ namespace AutoHandler
                 queue.CreateIfNotExists();
                 queue.FetchAttributes();
 
-                if (queue.ApproximateMessageCount > 0)
+                if (true)
                 {
                     CloudQueueMessage message = queue.GetMessage();
                     if (message != null)
                     {
-                        string token = message.AsString;
+                        string[] contents = message.AsString.Split('*');
+                        string token = contents[0];
 
                         string title = "Green Bus";
-                        string notification = "Thẻ của bạn sắp hết tiền, vui lòng nạp thêm.";
+                        string notification = contents[1];
 
                         SendToFireBase(token, title, notification);
 

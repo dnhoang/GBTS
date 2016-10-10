@@ -21,12 +21,13 @@ namespace Green_Bus_Ticket_System_Data
             this.Tickets = new HashSet<Ticket>();
         }
     
-        public string CardId { get; set; }
+        public int Id { get; set; }
+        public string UniqueIdentifier { get; set; }
+        public string CardName { get; set; }
         public System.DateTime RegistrationDate { get; set; }
         public double Balance { get; set; }
         public int Status { get; set; }
         public Nullable<int> UserId { get; set; }
-        public string CardName { get; set; }
     
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

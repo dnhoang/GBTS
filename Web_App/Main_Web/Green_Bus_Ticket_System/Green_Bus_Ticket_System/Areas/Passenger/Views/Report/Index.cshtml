@@ -6,7 +6,7 @@
 }
 <div class="container-padding">
     <div class="col col-md-12 gb-padding">
-        <form class="form-inline">
+        <div class="form-inline">
             <div class="form-group">
                 <label for="beginDate" class="form-label">TỪ NGÀY</label>
                 <div class="input-prepend input-group">
@@ -22,7 +22,7 @@
                 </div>
             </div>
             <button type="button" class="btn btn-default" id="get-report"><i class="fa fa-search"></i></button>
-        </form>
+        </div>
     </div>
 
     <div class="col col-md-12 gb-padding report">
@@ -54,7 +54,7 @@
                                 }
                                 else
                                 {
-                                    <td>@item.Card.CardId</td>
+                                    <td>@item.Card.UniqueIdentifier</td>
                                 }
                             
                             <td>@item.Total.ToString("#,##0") đ</td>

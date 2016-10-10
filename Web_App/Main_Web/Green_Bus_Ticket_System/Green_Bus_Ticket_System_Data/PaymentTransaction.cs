@@ -15,7 +15,7 @@ namespace Green_Bus_Ticket_System_Data
     public partial class PaymentTransaction
     {
         public int Id { get; set; }
-        public string CardId { get; set; }
+        public int CardId { get; set; }
         public int CreditPlanId { get; set; }
         public string TransactionId { get; set; }
         public int Total { get; set; }

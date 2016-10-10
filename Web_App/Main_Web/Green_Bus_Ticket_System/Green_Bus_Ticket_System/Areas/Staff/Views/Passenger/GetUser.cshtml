@@ -20,7 +20,7 @@ else
                 <input type="text" id="edit-name" class="form-control" value="@user.Fullname">
             </div>
             <div class="col-sm-4">
-                <button type="button" class="btn btn-default save" id="@user.PhoneNumber"><i class="fa fa-floppy-o"></i> LƯU</button>
+                <button type="button" class="btn btn-default save" id="@user.PhoneNumber"><i class="fa fa-floppy-o"></i></button>
             </div>
         </div>
         <div class="form-group">
@@ -40,20 +40,21 @@ else
                         {
 
                             <tr>
-                                <td>@item.CardId</td>
+                                <td>@item.UniqueIdentifier</td>
                                 <td>@item.Balance.ToString("#,##0") đ</td>
 
                                 @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.ACTIVATED)
                                 {
-                                    <td><span class="statuslable" id="@item.CardId"><span class="label label-success">ĐÃ KÍCH HOẠT</span></span></td>
-                                    <td><button type="button" class="btn btn-danger lockcard" id="@item.CardId"><i class="fa fa-lock"></i> KHÓA THẺ</button></td>
+                                    <td><span class="statuslable" id="@item.UniqueIdentifier"><span class="label label-success">ĐÃ KÍCH HOẠT</span></span></td>
+                                    <td><button data-toggle="tooltip" title="Khóa thẻ" type="button" class="btn btn-danger lockcard" id="@item.UniqueIdentifier"><i class="fa fa-lock"></i></button></td>
 
                                 }
                                 else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.BLOCKED)
                                 {
-                                    <td><span class="statuslable" id="@item.CardId"><span class="label label-danger">KHÓA</span></span></td>
-                                    <td><button type="button" class="btn btn-primary unlockcard" id="@item.CardId"><i class="fa fa-unlock"></i> MỞ KHÓA</button></td>
+                                    <td><span class="statuslable" id="@item.UniqueIdentifier"><span class="label label-danger">KHÓA</span></span></td>
+                                    <td><button data-toggle="tooltip" title="Mở khóa thẻ" type="button" class="btn btn-primary unlockcard" id="@item.UniqueIdentifier"><i class="fa fa-unlock"></i></button></td>
                                 }
+                               
                             </tr>
                         }
                     </tbody>

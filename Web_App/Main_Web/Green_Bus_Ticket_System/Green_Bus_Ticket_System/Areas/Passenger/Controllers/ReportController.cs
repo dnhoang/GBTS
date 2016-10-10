@@ -65,7 +65,7 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
                     List<string> oneTicket = new List<string>();
                     oneTicket.Add(item.BoughtDated.ToString("dd/MM/yyyy hh:mm:ss tt"));
                     oneTicket.Add(item.BusRoute.Code);
-                    oneTicket.Add((item.Card.CardName == null || item.Card.CardName.Length == 0) ? item.CardId : item.Card.CardName);
+                    oneTicket.Add((item.Card.CardName == null || item.Card.CardName.Length == 0) ? item.Card.UniqueIdentifier : item.Card.CardName);
                     oneTicket.Add(item.Total.ToString("#,##0") + " đ");
                     result.Add(oneTicket);
                 }
