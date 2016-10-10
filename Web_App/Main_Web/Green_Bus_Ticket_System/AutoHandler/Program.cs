@@ -38,7 +38,7 @@ namespace AutoHandler
         static async Task SendBalanceNotification()
         {
             string storageConn = ConfigurationManager.AppSettings["StorageConnection"];
-
+            int count = 0;
             while (true)
             {
                 CloudStorageAccount account = CloudStorageAccount.Parse(storageConn);
@@ -67,8 +67,15 @@ namespace AutoHandler
                 else
                 {
                     Console.WriteLine("No message...");
+                    
                 }
                 await Task.Delay(2000);
+                count++;
+                if(count > 100)
+                {
+                    count = 0;
+                    Console.Clear();
+                }
             }
         }
 

@@ -7,8 +7,10 @@
         android:required="true" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.NFC" />
 
     <application
         android:allowBackup="true"
@@ -49,6 +51,17 @@
         <activity android:name=".activity.CreditPlanActivity" />
         <activity android:name=".activity.PaypalActivity" />
         <activity android:name=".activity.ConfirmationActivity"></activity>
+
+        <activity android:name=".activity.ActivateCardActivity"
+            android:label="Kích hoạt thẻ">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.gbts.navigationdraweractivity.activity.ActivateCardActivity"/>
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech" />
+        </activity>
+
     </application>
 
 </manifest>

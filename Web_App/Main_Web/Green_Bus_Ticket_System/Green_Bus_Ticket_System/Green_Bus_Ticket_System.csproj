@@ -286,6 +286,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\front\bg.jpg" />
     <Content Include="Content\front\css\bootstrap.css" />
     <Content Include="Content\front\css\font-awesome.min.css" />
     <Content Include="Content\front\css\plugin\awesome-bootstrap-checkbox\awesome-bootstrap-checkbox.css" />
@@ -416,7 +417,8 @@
     <Content Include="Areas\Staff\Views\Passenger\GetUser.cshtml" />
     <Content Include="Areas\Staff\Views\Home\Profiles.cshtml" />
     <Content Include="Areas\Passenger\Views\Card\Fail.cshtml" />
-    <Content Include="Areas\Staff\Views\Card\SearhCard.cshtml" />
+    <Content Include="Areas\Staff\Views\Card\SearchCard.cshtml" />
+    <Content Include="Areas\Staff\Views\Passenger\SearchPassenger.cshtml" />
     <None Include="Properties\PublishProfiles\GBTS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

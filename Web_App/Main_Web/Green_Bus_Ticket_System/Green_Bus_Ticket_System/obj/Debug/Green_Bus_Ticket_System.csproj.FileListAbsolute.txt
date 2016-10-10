@@ -1,4 +1,3 @@
-E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\obj\Debug\Green_Bus_Ticket_System.csprojResolveAssemblyReference.cache
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\ApplicationInsights.config
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\roslyn\csc.exe
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
@@ -152,5 +151,6 @@ E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\ko\
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\ru\System.Spatial.resources.dll
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\zh-Hans\System.Spatial.resources.dll
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\zh-Hant\System.Spatial.resources.dll
+E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\obj\Debug\Green_Bus_Ticket_System.csprojResolveAssemblyReference.cache
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\obj\Debug\Green_Bus_Ticket_System.dll
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\obj\Debug\Green_Bus_Ticket_System.pdb

@@ -24,12 +24,12 @@
 
     </div>
 
-    
-    @if (cards.Count <= 0)
+ @if (false) { 
+    if (cards.Count <= 0)
     {
         <p>Không có thẻ nào!</p>
     }
-    else if(false)
+    else
     {
         <table id="card-table" class="table display">
             <thead>
@@ -93,9 +93,9 @@
             </tfoot>
         </table>
 
-        
-
     }
+
+ }
     <!-- Modal -->
     <div class="modal fade" id="addCardModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
@@ -119,7 +119,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-white" data-dismiss="modal">HỦY</button>
-                    <button type="button" class="btn btn-default" id="save">LƯU</button>
+                    <button type="button" class="btn btn-default" id="save"><i class="fa fa-floppy-o"></i> LƯU</button>
                 </div>
 
             </div>
@@ -164,7 +164,7 @@
             var term = $("#term").val().trim();
             if (term.length > 0) {
                 $.ajax({
-                    url: "/Staff/Card/SearhCard",
+                    url: "/Staff/Card/SearchCard",
                     dataType: "html",
                     data: { term: term },
                     method: "GET",

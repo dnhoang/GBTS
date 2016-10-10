@@ -37,7 +37,7 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
             return View();
         }
 
-        public ActionResult SearhCard(string term)
+        public ActionResult SearchCard(string term)
         {
             List<Card> cards = _cardService.GetAll().Where(c => c.CardId.ToLower().Contains(term.ToLower()) || (c.User != null && c.User.PhoneNumber.Contains(term))).ToList();
             ViewBag.Cards = cards;
