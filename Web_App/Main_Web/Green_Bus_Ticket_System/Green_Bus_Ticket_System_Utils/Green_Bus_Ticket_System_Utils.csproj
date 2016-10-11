@@ -69,6 +69,7 @@
     <Compile Include="Paypal.cs" />
     <Compile Include="PaypalSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RouteObject.cs" />
     <Compile Include="SMSMessage.cs" />
     <Compile Include="CommonUtils.cs" />
     <Compile Include="StatusReference.cs" />
