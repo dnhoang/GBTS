@@ -1,0 +1,91 @@
+﻿@using Jmelosegui.Mvc.GoogleMap
+@{
+    ViewBag.Title = "Tìm xe buýt";
+    List<Green_Bus_Ticket_System_Data.BusRoute> routes =
+        (List<Green_Bus_Ticket_System_Data.BusRoute>) ViewBag.Routes;
+}
+<div class="container-padding">
+    <div class="col col-md-4">
+        <div class="col col-md-12 gb-padding text-center">
+            <div class="form-inline hform">
+                <div class="input-group" style="min-width: 200px;">
+                    <div class="input-group-addon"><i class="fa fa-user"></i></div>
+                    <input type="text" class="form-control" id="term" placeholder="Mã số hoặc tên tuyến">
+                </div>
+                <button type="button" class="btn btn-default" id="search"><i class="fa fa-search"></i></button>
+            </div>
+        </div>
+        <div class="route-list" id="route-list">
+            @foreach (var item in routes)
+            {
+                <div class="col col-md-12 route-item" id="@item.Code">
+                    <span class="label label-success">&nbsp;@item.Code&nbsp;</span> &nbsp; @item.Name
+                </div>
+            }
+        </div>
+        
+        
+
+    </div>
+    <div class="col col-md-8">
+        <div style="height: 500px; border: solid 1px #cccccc" id="mapContainer"></div>
+    </div>
+</div>
+    
+
+
+    @section CustomJs{
+        @(Html.GoogleMap()
+          .ScriptRegistrar(scripts => scripts.Add("jmelosegui.googlemap.js"))
+        )
+
+        <script>
+            function geoFindMe() {
+                if (!navigator.geolocation) {
+                    return;
+                }
+
+                function success(position) {
+                    var latitude = position.coords.latitude;
+                    var longitude = position.coords.longitude;
+                    new $.jmelosegui.GoogleMap('#mapContainer').ajax({
+                        url: '/Passenger/Bus/GetMap',
+                        type: "GET",
+                        data: { latitude: latitude, longitude: longitude },
+                        success: function (data) {
+                            //alert('succeded');
+                        }
+                    });
+
+                };
+
+                function error() {
+                    console.log("Unable to retrieve your location");
+                };
+                navigator.geolocation.getCurrentPosition(success, error);
+            }
+            geoFindMe();
+
+            $("#search").click(function () {
+                var term = $("#term").val().trim();
+                if (term.length > 0) {
+                    $.ajax({
+                        url: "/Passenger/Bus/SearchRoute",
+                        dataType: "html",
+                        data: { term: term },
+                        method: "GET",
+                        success: function (data) {
+                            $("#route-list").html(data);
+                        }
+                    });
+                }
+            });
+
+            $('#term').keypress(function (e) {
+                var key = e.which;
+                if (key == 13) {
+                    $("#search").trigger("click");
+                }
+            });
+        </script>
+    }

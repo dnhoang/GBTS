@@ -4180,3 +4180,19 @@ Widgets
     font-size: 15px;
     margin-right: 0px;
 }
+.route-item{
+    padding: 5px 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+.route-item:hover{
+    background-color: #26a65b;
+    color: #fff;
+    cursor: pointer;
+}
+.route-list{
+        overflow-y: scroll;
+    display: block;
+    width: 100%;
+    max-height: 425px;
+}

@@ -154,3 +154,4 @@ E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\zh-
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\obj\Debug\Green_Bus_Ticket_System.csprojResolveAssemblyReference.cache
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\obj\Debug\Green_Bus_Ticket_System.dll
 E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\obj\Debug\Green_Bus_Ticket_System.pdb
+E:\GBTS\Web_App\Main_Web\Green_Bus_Ticket_System\Green_Bus_Ticket_System\bin\Jmelosegui.Mvc.GoogleMap.dll

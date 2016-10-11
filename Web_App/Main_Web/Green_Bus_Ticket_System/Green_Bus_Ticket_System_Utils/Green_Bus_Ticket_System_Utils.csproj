@@ -34,6 +34,10 @@
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="RestSharp, Version=105.2.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.2\lib\net452\RestSharp.dll</HintPath>
       <Private>True</Private>
@@ -63,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="MapPoint.cs" />
     <Compile Include="RestClient.cs" />
     <Compile Include="JsonResponse.cs" />
     <Compile Include="Notification.cs" />
@@ -73,6 +78,7 @@
     <Compile Include="SMSMessage.cs" />
     <Compile Include="CommonUtils.cs" />
     <Compile Include="StatusReference.cs" />
+    <Compile Include="StopInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
