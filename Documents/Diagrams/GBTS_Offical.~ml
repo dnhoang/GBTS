@@ -4314,6 +4314,8 @@ Extension point: Edit card name
 <XPD:REF name="Associations[1]">vmCIiTeD5EStelUKSImpHAAA</XPD:REF>
 <XPD:REF name="Associations[2]">CGxCsXb69UeCH8OqcexDmgAA</XPD:REF>
 <XPD:REF name="Associations[3]">ECbvNh7Oa0CaVAjJynlBVwAA</XPD:REF>
+<XPD:ATTR name="#Instances" type="integer">1</XPD:ATTR>
+<XPD:REF name="Instances[0]">k9iPYf1BxkOq+lfza1jIYAAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedElements[14]" type="UMLAssociation" guid="QRagwzHRI0a4lcbe/2VE2QAA">
 <XPD:REF name="Namespace">qlm6m4vTnUmCXP0AZW9JSgAA</XPD:REF>
@@ -5907,7 +5909,7 @@ Extension point: Edit card name
 <XPD:OBJ name="OwnedCollaborationInstanceSets[0]" type="UMLCollaborationInstanceSet" guid="eHNfogcgIkqPJSwxtbIlwQAA">
 <XPD:ATTR name="Name" type="string">CollaborationInstanceSet1</XPD:ATTR>
 <XPD:REF name="RepresentedClassifier">YmAKeL7s9kafHcCKqsXtMgAA</XPD:REF>
-<XPD:ATTR name="#InteractionInstanceSets" type="integer">7</XPD:ATTR>
+<XPD:ATTR name="#InteractionInstanceSets" type="integer">8</XPD:ATTR>
 <XPD:OBJ name="InteractionInstanceSets[0]" type="UMLInteractionInstanceSet" guid="7nx7OsoScUaRabr7sPBsiAAA">
 <XPD:ATTR name="Name" type="string">Add credit</XPD:ATTR>
 <XPD:REF name="Context">eHNfogcgIkqPJSwxtbIlwQAA</XPD:REF>
@@ -11154,7 +11156,44 @@ Extension point: Edit card name
 <XPD:REF name="Views[0]">sK5YU13pU0monN9+qC5aqAAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:ATTR name="#ParticipatingInstances" type="integer">19</XPD:ATTR>
+<XPD:OBJ name="InteractionInstanceSets[7]" type="UMLInteractionInstanceSet" guid="E42IOzyqYEqVCrUMmWWPHQAA">
+<XPD:ATTR name="Name" type="string">Send noti</XPD:ATTR>
+<XPD:REF name="Context">eHNfogcgIkqPJSwxtbIlwQAA</XPD:REF>
+<XPD:ATTR name="#OwnedDiagrams" type="integer">1</XPD:ATTR>
+<XPD:OBJ name="OwnedDiagrams[0]" type="UMLSequenceDiagram" guid="jgXYKiD+S0O4MXZngjdQAgAA">
+<XPD:ATTR name="Name" type="string">Send noti</XPD:ATTR>
+<XPD:REF name="DiagramOwner">E42IOzyqYEqVCrUMmWWPHQAA</XPD:REF>
+<XPD:OBJ name="DiagramView" type="UMLSequenceDiagramView" guid="0egRDROUGk+P0tnffTYsUwAA">
+<XPD:REF name="Diagram">jgXYKiD+S0O4MXZngjdQAgAA</XPD:REF>
+<XPD:ATTR name="#OwnedViews" type="integer">1</XPD:ATTR>
+<XPD:OBJ name="OwnedViews[0]" type="UMLSeqObjectView" guid="R6mw4+7U7U2glIC/Zt1LWQAA">
+<XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
+<XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">171</XPD:ATTR>
+<XPD:ATTR name="Top" type="integer">102</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">83</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">350</XPD:ATTR>
+<XPD:REF name="Model">k9iPYf1BxkOq+lfza1jIYAAA</XPD:REF>
+<XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="9yrmKeHCAkKqdi/VgJe4UwAA">
+<XPD:OBJ name="NameLabel" type="LabelView" guid="/3WUkbrVukyWnWVgo/e84wAA">
+<XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
+<XPD:ATTR name="Text" type="string"> : Auto Handler</XPD:ATTR>
+</XPD:OBJ>
+<XPD:OBJ name="StereotypeLabel" type="LabelView" guid="9kPqbWD+lEWpFmDm+3oEkQAA">
+<XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
+</XPD:OBJ>
+<XPD:OBJ name="PropertyLabel" type="LabelView" guid="T44qklB8ZkKJgEAyMSSlxgAA">
+<XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
+</XPD:OBJ>
+</XPD:OBJ>
+<XPD:OBJ name="LifeLine" type="UMLLifeLineView" guid="nUpkU3fhCUG7AhVyp7kcrgAA">
+<XPD:REF name="Model">k9iPYf1BxkOq+lfza1jIYAAA</XPD:REF>
+</XPD:OBJ>
+</XPD:OBJ>
+</XPD:OBJ>
+</XPD:OBJ>
+</XPD:OBJ>
+<XPD:ATTR name="#ParticipatingInstances" type="integer">20</XPD:ATTR>
 <XPD:OBJ name="ParticipatingInstances[0]" type="UMLObject" guid="Pwna+Os1306Gpu5S8AUSrAAA">
 <XPD:REF name="Classifier">9yiD/evkLUqICeJRggbsQQAA</XPD:REF>
 <XPD:REF name="CollaborationInstanceSet">eHNfogcgIkqPJSwxtbIlwQAA</XPD:REF>
@@ -11487,6 +11526,13 @@ Extension point: Edit card name
 <XPD:ATTR name="#ReceivingStimuli" type="integer">2</XPD:ATTR>
 <XPD:REF name="ReceivingStimuli[0]">kDAw0YtSOUWVA53reuqNdQAA</XPD:REF>
 <XPD:REF name="ReceivingStimuli[1]">46ZDvRdJmEiLc3mL9LbUhAAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="ParticipatingInstances[19]" type="UMLObject" guid="k9iPYf1BxkOq+lfza1jIYAAA">
+<XPD:REF name="Classifier">cN7dtTI/0UuyCc+S0GA+eAAA</XPD:REF>
+<XPD:REF name="CollaborationInstanceSet">eHNfogcgIkqPJSwxtbIlwQAA</XPD:REF>
+<XPD:ATTR name="#Views" type="integer">2</XPD:ATTR>
+<XPD:REF name="Views[0]">R6mw4+7U7U2glIC/Zt1LWQAA</XPD:REF>
+<XPD:REF name="Views[1]">nUpkU3fhCUG7AhVyp7kcrgAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
 </XPD:OBJ>
