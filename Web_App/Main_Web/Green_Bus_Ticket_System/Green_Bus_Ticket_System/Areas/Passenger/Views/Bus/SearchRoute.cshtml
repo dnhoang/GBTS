@@ -1,0 +1,14 @@
+﻿@{
+    List<Green_Bus_Ticket_System_Data.BusRoute> routes =
+        (List<Green_Bus_Ticket_System_Data.BusRoute>)ViewBag.Routes;
+}
+@if(routes.Count == 0)
+{
+    <p>Không tìm thấy kết quả phù hợp!</p>
+}
+@foreach (var item in routes)
+{
+    <div class="col col-md-12 route-item" id="@item.Code">
+        <span class="label label-success">&nbsp;@item.Code&nbsp;</span> &nbsp; @item.Name
+    </div>
+}

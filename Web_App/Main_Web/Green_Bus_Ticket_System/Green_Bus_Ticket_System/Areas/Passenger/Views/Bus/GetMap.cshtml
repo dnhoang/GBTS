@@ -1,0 +1,44 @@
+﻿@using Jmelosegui.Mvc.GoogleMap
+@using Green_Bus_Ticket_System_Utils
+@using System.Drawing
+@model IEnumerable<StopInfo>
+@{
+    double lat = (double)ViewBag.Latitude;
+    double lon = (double)ViewBag.Longitude;
+    IEnumerable<StopInfo> data = (IEnumerable<StopInfo>)ViewBag.Marker;
+}
+@{
+    Html.GoogleMap()
+                  .Center(c => c.Latitude(lat).Longitude(lon))
+                  .Zoom(15)
+                  .Name("map")
+                  .Height(500)
+                  .ApiKey("AIzaSyC1ewBWnqFqrJWlMRyFzaRj6rb_J53gmWM")
+                  .BindTo<StopInfo, Marker>
+            (Model, mappings => mappings.For<StopInfo>
+                (
+                    binding => binding.ItemDataBound
+                        (
+                            (marker, regionInfo) =>
+                            {
+                                marker.Latitude = regionInfo.Latitude;
+                                marker.Longitude = regionInfo.Longitude;
+                                marker.Title = regionInfo.Title;
+                                marker.ZIndex = regionInfo.ZIndex;
+                                marker.Icon = new MarkerImage(String.Format("~/Content/front/{0}", regionInfo.ImagePath)
+                                        , new Size(50, 50)
+                                        , new Point(0, 0)
+                                        , new Point(0, 12));
+                                marker.Window = new InfoWindow(marker)
+                                {
+                                    Template =
+                                    {
+                                    Content = () => ViewContext.Writer.Write(regionInfo.InfoWindowContent)
+                                    }
+                                };
+                            }
+                        )
+                )
+            ).Render();
+}
+@(Html.GoogleMap().ScriptRegistrar())

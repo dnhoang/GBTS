@@ -10,14 +10,19 @@ using System.Configuration;
 using log4net;
 using System.Net;
 using System.IO;
+using System.Globalization;
+using Newtonsoft.Json;
+using Green_Bus_Ticket_System_Data.Repositories;
 
 namespace AutoHandler
 {
     class Program
     {
-        static string key = ConfigurationManager.AppSettings["FireBaseKey"];
-        static string senderId = ConfigurationManager.AppSettings["FireBaseSender"];
-
+        
+        public Program()
+        {
+            
+        }
         private static readonly ILog log = LogManager.GetLogger("AutoLog");
         static void Main(string[] args)
         {
@@ -26,12 +31,12 @@ namespace AutoHandler
 
         static async Task MainAsync()
         {
-            //var task1 = SendNotification();
-            //var task2 = SendNotificationx();
+            var task1 = SendBalanceNotification();
+            var task2 = UpdateBusRoute();
 
-            //await Task.WhenAll(task1, task2);
+            await Task.WhenAll(task1, task2);
 
-            await SendBalanceNotification();
+            //await SendBalanceNotification();
 
         }
 
@@ -41,6 +46,8 @@ namespace AutoHandler
             int count = 0;
             while (true)
             {
+                
+
                 CloudStorageAccount account = CloudStorageAccount.Parse(storageConn);
 
                 CloudQueueClient client = account.CreateCloudQueueClient();
@@ -48,7 +55,7 @@ namespace AutoHandler
                 queue.CreateIfNotExists();
                 queue.FetchAttributes();
 
-                if (true)
+                if (queue.ApproximateMessageCount > 0)
                 {
                     CloudQueueMessage message = queue.GetMessage();
                     if (message != null)
@@ -80,8 +87,33 @@ namespace AutoHandler
             }
         }
 
+        static async Task UpdateBusRoute()
+        {
+            while (true)
+            {
+                string apiKey = ConfigurationManager.AppSettings["ApiKey"];
+                string webHost = ConfigurationManager.AppSettings["WebHost"];
+                string configTime = ConfigurationManager.AppSettings["BusRouteCrawlerTime"];
+                string current = DateTime.Now.ToString("hh:mm:ss tt");
+
+                if (current.Equals(configTime))
+                {
+                    string endPoint = webHost + "Api/CrawlBusRoute?key=" + apiKey;
+                    var client = new RestClient(endPoint);
+                    var json = client.MakeRequest();
+                    log.Info(json);
+                }
+
+
+                await Task.Delay(1000);
+            }
+
+        }
         static void SendToFireBase(string token, string title, string message)
         {
+            string key = ConfigurationManager.AppSettings["FireBaseKey"];
+            string senderId = ConfigurationManager.AppSettings["FireBaseSender"];
+
             WebRequest tRequest;
             tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
             tRequest.Method = "POST";
