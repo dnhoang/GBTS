@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     boolean writeMode;
     Tag mytag;
     String setting = "settingPreference";
-    String hostAddress = "http://grinbuz.com/";
+    String hostAddress = "https://grinbuz.com/";
     RelativeLayout successTicket;
     RelativeLayout failTicket;
 
@@ -68,8 +68,12 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getApplicationContext(),SettingActivity.class);
-                startActivity(intent);
+                if (Utility.isNetworkConnected(getApplicationContext())){
+                    Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
+                    startActivity(intent);
+                } else{
+                    Toast.makeText(getApplicationContext(),"Vui lòng kiểm tra kết nối!",Toast.LENGTH_LONG).show();
+                }
             }
         });
 //        fab.setOnClickListener(new View.OnClickListener() {

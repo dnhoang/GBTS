@@ -36,7 +36,7 @@ public class SettingActivity extends AppCompatActivity {
     ArrayList<TicketType> listType = new ArrayList<TicketType>();
     ArrayList<String> ticketTypeName = new ArrayList<String>();
     String setting = "settingPreference";
-    String hostAddress = "http://grinbuz.com/";
+    String hostAddress = "https://grinbuz.com/";
     //EditText host = (EditText) findViewById(R.id.edtHost);
     Spinner spinner;
     BusRoute busRoute=new BusRoute();
@@ -54,8 +54,7 @@ public class SettingActivity extends AppCompatActivity {
 
         EditText edtRoute=(EditText)findViewById(R.id.edtRoute);
         edtRoute.setText(sharedPreferences.getString("code",""));
-        actionBar = getSupportActionBar();
-        actionBar.setDefaultDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //Spinner
 
         //Get all ticket type
