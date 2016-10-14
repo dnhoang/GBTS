@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         //End update
         //END NFC
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
             cardId = params[0];
             ticketTypeId = params[1];
             routeCode = params[2];
+            SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+            hostAddress=sharedPreferences.getString("host","https://grinbuzz.com");
             String strURL = hostAddress + "/Api/SellTicket?key=gbts_2016_capstone&cardId=" + cardId + "&ticketTypeId=" + ticketTypeId + "&routeCode=" + routeCode;
 
             // Getting JSON from URL
@@ -160,8 +163,8 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             if (success) {
-
-                System.out.println("SUCCESS!");
+                FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                fab.hide();
                 successTicket = (RelativeLayout) findViewById(R.id.container);
                 successTicket.setVisibility(View.VISIBLE);
                 MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
@@ -169,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 String message = null;
                 try {
                     message = jsonObject.getString("message");
-                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -177,6 +180,8 @@ public class MainActivity extends AppCompatActivity {
                 tvSuccessPrice.setText("Thẻ của bạn đã bị trừ "+sharedPreferences.getString("price","0")+ " đồng");
                 changeLayout(true);
             } else {
+                FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                fab.hide();
                 failTicket = (RelativeLayout) findViewById(R.id.containerfail);
                 failTicket.setVisibility(View.VISIBLE);
                 MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
@@ -185,7 +190,9 @@ public class MainActivity extends AppCompatActivity {
                 String message = null;
                 try {
                     message = jsonObject.getString("message");
-                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                    final TextView tvFail=(TextView) findViewById(R.id.tvFail);
+                    tvFail.setText(message);
+                    //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -211,9 +218,13 @@ public class MainActivity extends AppCompatActivity {
             public void onFinish() {
                 if (result == true) {
                     sucess.setVisibility(View.INVISIBLE);
+                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                    fab.show();
                 } else {
                     //fail
                     fail.setVisibility(View.INVISIBLE);
+                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                    fab.show();
 
                 }
             }

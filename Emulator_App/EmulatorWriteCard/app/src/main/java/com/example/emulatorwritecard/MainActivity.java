@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     IntentFilter writeTagFilters[];
     boolean writeMode;
     Tag mytag;
-    String hostAddress = "https://grinbuz.com";
+    String hostAddress = "";
     RelativeLayout succesLayout;
     RelativeLayout failLayout;
     TextView messageResult;
@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SharedPreferences sharedPreferences=getSharedPreferences(settings,MODE_PRIVATE);
+        hostAddress=sharedPreferences.getString("host","https://grinbuzz.com");
         getSupportActionBar().hide();
         succesLayout = (RelativeLayout) findViewById(R.id.container);
         succesLayout.setVisibility(View.INVISIBLE);

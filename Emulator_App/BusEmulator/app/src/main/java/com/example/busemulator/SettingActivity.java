@@ -37,7 +37,7 @@ public class SettingActivity extends AppCompatActivity {
     ArrayList<String> ticketTypeName = new ArrayList<String>();
     String setting = "settingPreference";
     String hostAddress = "https://grinbuz.com/";
-    //EditText host = (EditText) findViewById(R.id.edtHost);
+
     Spinner spinner;
     BusRoute busRoute=new BusRoute();
 
@@ -51,7 +51,8 @@ public class SettingActivity extends AppCompatActivity {
         //addPreferencesFromResource(R.xml.setting_preferences);
         final SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
         setContentView(R.layout.activity_setting);
-
+        EditText edtHost = (EditText) findViewById(R.id.edtHost);
+        edtHost.setText(sharedPreferences.getString("host","https://grinbuz.com"));
         EditText edtRoute=(EditText)findViewById(R.id.edtRoute);
         edtRoute.setText(sharedPreferences.getString("code",""));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -113,15 +114,6 @@ public class SettingActivity extends AppCompatActivity {
                         }
 
 
-                        //chua chay
-//                        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-//
-//                        View header = navigationView.getHeaderView(0);
-//
-//                        TextView headerLine = (TextView) header.findViewById(R.id.tvHeaderRoute);
-//                        headerLine.setText(sharedPreferences.getString("code","Chưa chọn tuyến"));
-//                        TextView headerName = (TextView) header.findViewById(R.id.tvHeaderRouteName);
-//                        headerName.setText(sharedPreferences.getString("name","Chưa chọn tuyến"));
 
                     }
                 });
@@ -144,11 +136,25 @@ public class SettingActivity extends AppCompatActivity {
 
     public void saveSetting(String code, String ticketTypeName) throws IOException {
         SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+        EditText edtHost = (EditText) findViewById(R.id.edtHost);
+        String host=edtHost.getText().toString().trim();
+        if (host.equals("")){
 
+            SharedPreferences.Editor editor=sharedPreferences.edit();
+            editor.putString("host","https://grinbuz.com");
+            editor.commit();
+            new GetBusRouteByCode().execute(ticketTypeName);
+        } else{
+            hostAddress=edtHost.getText().toString().trim();
+            SharedPreferences.Editor editor=sharedPreferences.edit();
+            editor.putString("host",hostAddress);
+            editor.commit();
+            new GetBusRouteByCode().execute(ticketTypeName);
+        }
         //EditText edtRoute = (EditText) findViewById(R.id.edtRoute);
         //System.out.println(code);
         //BusRoute busRoute = getRouteByCode(code);
-        new GetBusRouteByCode().execute(ticketTypeName);
+
 
 
     }

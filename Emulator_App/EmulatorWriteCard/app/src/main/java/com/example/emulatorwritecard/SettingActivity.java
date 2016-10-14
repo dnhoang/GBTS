@@ -19,7 +19,7 @@ import Util.Utility;
 public class SettingActivity extends AppCompatActivity {
     String settings = "settingPreference";
 
-    String hostAddress = "https://grinbuz.com";
+    String hostAddress = "";
 
     private class GetStaffInfo extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
@@ -100,11 +100,16 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         final SharedPreferences sharedPreferences = getSharedPreferences(settings, MODE_PRIVATE);
+        hostAddress=sharedPreferences.getString("host","https://grinbuz.com");
+        EditText edtHost=(EditText)findViewById(R.id.edtHost);
+        edtHost.setText(hostAddress);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         TextView tvName = (TextView) findViewById(R.id.tvName);
         tvName.setText(sharedPreferences.getString("name", "Chưa đăng nhập"));
         EditText edtPhone=(EditText)findViewById(R.id.edtPhone);
@@ -116,8 +121,22 @@ public class SettingActivity extends AppCompatActivity {
                 if (Utility.isNetworkConnected(getApplicationContext())) {
                     EditText edtPhone = (EditText) findViewById(R.id.edtPhone);
                     String phone = edtPhone.getText().toString();
+                    EditText edtHost=(EditText)findViewById(R.id.edtHost);
+                    String host=edtHost.getText().toString().trim();
 
-                    new GetStaffInfo().execute(phone);
+                    if (host.equals("")){
+
+                        new GetStaffInfo().execute(phone);
+
+                        edtHost.setText(hostAddress);
+                    } else{
+                        hostAddress=host;
+                        SharedPreferences.Editor editor=sharedPreferences.edit();
+                        editor.putString("host",host);
+                        editor.commit();
+                        new GetStaffInfo().execute(phone);
+                    }
+
                 } else {
                     Toast.makeText(getApplicationContext(),"Không có kết nối với máy chủ",Toast.LENGTH_SHORT).show();
                 }
