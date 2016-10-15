@@ -21,11 +21,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.example.gbts.navigationdraweractivity.activity.ActivityGoogleFindPath;
 import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
 import com.example.gbts.navigationdraweractivity.asyntask.FireBaseIDTask;
 import com.example.gbts.navigationdraweractivity.fragment.AccountInfo;
 import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
 import com.example.gbts.navigationdraweractivity.fragment.FragmentDirection;
+import com.example.gbts.navigationdraweractivity.fragment.FragmentReport;
 import com.example.gbts.navigationdraweractivity.fragment.GetAllButRoute;
 import com.example.gbts.navigationdraweractivity.fragment.GetReport;
 import com.example.gbts.navigationdraweractivity.fragment.GmapFragment;
@@ -36,6 +38,10 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private final String PREFS_NAME = "mypre";
+    private final String PREF_USERNAME = "username";
+    private final String PREF_PASSWORD = "password";
+    private final String PREF_REMEMBER = "check";
 
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -121,7 +127,9 @@ public class MainActivity extends AppCompatActivity
         fab_direction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                direction.show(manager, "FragmentDirection");
+//                direction.show(manager, "FragmentDirection");
+                Intent intent = new Intent(getApplicationContext(), ActivityGoogleFindPath.class);
+                startActivity(intent);
             }
         });
         fab_search.setOnClickListener(new View.OnClickListener() {
@@ -204,8 +212,24 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_logout) {
-            Intent newAct = new Intent(this, LoginActivity.class);
-            startActivity(newAct);
+
+            SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            String prePhone = sharedPreferences.getString(PREF_USERNAME, "");
+            Log.d("test1 ", "prePhone " + prePhone);
+            String prePass = sharedPreferences.getString(PREF_PASSWORD, "");
+            Log.d("test1 ", "prePass " + prePass);
+            String checkedBox = sharedPreferences.getString(PREF_REMEMBER, "");
+            Log.d("test1 ", "checkedBox " + checkedBox);
+
+
+            Bundle bundle = new Bundle();
+            bundle.putString("rememberPhone", prePhone);
+            bundle.putString("rememberPass", prePass);
+            bundle.putString("rememberChecked", checkedBox);
+
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
         } else {
             // Create a new fragment and specify the fragment to show based on nav item clicked
             Fragment fragment = new Fragment();
@@ -221,6 +245,7 @@ public class MainActivity extends AppCompatActivity
                 case R.id.nav_getReport:
                     toolbar.setTitle("Báo cáo chi tiêu");
                     fragmentClass = GetReport.class;
+//                    fragmentClass = FragmentReport.class;
                     break;
                 case R.id.nav_profile:
                     toolbar.setTitle("Thông tin cá nhân ");

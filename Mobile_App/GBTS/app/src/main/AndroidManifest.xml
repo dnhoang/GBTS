@@ -2,14 +2,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.gbts.navigationdraweractivity">
 
+    <!-- OpenGL 2.0 graphic Maps -->
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
 
+    <!-- Allowed Access Internet -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Need config use Google Maps Android API (GMAA) -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.NFC" />
 
     <application
@@ -50,17 +56,18 @@
 
         <activity android:name=".activity.CreditPlanActivity" />
         <activity android:name=".activity.PaypalActivity" />
-
-        <activity android:name=".activity.ActivateCardActivity"
+        <activity
+            android:name=".activity.ActivateCardActivity"
             android:label="Kích hoạt thẻ">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.gbts.navigationdraweractivity.activity.ActivateCardActivity"/>
+                android:value="com.example.gbts.navigationdraweractivity.activity.ActivateCardActivity" />
             <meta-data
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech" />
         </activity>
-
+        <activity android:name=".activity.BusStopActivity" />
+        <activity android:name=".activity.ActivityGoogleFindPath"></activity>
     </application>
 
 </manifest>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
-    android:layout_height="400dp"
+    android:layout_height="350dp"
     android:orientation="vertical"
     android:layout_gravity="center"
-    android:background="@drawable/background_table"
-    android:padding="5dp">
+    android:padding="10dp"
+    android:background="@drawable/background_table">
 
     <TextView
         android:layout_width="match_parent"
@@ -26,10 +26,9 @@
         android:textSize="20dp"/>
 
     <EditText
-        android:id="@+id/edtStart"
+        android:id="@+id/edtOrigin"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
         android:background="#E0E0E0"
         android:padding="5dp"
         android:hint="Nhập điểm khởi hành"/>
@@ -43,16 +42,15 @@
         android:textSize="20dp"/>
 
     <EditText
-        android:id="@+id/edtEnd"
+        android:id="@+id/edtDestination"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
         android:padding="5dp"
         android:background="#E0E0E0"
         android:hint="Nhập điểm đến"/>
 
     <Button
-        android:id="@+id/btnFound"
+        android:id="@+id/btnFind"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
