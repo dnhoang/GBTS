@@ -102,9 +102,11 @@ public class SettingActivity extends AppCompatActivity {
                         String code = edtRoute.getText().toString();
 
                         String ticketType = spinner.getSelectedItem().toString();
-                        System.out.println(ticketType + "!!!!!");
                         if (ticketType!=null || code!=null){
                             try {
+//                                EditText edtHost = (EditText) findViewById(R.id.edtHost);
+//                                String host=edtHost.getText().toString().trim();
+//                                if (!host.equals("")) hostAddress=host;
                                 saveSetting(code, ticketType);
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -178,7 +180,8 @@ public class SettingActivity extends AppCompatActivity {
         @Override
         protected JSONObject doInBackground(String... params) {
             Utility jParser = new Utility();
-
+            SharedPreferences sharedPreferences=getSharedPreferences(setting,MODE_PRIVATE);
+            hostAddress=sharedPreferences.getString("host","https://grinbuz.com");
             String strURL = hostAddress + "/Api/GetAllTicketType?key=gbts_2016_capstone";
 
             // Getting JSON from URL

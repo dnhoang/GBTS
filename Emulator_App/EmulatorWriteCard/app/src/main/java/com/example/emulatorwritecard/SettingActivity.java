@@ -128,7 +128,7 @@ public class SettingActivity extends AppCompatActivity {
 
                         new GetStaffInfo().execute(phone);
 
-                        edtHost.setText(hostAddress);
+                        edtHost.setText(sharedPreferences.getString("host","https://grinbuz.com"));
                     } else{
                         hostAddress=host;
                         SharedPreferences.Editor editor=sharedPreferences.edit();
