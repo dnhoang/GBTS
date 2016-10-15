@@ -63,12 +63,8 @@ public class MainActivity extends AppCompatActivity
 
 
         setContentView(R.layout.activity_main);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.hideOverflowMenu();
-//        setSupportActionBar(toolbar);
-        //Lay thong tin
 
-        //NFC
+
         RelativeLayout sucess = (RelativeLayout) findViewById(R.id.container);
         sucess.setVisibility(View.INVISIBLE);
         RelativeLayout fail = (RelativeLayout) findViewById(R.id.containerfail);

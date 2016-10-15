@@ -40,5 +40,6 @@ namespace Green_Bus_Ticket_System_Utils
             DEACTIVATED = 0,
             ACTIVATED = 1,
         };
+
     }
 }

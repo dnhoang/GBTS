@@ -4180,3 +4180,39 @@ Widgets
     font-size: 15px;
     margin-right: 0px;
 }
+.route-item{
+    padding: 5px 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+.route-item:hover{
+    background-color: #26a65b;
+    color: #fff;
+    cursor: pointer;
+}
+.route-list{
+        overflow-y: scroll;
+    display: block;
+    width: 100%;
+    max-height: 425px;
+}
+.route-list .warnbox-content, .route-list .warnbox-c1, .route-list .warnbox-c2, .adp-agencies {
+    display: none!important;
+}
+.adp, .adp table {
+    font-family: "Open Sans",Arial,sans-serif !important;
+    font-weight: 400 !important;
+}
+.adp b, .adp-list b {
+    font-weight: 600!important;
+    text-transform: UPPERCASE;
+}
+img.adp-marker {
+    width: 15px;
+    height: 25px;
+    margin: 10px;
+}
+ .adp-text {
+    width: 100%;
+    font-weight: 600!important;
+}

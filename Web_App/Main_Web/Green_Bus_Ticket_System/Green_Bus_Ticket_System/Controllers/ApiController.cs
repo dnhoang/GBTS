@@ -21,6 +21,7 @@ namespace Green_Bus_Ticket_System.Controllers
 {
     public class ApiController : Controller
     {
+
         private static readonly ILog log = LogManager.GetLogger("WebLog");
         string apiKey = ConfigurationManager.AppSettings["ApiKey"];
         int minBalance = Int32.Parse(ConfigurationManager.AppSettings["AlertBalance"]);
@@ -48,6 +49,123 @@ namespace Green_Bus_Ticket_System.Controllers
 
         }
 
+        public JsonResult CrawlBusRoute(string key)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            string endPoint = @"http://apicms.ebms.vn/businfo/getallroute";
+            var client = new RestClient(endPoint);
+            var json = client.MakeRequest();
+            if (json != null)
+            {
+                List<RouteObject> routes = (List<RouteObject>)
+                    JsonConvert.DeserializeObject(json, typeof(List<RouteObject>));
+                foreach(var route  in routes)
+                {
+                    BusRoute dbRoute = _busRouteService.GetBusRouteByCode(route.RouteNo);
+                    if(dbRoute != null)
+                    {
+                        dbRoute.Name = route.RouteName;
+                        _busRouteService.Update(dbRoute);
+
+                    }
+                    else
+                    {
+                        BusRoute newRoute = new BusRoute();
+                        newRoute.Code = route.RouteNo;
+                        newRoute.Name = route.RouteName;
+                        _busRouteService.Create(newRoute);
+                    }
+                }
+
+                success = true;
+                message = "Bus route is updated!";
+            }
+            else
+            {
+                success = false;
+                message = "Unable to call api";
+                log.Error("Unable to call api to update bus routes");
+            }
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult GetBusStop(string key, string routeCode)
+        {
+            string message = "";
+            bool success = false;
+            List<StopObject> goStops = new List<StopObject>();
+            List<StopObject> backStops = new List<StopObject>();
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            string endPoint = @"http://apicms.ebms.vn/businfo/getallroute";
+            var client = new RestClient(endPoint);
+            var json = client.MakeRequest();
+            if (json != null)
+            {
+                try
+                {
+                    List<RouteObject> routes = (List<RouteObject>)
+                    JsonConvert.DeserializeObject(json, typeof(List<RouteObject>));
+                    RouteObject targetRoute = routes.Where(r => r.RouteNo.Equals(routeCode)).FirstOrDefault();
+                    if (targetRoute != null)
+                    {
+                        endPoint = @"http://apicms.ebms.vn/businfo/getvarsbyroute/" + targetRoute.RouteId;
+                        client = new RestClient(endPoint);
+                        json = client.MakeRequest();
+                        List<PointObject> points = (List<PointObject>)
+                        JsonConvert.DeserializeObject(json, typeof(List<PointObject>));
+                        if (points.Count > 0)
+                        {
+                            endPoint = @"http://apicms.ebms.vn/businfo/getstopsbyvar/" + targetRoute.RouteId + "/" + points[0].RouteVarId;
+                            client = new RestClient(endPoint);
+                            json = client.MakeRequest();
+                            goStops = (List<StopObject>)
+                            JsonConvert.DeserializeObject(json, typeof(List<StopObject>));
+
+                            endPoint = @"http://apicms.ebms.vn/businfo/getstopsbyvar/" + targetRoute.RouteId + "/" + points[1].RouteVarId;
+                            client = new RestClient(endPoint);
+                            json = client.MakeRequest();
+                            backStops = (List<StopObject>)
+                            JsonConvert.DeserializeObject(json, typeof(List<StopObject>));
+
+                            success = true;
+                            message = "Thành công!";
+                        }
+                    }
+                }
+                catch
+                {
+                    success = false;
+                    message = "Hệ thống đang bận...";
+                    log.Error("Unable to call api to update bus routes");
+                }
+
+            }
+            else
+            {
+                success = false;
+                message = "Unable to call api";
+                log.Error("Unable to call api to update bus routes");
+            }
+            return Json(new { success = success, message = message, goStops = goStops, backStops = backStops }, JsonRequestBehavior.AllowGet);
+
+        }
+
         public JsonResult GetRate(string key)
         {
             string message = "";
@@ -65,7 +183,7 @@ namespace Green_Bus_Ticket_System.Controllers
             if (json != null)
             {
                 var obj = JObject.Parse(json);
-               rate = (float)obj["results"]["USD_VND"]["val"];
+                rate = (float)obj["results"]["USD_VND"]["val"];
                 success = true;
             }
 
@@ -821,6 +939,23 @@ namespace Green_Bus_Ticket_System.Controllers
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult TanPushSms(string key, string phone, string content)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!"tandeptrai".Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            SMSMessage.SendSMS(CommonUtils.GlobalingingPhone(phone), content);
+            success = true;
+            message = "Server đã gửi tin nhắn cho Tân rồi nha!";
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+        }
 
         private void SendNotification(string code, string msg)
         {
