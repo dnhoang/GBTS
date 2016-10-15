@@ -38,7 +38,8 @@ public class Utility {
             URL url = new URL(apiUrl);
 
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
+            urlConnection.setReadTimeout(5000);
+            urlConnection.setConnectTimeout(5000);
 //            urlConnection.setRequestProperty("User-Agent", "");
 //            urlConnection.setRequestMethod("POST");
 //            urlConnection.setDoInput(true);
