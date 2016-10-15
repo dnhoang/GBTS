@@ -939,6 +939,23 @@ namespace Green_Bus_Ticket_System.Controllers
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult TanPushSms(string key, string phone, string content)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!"tandeptrai".Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            SMSMessage.SendSMS(CommonUtils.GlobalingingPhone(phone), content);
+            success = true;
+            message = "Server đã gửi tin nhắn cho Tân rồi nha!";
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+        }
 
         private void SendNotification(string code, string msg)
         {

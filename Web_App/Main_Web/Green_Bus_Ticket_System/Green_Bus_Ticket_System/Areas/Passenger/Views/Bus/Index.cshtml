@@ -1,6 +1,6 @@
 ﻿@using Jmelosegui.Mvc.GoogleMap
 @{
-    ViewBag.Title = "Tìm xe buýt";
+    ViewBag.Title = "Tra cứu tuyến";
     List<Green_Bus_Ticket_System_Data.BusRoute> routes =
         (List<Green_Bus_Ticket_System_Data.BusRoute>) ViewBag.Routes;
 }
@@ -40,18 +40,20 @@
         )
 
         <script>
+            var lat = 0;
+            var lon = 0;
             function geoFindMe() {
                 if (!navigator.geolocation) {
                     return;
                 }
 
                 function success(position) {
-                    var latitude = position.coords.latitude;
-                    var longitude = position.coords.longitude;
+                    lat = position.coords.latitude;
+                    lon = position.coords.longitude;
                     new $.jmelosegui.GoogleMap('#mapContainer').ajax({
                         url: '/Passenger/Bus/GetMap',
                         type: "GET",
-                        data: { latitude: latitude, longitude: longitude },
+                        data: { latitude: lat, longitude: lon },
                         success: function (data) {
                             //alert('succeded');
                         }
@@ -87,5 +89,19 @@
                     $("#search").trigger("click");
                 }
             });
+
+            $(document).on("click", ".route-item", function () {
+                var code = this.id;
+                new $.jmelosegui.GoogleMap('#mapContainer').ajax({
+                    url: '/Passenger/Bus/RouteDetails',
+                    type: "GET",
+                    data: { routeCode: code, latitude: lat, longitude: lon },
+                    success: function (data) {
+                        //alert('succeded');
+
+                    }
+                });
+            });
+            
         </script>
     }

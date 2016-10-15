@@ -428,6 +428,8 @@
     <Content Include="Areas\Passenger\Views\Bus\Index.cshtml" />
     <Content Include="Areas\Passenger\Views\Bus\GetMap.cshtml" />
     <Content Include="Areas\Passenger\Views\Bus\SearchRoute.cshtml" />
+    <Content Include="Areas\Passenger\Views\Bus\RouteDetails.cshtml" />
+    <Content Include="Areas\Passenger\Views\Bus\Direction.cshtml" />
     <None Include="Properties\PublishProfiles\GBTS.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jmelosegui.googlemap.js" />

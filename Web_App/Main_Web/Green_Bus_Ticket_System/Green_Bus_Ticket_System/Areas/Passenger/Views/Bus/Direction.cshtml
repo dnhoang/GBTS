@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewBag.Title = "Tìm xe buýt";
+}
+
+<div class="container-padding">
+    <div class="col col-md-12">
+        <div class="col col-md-12 gb-padding text-center">
+            <div class="form-inline hform">
+                <div class="input-group" style="min-width: 200px;">
+                    <div class="input-group-addon"><i class="fa fa-map-marker"></i></div>
+                    <input type="text" class="form-control" id="txtSource" placeholder="Nơi khởi hành">
+                </div>
+                <div class="input-group" style="min-width: 200px;">
+                    <div class="input-group-addon"><i class="fa fa-location-arrow"></i></div>
+                    <input type="text" class="form-control" id="txtDestination" placeholder="Nơi đến">
+                </div>
+                <button type="button" class="btn btn-default" onclick="GetRoute()"><i class="fa fa-search"></i></button>
+            </div>
+        </div>
+    </div>
+    <div class="col col-md-4">
+        <div class="route-list" id="route-list" style="max-height: 450px;">
+            <div id="dvPanel">
+            </div>
+        </div>
+
+
+
+    </div>
+    <div class="col col-md-12" id="map-col">
+        <div id="dvMap" style="height: 450px">
+        </div>
+    </div>
+</div>
+
+
+@section CustomJs{
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyATybzMqhRSL4F1besEVGClGr6X3XAz1PE"></script>
+<script type="text/javascript">
+        var lat = 0;
+        var lon = 0;
+        function geoFindMe() {
+            if (!navigator.geolocation) {
+                return;
+            }
+
+            function success(position) {
+                lat = position.coords.latitude;
+                lon = position.coords.longitude;
+            };
+
+            function error() {
+                console.log("Vui lòng cấp phép lấy địa điểm hiện tại");
+            };
+
+            navigator.geolocation.getCurrentPosition(success, error);
+        }
+        geoFindMe();
+        var source, destination;
+        var directionsDisplay;
+        var directionsService = new google.maps.DirectionsService();
+        google.maps.event.addDomListener(window, 'load', function () {
+            new google.maps.places.SearchBox(document.getElementById('txtSource'));
+            new google.maps.places.SearchBox(document.getElementById('txtDestination'));
+            directionsDisplay = new google.maps.DirectionsRenderer({ 'draggable': true });
+        });
+
+        function GetRoute() {
+            if (lat == 0) lat = 10.8530177;
+            if (lon == 0) lon = 106.6293886;
+
+            var mumbai = new google.maps.LatLng(lat, lon);
+            var mapOptions = {
+                zoom: 159--,
+                center: mumbai
+            };
+            map = new google.maps.Map(document.getElementById('dvMap'), mapOptions);
+            directionsDisplay.setMap(map);
+            directionsDisplay.setPanel(document.getElementById('dvPanel'));
+
+            //*********DIRECTIONS AND ROUTE**********************//
+            source = document.getElementById("txtSource").value;
+            destination = document.getElementById("txtDestination").value;
+            if (source.trim().length <= 0 || destination.trim().length <= 0) {
+                return;
+            }
+            $("#map-col").removeClass("col-md-12");
+            $("#map-col").addClass("col-md-8");
+
+            var request = {
+                origin: source,
+                destination: destination,
+                travelMode: google.maps.TravelMode.TRANSIT
+            };
+            directionsService.route(request, function (response, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    directionsDisplay.setDirections(response);
+                }
+            });
+
+            //*********DISTANCE AND DURATION**********************//
+            var service = new google.maps.DistanceMatrixService();
+            service.getDistanceMatrix({
+                origins: [source],
+                destinations: [destination],
+                travelMode: google.maps.TravelMode.TRANSIT,
+                unitSystem: google.maps.UnitSystem.METRIC,
+                avoidHighways: false,
+                avoidTolls: false
+            }, function (response, status) {
+                if (status == google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS") {
+                    var distance = response.rows[0].elements[0].distance.text;
+                    var duration = response.rows[0].elements[0].duration.text;
+                } else {
+                    $("#dvPanel").html("Không tìm thấy tuyến nào phù hợp!");
+                }
+            });
+        }
+        GetRoute();
+</script>
+}
