@@ -70,8 +70,6 @@ public class CreditCardDetails extends DialogFragment
         View view = inflater.inflate(R.layout.fragment_contain_details, container, false);
 
         //Send data by intent
-
-
         //Get bundle
         Bundle bundle = getArguments();
         card.put(TAG_CARD_ID, bundle.getString(TAG_CARD_ID));

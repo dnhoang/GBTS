@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="220dp"
+        android:layout_height="200dp"
         android:background="@drawable/side_nav_bar"
         android:gravity="bottom"
         android:orientation="horizontal"
@@ -24,23 +24,23 @@
             android:id="@+id/nav_icon"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:paddingTop="5dp"
             android:layout_marginBottom="10dp"
-            android:src="@drawable/ic_action_bus1"
-            android:onClick="clickToHome"/>
+            android:onClick="clickToHome"
+            android:paddingTop="5dp"
+            android:src="@drawable/ic_action_bus1" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/txtTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Green Bus Ticket System"
                 android:onClick="clickToHome"
+                android:text="Green Bus Ticket System"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
             <TextView
@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="clickToHome"
-                android:text="FPT University"/>
+                android:text="FPT University" />
         </LinearLayout>
 
     </LinearLayout>
@@ -57,7 +57,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="6">
+        android:layout_weight="6"
+        android:orientation="vertical">
 
         <TableLayout
             android:id="@+id/table_layout"
@@ -70,15 +71,17 @@
                 android:id="@+id/tableRow1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="15dp"
-                android:layout_marginTop="5dp"
+                android:layout_gravity="center"
                 android:gravity="center">
 
 
                 <EditText
                     android:id="@+id/edtPhone"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="35dp"
+                    android:padding="3dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/textviewshape"
                     android:hint="   Nhập Số Điện Thoại..."
                     android:inputType="phone">
@@ -99,45 +102,63 @@
                 <EditText
                     android:id="@+id/edtPassword"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="35dp"
+                    android:padding="3dp"
                     android:background="@drawable/textviewshape"
                     android:hint="   Nhập Mật Khẩu..."
                     android:inputType="textPassword" />
             </TableRow>
 
             <TableRow
-                android:id="@+id/tableRow3"
+                android:id="@+id/tableRow12"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <CheckBox
+                    android:id="@+id/saveLoginCheckBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="3dp"
+                    android:text="Lưu tài khoản" />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow3"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:layout_marginTop="5dp"
                 android:gravity="center">
 
                 <Button
                     android:id="@+id/btnLogin"
+                    android:layout_width="100dp"
+                    android:layout_height="35dp"
                     android:background="@drawable/buttonshape"
                     android:onClick="clickToLogin"
                     android:text="Đăng Nhập"
                     android:textColor="#FFFFFF"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
                     android:textSize="20sp" />
 
             </TableRow>
+
             <TableRow
                 android:id="@+id/tableRow4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:layout_marginTop="5dp"
                 android:gravity="center">
 
                 <Button
                     android:id="@+id/btnActive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
                     android:background="@drawable/buttonshape"
                     android:onClick="clickToActivateCard"
                     android:text="Kích Hoạt"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp" />
-
             </TableRow>
         </TableLayout>
     </LinearLayout>

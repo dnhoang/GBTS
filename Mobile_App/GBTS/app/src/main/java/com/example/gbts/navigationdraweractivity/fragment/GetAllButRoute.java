@@ -1,6 +1,7 @@
 package com.example.gbts.navigationdraweractivity.fragment;
 
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,9 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.gbts.navigationdraweractivity.R;
+import com.example.gbts.navigationdraweractivity.activity.BusStopActivity;
 import com.example.gbts.navigationdraweractivity.adapter.AllBusroutesAdapter;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.enity.AllBusroutes;
@@ -86,7 +89,17 @@ public class GetAllButRoute extends DialogFragment {
                 listView = (ListView) getView().findViewById(R.id.listView_getBusroute);
                 allBusroutesAdapter = new AllBusroutesAdapter(getActivity(), busroutesList);
                 listView.setAdapter(allBusroutesAdapter);
-
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        busroutes = busroutesList.get(position);
+                        // ID is tuyen duong
+                        String routeCode = busroutes.getBusCode();
+                        Intent intent = new Intent(getActivity(), BusStopActivity.class);
+                        intent.putExtra("routeCode", routeCode);
+                        startActivity(intent);
+                    }
+                });
             } catch (JSONException e) {
                 e.printStackTrace();
             }

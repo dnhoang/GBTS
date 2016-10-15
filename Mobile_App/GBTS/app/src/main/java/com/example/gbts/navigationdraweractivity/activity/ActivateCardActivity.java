@@ -114,7 +114,7 @@ public class ActivateCardActivity extends AppCompatActivity {
             if (Utility.isNetworkConnected(ActivateCardActivity.this)) {
                 final EditText edtPhone = (EditText) findViewById(R.id.edtActivatePhoneNumber);
                 String phone = edtPhone.getText().toString().trim();
-                if (phone!=null){
+                if (phone != null) {
                     tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
 
@@ -122,9 +122,12 @@ public class ActivateCardActivity extends AppCompatActivity {
 
                     String[] params = {cardId, phone};
                     //TicketResult ticketResult = new TicketResult();
-                    new ActivateNFCCard().execute(params);
-                }
-                else{
+                    try {
+                        new ActivateNFCCard().execute(params);
+                    } catch (Exception e) {
+                        Toast.makeText(this, "Không thể kết nối với máy chủ!", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
                     //Toast.makeText(this, "Vui lòng nhập số điện thoại", Toast.LENGTH_LONG).show();
                     edtPhone.setError("Vui lòng nhập số điện thoại");
                 }
