@@ -4216,3 +4216,11 @@ img.adp-marker {
     width: 100%;
     font-weight: 600!important;
 }
+ .reportform .input-group {
+    display: inline-table;
+    vertical-align: middle;
+    max-width: 160px;
+}
+ table.dataTable.no-footer {
+    border-bottom: none!important;
+}

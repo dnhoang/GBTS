@@ -1,0 +1,82 @@
+﻿
+
+@{
+    ViewBag.Title = "Báo cáo chi tiêu";
+    List<Green_Bus_Ticket_System_Data.Card> cards =
+        (List<Green_Bus_Ticket_System_Data.Card>)ViewBag.Cards;
+    var count = 0;
+    bool isIn = false;
+    bool isNew = true;
+    foreach (var item in cards)
+    {
+        if (item.Tickets.Count > 0)
+        {
+            count++;
+        }
+    }
+}
+
+
+    @if (count == 0)
+    {
+        <p>Không có dữ liệu trong khoảng thời gian đã chọn</p>
+    }
+    else
+    {
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            @foreach (var item in cards)
+                {
+                <div class="panel panel-default panel-collapse">
+                    <div class="panel-heading" role="tab" id="heading-@item.UniqueIdentifier">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse-@item.UniqueIdentifier" aria-expanded="true" aria-controls="collapse-@item.UniqueIdentifier">
+                                <i class="fa fa-credit-card"></i> @((item.CardName != null && item.CardName.Length > 0) ? item.CardName : item.UniqueIdentifier)
+                            </a>
+                        </h4>
+                    </div>
+                    @if (item.Tickets.Count > 0)
+                    {
+                        isIn = true;
+                    }
+                    <div id="collapse-@item.UniqueIdentifier" class="panel-collapse collapse @((isIn && isNew) ? Html.Raw("in"): Html.Raw(""))" role="tabpanel" aria-labelledby="heading-@item.UniqueIdentifier">
+                        @if (item.Tickets.Count > 0)
+                        {
+                            isNew = false;
+                            isIn = false;
+                        }
+                        <div class="panel-body">
+                            @if (item.Tickets.Count <= 0)
+                            {
+                                <p>Không có dữ liệu trong khoảng thời gian đã chọn</p>
+                            }
+                            else
+                            {
+                                <table id="report-table-@item.UniqueIdentifier" class="table display">
+                                    <thead>
+                                        <tr>
+                                            <th>NGÀY GIỜ</th>
+                                            <th>SỐ XE BUÝT</th>
+                                            <th>SỐ TIỀN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (Green_Bus_Ticket_System_Data.Ticket ticket in item.Tickets.OrderByDescending(t => t.BoughtDated).ToList())
+                                        {
+                                            <tr>
+                                                <td>@ticket.BoughtDated.ToString("dd/MM/yyyy hh:mm:ss tt")</td>
+                                                <td>@ticket.BusRoute.Code - @ticket.BusRoute.Name</td>
+                                                <td>@ticket.Total.ToString("#,##0") đ</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    }
+
+

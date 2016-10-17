@@ -15,9 +15,11 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
     {
         private static readonly ILog log = LogManager.GetLogger("WebLog");
         ITicketService _ticketService;
-        public ReportController(ITicketService ticketService)
+        ICardService _cardService;
+        public ReportController(ITicketService ticketService, ICardService cardService)
         {
             _ticketService = ticketService;
+            _cardService = cardService;
         }
         // GET: Passenger/Report
         public ActionResult Index()
@@ -33,47 +35,51 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
             ViewBag.BeginDate = lastThirtyDate.ToString("dd/MM/yyyy");
             ViewBag.EndDate = currentDate.ToString("dd/MM/yyyy");
 
-            ViewBag.Tickets = _ticketService.GetTicketByDateRange(
-                GetCurrentUser().UserId, lastThirtyDate, currentDate);
+
+            var cards = _cardService.GetCardsByUser(GetCurrentUser().UserId);
+
+            List<Card> filteredCards = new List<Card>();
+            foreach(Card item in cards)
+            {
+                item.Tickets = item.Tickets.Where(t =>
+                    t.BoughtDated >= lastThirtyDate
+                    && t.BoughtDated <= currentDate
+                    ).OrderByDescending(p => p.BoughtDated).ToList();
+                filteredCards.Add(item);
+            }
+
+            ViewBag.Cards = filteredCards;
 
             return View();
         }
 
-        public JsonResult GetReport(string beginDate, string endDate)
+        public ActionResult GetReport(string beginDate, string endDate)
         {
-            string message = "";
-            bool success = false;
-            List<List<string>> result = new List<List<string>>();
             if (!AuthorizeRequest())
             {
-                success = false;
-                message = "Bạn chưa đăng nhập!";
+                return Redirect("/Access/Login");
             }
-            else
+            String current = DateTime.Now.ToString("hh:mm:ss tt");
+            DateTime begin = DateTime.ParseExact(beginDate + " 00:00:00 AM", "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
+            DateTime end = DateTime.ParseExact(endDate + " " + current, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
+
+           
+            var cards = _cardService.GetCardsByUser(GetCurrentUser().UserId);
+
+            List<Card> filteredCards = new List<Card>();
+            foreach (Card item in cards)
             {
-                String current = DateTime.Now.ToString("hh:mm:ss tt");
-                
-                DateTime begin = DateTime.ParseExact(beginDate + " 00:00:00 AM", "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
-                DateTime end = DateTime.ParseExact(endDate + " " + current, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
-
-                List<Ticket> tickets = _ticketService.GetTicketByDateRange(
-                    GetCurrentUser().UserId, begin, end);
-
-                
-                foreach (Ticket item in tickets)
-                {
-                    List<string> oneTicket = new List<string>();
-                    oneTicket.Add(item.BoughtDated.ToString("dd/MM/yyyy hh:mm:ss tt"));
-                    oneTicket.Add(item.BusRoute.Code);
-                    oneTicket.Add((item.Card.CardName == null || item.Card.CardName.Length == 0) ? item.Card.UniqueIdentifier : item.Card.CardName);
-                    oneTicket.Add(item.Total.ToString("#,##0") + " đ");
-                    result.Add(oneTicket);
-                }
-
-                success = true;
+                item.Tickets = item.Tickets.Where(t =>
+                    t.BoughtDated >= begin
+                    && t.BoughtDated <= end
+                    ).OrderByDescending(p => p.BoughtDated).ToList();
+                filteredCards.Add(item);
             }
-            return Json(new { success = success, message = message, data = result }, JsonRequestBehavior.AllowGet);
-            
+
+            ViewBag.Cards = filteredCards;
+
+            return PartialView();
+
         }
         
 

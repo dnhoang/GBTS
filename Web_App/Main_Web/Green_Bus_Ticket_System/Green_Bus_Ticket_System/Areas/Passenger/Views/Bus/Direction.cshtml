@@ -36,10 +36,29 @@
 
 
 @section CustomJs{
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyATybzMqhRSL4F1besEVGClGr6X3XAz1PE"></script>
-<script type="text/javascript">
-        var lat = 0;
-        var lon = 0;
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyATybzMqhRSL4F1besEVGClGr6X3XAz1PE"></script>
+    <script type="text/javascript">
+        var lat = 10.8530177;
+        var lon = 106.6293886;
+        var map;
+        var source, destination;
+        var directionsDisplay;
+        var directionsService = new google.maps.DirectionsService();
+
+        var southWest = new google.maps.LatLng(10.417785, 106.368090);
+        var northEast = new google.maps.LatLng(11.175527, 106.894677);
+        var bounds = new google.maps.LatLngBounds(southWest, northEast);
+
+        google.maps.event.addDomListener(window, 'load', function () {
+            new google.maps.places.SearchBox(document.getElementById('txtSource'), {
+                bounds: bounds
+            });
+            new google.maps.places.SearchBox(document.getElementById('txtDestination'), {
+                bounds: bounds
+            });
+            directionsDisplay = new google.maps.DirectionsRenderer({ 'draggable': true });
+        });
+
         function geoFindMe() {
             if (!navigator.geolocation) {
                 return;
@@ -48,6 +67,34 @@
             function success(position) {
                 lat = position.coords.latitude;
                 lon = position.coords.longitude;
+
+                var curLoc = new google.maps.LatLng(lat, lon);
+                var mapOptions = {
+                    zoom: 15,
+                    center: curLoc,
+                    componentRestrictions: { country: "vn" }
+                };
+
+                map = new google.maps.Map(document.getElementById('dvMap'), mapOptions);
+                directionsDisplay.setMap(map);
+                directionsDisplay.setPanel(document.getElementById('dvPanel'));
+
+                var latlng = { lat: lat, lng: lon };
+
+                var marker = new google.maps.Marker({
+                    position: latlng,
+                    map: map,
+                    title: 'Vị trí hiện tại'
+                });
+
+                var geocoder = new google.maps.Geocoder;
+                geocoder.geocode({ 'location': latlng }, function (results, status) {
+                    if (status === 'OK') {
+                        if (results[1]) {
+                            $("#txtSource").val(results[1].formatted_address);
+                        }
+                    }
+                });
             };
 
             function error() {
@@ -56,28 +103,20 @@
 
             navigator.geolocation.getCurrentPosition(success, error);
         }
-        geoFindMe();
-        var source, destination;
-        var directionsDisplay;
-        var directionsService = new google.maps.DirectionsService();
-        google.maps.event.addDomListener(window, 'load', function () {
-            new google.maps.places.SearchBox(document.getElementById('txtSource'));
-            new google.maps.places.SearchBox(document.getElementById('txtDestination'));
-            directionsDisplay = new google.maps.DirectionsRenderer({ 'draggable': true });
-        });
 
         function GetRoute() {
-            if (lat == 0) lat = 10.8530177;
-            if (lon == 0) lon = 106.6293886;
-
-            var mumbai = new google.maps.LatLng(lat, lon);
+            $("#dvPanel").html("");
+            var curLoc = new google.maps.LatLng(lat, lon);
             var mapOptions = {
-                zoom: 159--,
-                center: mumbai
+                zoom: 15,
+                center: curLoc,
+                componentRestrictions: { country: "vn" }
             };
             map = new google.maps.Map(document.getElementById('dvMap'), mapOptions);
             directionsDisplay.setMap(map);
             directionsDisplay.setPanel(document.getElementById('dvPanel'));
+
+
 
             //*********DIRECTIONS AND ROUTE**********************//
             source = document.getElementById("txtSource").value;
@@ -110,6 +149,7 @@
                 avoidTolls: false
             }, function (response, status) {
                 if (status == google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS") {
+
                     var distance = response.rows[0].elements[0].distance.text;
                     var duration = response.rows[0].elements[0].duration.text;
                 } else {
@@ -117,6 +157,7 @@
                 }
             });
         }
-        GetRoute();
-</script>
+        geoFindMe();
+        //GetRoute();
+    </script>
 }

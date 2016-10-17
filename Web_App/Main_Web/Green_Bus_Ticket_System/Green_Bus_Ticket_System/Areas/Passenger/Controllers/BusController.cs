@@ -36,6 +36,10 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
 
         public ActionResult Direction()
         {
+            if (!AuthorizeRequest())
+            {
+                return Redirect("/Access/Login");
+            }
             return View();
         }
         public ActionResult SearchRoute(string term)

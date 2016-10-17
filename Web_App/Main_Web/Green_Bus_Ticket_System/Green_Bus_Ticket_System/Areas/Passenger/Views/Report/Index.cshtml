@@ -1,12 +1,22 @@
 ﻿
 @{
     ViewBag.Title = "Báo cáo chi tiêu";
-    List<Green_Bus_Ticket_System_Data.Ticket> tickets =
-        (List<Green_Bus_Ticket_System_Data.Ticket>)ViewBag.Tickets;
+    List<Green_Bus_Ticket_System_Data.Card> cards =
+        (List<Green_Bus_Ticket_System_Data.Card>)ViewBag.Cards;
+    var count = 0;
+    bool isIn = false;
+    bool isNew = true;
+    foreach (var item in cards)
+    {
+        if (item.Tickets.Count > 0)
+        {
+            count++;
+        }
+    }
 }
 <div class="container-padding">
-    <div class="col col-md-12 gb-padding">
-        <div class="form-inline">
+    <div class="col col-md-12 gb-padding text-center">
+        <div class="form-inline reportform">
             <div class="form-group">
                 <label for="beginDate" class="form-label">TỪ NGÀY</label>
                 <div class="input-prepend input-group">
@@ -26,52 +36,70 @@
     </div>
 
     <div class="col col-md-12 gb-padding report">
-        @if (tickets.Count <= 0)
+        @if (count == 0)
         {
             <p>Không có dữ liệu trong khoảng thời gian đã chọn</p>
         }
         else
         {
-            <table id="report-table" class="table display">
-                <thead>
-                    <tr>
-                        <th>NGÀY GIỜ</th>
-                        <th>SỐ XE BUÝT</th>
-                        <th>THẺ THANH TOÁN</th>
-                        <th>SỐ TIỀN</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (Green_Bus_Ticket_System_Data.Ticket item in tickets)
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                @foreach (var item in cards)
                 {
-                        <tr>
-                            <td>@item.BoughtDated.ToString("dd/MM/yyyy hh:mm:ss tt")</td>
-                            <td>@item.BusRoute.Code</td>
-                            
-                                @if (item.Card.CardName != null && item.Card.CardName.Length > 0)
+                    <div class="panel panel-default panel-collapse">
+                        <div class="panel-heading" role="tab" id="heading-@item.UniqueIdentifier">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse-@item.UniqueIdentifier" aria-expanded="true" aria-controls="collapse-@item.UniqueIdentifier">
+                                    <i class="fa fa-credit-card"></i> @((item.CardName != null && item.CardName.Length > 0) ? item.CardName : item.UniqueIdentifier)
+                                </a>
+                            </h4>
+                        </div>
+                        @if (item.Tickets.Count > 0)
+                        {
+                            isIn = true;
+                        }
+                        <div id="collapse-@item.UniqueIdentifier" class="panel-collapse collapse @((isIn && isNew) ? Html.Raw("in"): Html.Raw(""))" role="tabpanel" aria-labelledby="heading-@item.UniqueIdentifier">
+                            @if (item.Tickets.Count > 0)
+                            {
+                                isNew = false;
+                                isIn = false;
+                            }
+                            <div class="panel-body">
+                                @if (item.Tickets.Count <= 0)
                                 {
-                                    <td>@item.Card.CardName</td>
+                                    <p>Không có dữ liệu trong khoảng thời gian đã chọn</p>
                                 }
                                 else
                                 {
-                                    <td>@item.Card.UniqueIdentifier</td>
-                                }
-                            
-                            <td>@item.Total.ToString("#,##0") đ</td>
-                        </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th>NGÀY GIỜ</th>
-                        <th>SỐ XE BUÝT</th>
-                        <th>THẺ THANH TOÁN</th>
-                        <th>SỐ TIỀN</th>
-                    </tr>
-                </tfoot>
-            </table>
+                                    <table id="report-table-@item.UniqueIdentifier" class="table display">
+                                        <thead>
+                                            <tr>
+                                                <th>NGÀY GIỜ</th>
+                                                <th>SỐ XE BUÝT</th>
+                                                <th>SỐ TIỀN</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (Green_Bus_Ticket_System_Data.Ticket ticket in item.Tickets.OrderByDescending(t => t.BoughtDated).ToList())
+                                            {
+                                                <tr>
+                                                    <td>@ticket.BoughtDated.ToString("dd/MM/yyyy hh:mm:ss tt")</td>
+                                                    <td>@ticket.BusRoute.Code - @ticket.BusRoute.Name</td>
+                                                    <td>@ticket.Total.ToString("#,##0") đ</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
 
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
         }
+
+
     </div>
     <br />
 </div>
@@ -97,6 +125,11 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            @foreach (var item in cards)
+            {
+                @Html.Raw("$('#report-table-"+item.UniqueIdentifier+ "').DataTable({'order': [], 'aLengthMenu': [[5, 10, 15, -1], [5, 10, 15, 'All']],'iDisplayLength': 5});")
+            }
+
             $('#date-picker-begin').daterangepicker({
                 singleDatePicker: true,
                 format: 'DD/MM/YYYY',
@@ -121,35 +154,31 @@
                 $('#date-picker-begin').data("daterangepicker").setEndDate(newBeginDate);
             });
 
-            $('#report-table').DataTable({
-                "order": []
-            });
 
             $("#get-report").click(function () {
                 var beginDate = $('#date-picker-begin').val();
                 var endDate = $('#date-picker-end').val();
-
+                $("#get-report").html('<i class="fa fa-spinner fa-pulse fa-fw"></i>');
+                $(".report").html("");
                 $.ajax({
                     url: "/Passenger/Report/GetReport",
-                    dataType: "json",
+                    dataType: "html",
                     data: { beginDate: beginDate, endDate: endDate },
                     method: "GET",
                     success: function (data) {
-                        if (data.success) {
-                            $('#report-table').DataTable().destroy();
-                            $('#report-table').DataTable({
-                                data: data.data,
-                                "order": []
-                            });
-                        } else {
-                            swal({
-                                text: data.message,
-                                type: "error",
-                            });
-                        }
+                        setTimeout(function () {
+                            $(".report").html(data);
+                            @foreach (var item in cards)
+                            {
+                                @Html.Raw("$('#report-table-"+item.UniqueIdentifier+ "').DataTable().destroy();")
+                                @Html.Raw("$('#report-table-"+item.UniqueIdentifier+ "').DataTable({'order': [], 'aLengthMenu': [[5, 10, 15, -1], [5, 10, 15, 'All']],'iDisplayLength': 5});")
+                            }
+                            $("#get-report").html('<i class="fa fa-search"></i>');
+                        }, 1000);
 
                     }
                 });
+
             });
         });
 
