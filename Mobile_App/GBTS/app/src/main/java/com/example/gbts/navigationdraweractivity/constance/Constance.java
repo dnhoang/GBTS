@@ -23,4 +23,6 @@ public class Constance {
             "https://grinbuz.com/Api/GetAllBusRoutes?key=gbts_2016_capstone";
     public static String API_GET_REPORT =
             "https://grinbuz.com/Api/GetReport?key=gbts_2016_capstone";
+    public static String API_GET_BUSSTOP =
+            "https://grinbuz.com/Api/GetBusStop?key=gbts_2016_capstone";
 }
