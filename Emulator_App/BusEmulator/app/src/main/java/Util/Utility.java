@@ -35,6 +35,7 @@ import javax.crypto.spec.SecretKeySpec;
     //
 public class Utility {
      //encrypt
+     final String keyAES = "ssshhhhhhhhhhh!!!!";
      private static SecretKeySpec secretKey;
         private static byte[] key;
 
@@ -110,8 +111,8 @@ public class Utility {
         }
 
         public void writeCard(String text, Tag tag) throws IOException, FormatException {
-
-            NdefRecord[] records = { createRecord(text) };
+            String encryptedString = encrypt(text, keyAES) ;
+            NdefRecord[] records = { createRecord(encryptedString) };
             NdefMessage message = new NdefMessage(records);
             Ndef ndef = Ndef.get(tag);
             ndef.connect();
