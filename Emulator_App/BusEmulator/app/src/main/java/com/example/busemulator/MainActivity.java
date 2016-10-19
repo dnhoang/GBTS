@@ -6,8 +6,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.nfc.FormatException;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -26,7 +30,10 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+
 
 import Util.Utility;
 
@@ -45,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     String cardId;
     String ticketTypeId;
     String routeCode;
+    final String secretKey = "ssshhhhhhhhhhh!!!!";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,16 +72,36 @@ public class MainActivity extends AppCompatActivity {
 
         //End update
         //END NFC
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Utility.isNetworkConnected(getApplicationContext())){
+                if (Utility.isNetworkConnected(getApplicationContext())) {
                     Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
                     startActivity(intent);
-                } else{
-                    Toast.makeText(getApplicationContext(),"Vui lòng kiểm tra kết nối!",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Vui lòng kiểm tra kết nối!", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        final FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
+
+        fabOffline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!Utility.isNetworkConnected(getApplicationContext())) {
+                    SharedPreferences sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
+                    Integer offlineTicket = sharedPreferences.getInt("OfflineTicket", 0);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt("OfflineTicket", offlineTicket + 1);
+                    fabOffline.hide();
+                    fab.hide();
+                    successTicket = (RelativeLayout) findViewById(R.id.container);
+                    successTicket.setVisibility(View.VISIBLE);
+                    changeLayout(true);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Đã có kết nối mạng, vui lòng sử dụng thẻ!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -86,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
     }
+
     @Override
     protected void onNewIntent(Intent intent) {
 
@@ -112,9 +141,11 @@ public class MainActivity extends AppCompatActivity {
 
 //Verify ticket Async
     }
+
     static String bin2hex(byte[] data) {
         return String.format("%0" + (data.length * 2) + "X", new BigInteger(1, data));
     }
+
     private class VerifyTicket extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
         String cardId, ticketTypeId, routeCode;
@@ -141,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
             ticketTypeId = params[1];
             routeCode = params[2];
             SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
-            hostAddress=sharedPreferences.getString("host","https://grinbuzz.com");
+            hostAddress = sharedPreferences.getString("host", "https://grinbuzz.com");
             String strURL = hostAddress + "/Api/SellTicket?key=gbts_2016_capstone&cardId=" + cardId + "&ticketTypeId=" + ticketTypeId + "&routeCode=" + routeCode;
 
             // Getting JSON from URL
@@ -151,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
-            final SharedPreferences sharedPreferences=getSharedPreferences(setting,MODE_PRIVATE);
+            final SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
             super.onPostExecute(jsonObject);
             // Hide dialog
             pDialog.dismiss();
@@ -169,6 +200,14 @@ public class MainActivity extends AppCompatActivity {
                 successTicket.setVisibility(View.VISIBLE);
                 MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
                 mediaPlayer.start();
+
+                //Encrypt !!!!
+                String originalString = "howtodoinjava.com";
+                String encryptedString = Utility.encrypt(originalString, secretKey) ;
+                String decryptedString = Utility.decrypt(encryptedString, secretKey) ;
+                //Toast.makeText(getApplicationContext(), decryptedString, Toast.LENGTH_SHORT).show();
+
+                //End encrypt
                 String message = null;
                 try {
                     message = jsonObject.getString("message");
@@ -176,8 +215,8 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                final TextView tvSuccessPrice=(TextView) findViewById(R.id.tvSuccessPrice);
-                tvSuccessPrice.setText("Thẻ của bạn đã bị trừ "+sharedPreferences.getString("price","0")+ " đồng");
+                final TextView tvSuccessPrice = (TextView) findViewById(R.id.tvSuccessPrice);
+                tvSuccessPrice.setText("Thẻ của bạn đã bị trừ " + sharedPreferences.getString("price", "0") + " đồng");
                 changeLayout(true);
             } else {
                 FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -190,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
                 String message = null;
                 try {
                     message = jsonObject.getString("message");
-                    final TextView tvFail=(TextView) findViewById(R.id.tvFail);
+                    final TextView tvFail = (TextView) findViewById(R.id.tvFail);
                     tvFail.setText(message);
                     //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
@@ -202,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
     private void changeLayout(final boolean result) {
 
         final RelativeLayout sucess = (RelativeLayout) findViewById(R.id.container);
@@ -220,17 +260,22 @@ public class MainActivity extends AppCompatActivity {
                     sucess.setVisibility(View.INVISIBLE);
                     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                     fab.show();
+                    FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
+                    fabOffline.show();
                 } else {
                     //fail
                     fail.setVisibility(View.INVISIBLE);
                     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                     fab.show();
+                    FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
+                    fabOffline.show();
 
                 }
             }
         };
         timer.start();
     }
+
     public void onPause() {
         super.onPause();
         ReadModeOff();
@@ -258,26 +303,7 @@ public class MainActivity extends AppCompatActivity {
         writeMode = false;
         adapter.disableForegroundDispatch(this);
     }
+
     //NFC
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }
