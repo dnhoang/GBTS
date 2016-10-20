@@ -1,6 +1,7 @@
 package com.example.gbts.navigationdraweractivity.module.google.mapsAPI;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 import com.google.android.gms.maps.model.LatLng;
@@ -25,8 +26,10 @@ import java.util.List;
  */
 
 public class DirectionFinder {
-    private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?";
-    private static final String GOOGLE_API_KEY = "AIzaSyDnwLF2-WfK8cVZt9OoDYJ9Y8kspXhEHfI";
+    private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?language=vi&";
+    private static final String GOOGLE_API_KEY = "AIzaSyC_Nn1lgcszdfpjEH0ySBjdYdIQD8QChaQ";
+    //        private static final String GOOGLE_API_KEY = "AIzaSyAxvdx9eKV_HPzrxGWiiNLL9I7WoDe0FSE";
+//    private static final String GOOGLE_API_KEY = "AIzaSyA4EpKiXWt_UHlotCQjv1EWqdHrND8nTmA";
     private static final String GOOGLE_MODE = "bus";
     private DirectionFinderListener listener;
     private String origin;
@@ -52,12 +55,13 @@ public class DirectionFinder {
     }
 
     private class DownloadRawData extends AsyncTask<String, Void, String> {
+        URL url;
 
         @Override
         protected String doInBackground(String... params) {
             String link = params[0];
             try {
-                URL url = new URL(link);
+                url = new URL(link);
                 InputStream is = url.openConnection().getInputStream();
                 StringBuffer buffer = new StringBuffer();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -80,31 +84,56 @@ public class DirectionFinder {
         @Override
         protected void onPostExecute(String res) {
             try {
+                Log.d("anhtruong", "url " + createUrl().toString());
                 parseJSon(res);
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
         }
     }
 
     private void parseJSon(String data) throws JSONException {
+//            Log.d("anhtruongne ", "parseJSon");
         if (data == null)
             return;
 
         List<Route> routes = new ArrayList<>();
+        List<Steps> stepsList = new ArrayList<>();
         JSONObject jsonData = new JSONObject(data);
         JSONArray jsonRoutes = jsonData.getJSONArray("routes");
+        List<String> htmlInstruct = new ArrayList<>();
+        Route route = new Route();
+        /** Traversing all routes */
         for (int i = 0; i < jsonRoutes.length(); i++) {
             JSONObject jsonRoute = jsonRoutes.getJSONObject(i);
-            Route route = new Route();
 
             JSONObject overview_polylineJson = jsonRoute.getJSONObject("overview_polyline");
             JSONArray jsonLegs = jsonRoute.getJSONArray("legs");
+
+            /** Traversing all legs */
+            JSONObject js = jsonLegs.getJSONObject(0);
+            JSONArray jsonSteps = js.getJSONArray("steps");
+
+            /** Traversing all steps */
+            for (int j = 0; j < jsonSteps.length(); j++) {
+                JSONObject singleStep = jsonSteps.getJSONObject(j);
+                try {
+                    byte[] tmp = singleStep.getString("html_instructions").getBytes("UTF-8");
+                    String htmls = new String(tmp, "UTF-8");
+                    htmlInstruct.add(htmls);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+
             JSONObject jsonLeg = jsonLegs.getJSONObject(0);
             JSONObject jsonDistance = jsonLeg.getJSONObject("distance");
             JSONObject jsonDuration = jsonLeg.getJSONObject("duration");
             JSONObject jsonEndLocation = jsonLeg.getJSONObject("end_location");
             JSONObject jsonStartLocation = jsonLeg.getJSONObject("start_location");
+
 
             route.distance = new Distance(jsonDistance.getString("text"), jsonDistance.getInt("value"));
             route.duration = new Duration(jsonDuration.getString("text"), jsonDuration.getInt("value"));
@@ -113,6 +142,18 @@ public class DirectionFinder {
             route.startLocation = new LatLng(jsonStartLocation.getDouble("lat"), jsonStartLocation.getDouble("lng"));
             route.endLocation = new LatLng(jsonEndLocation.getDouble("lat"), jsonEndLocation.getDouble("lng"));
             route.points = decodePolyLine(overview_polylineJson.getString("points"));
+            String html = "";
+            for (String item : htmlInstruct) {
+                html += item + "<br/>";
+            }
+            try {
+                byte[] tmp = html.getBytes("UTF-8");
+                String htmls = new String(tmp, "UTF-8");
+                route.html_instructions = htmls;
+                Log.d("htmls ", htmls);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
 
             routes.add(route);
         }

@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/background_table"
         android:hint="Nhập điểm đi"
+        android:text="Bến thành"
         android:padding="7dp" />
 
 
@@ -23,6 +24,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/background_table"
         android:hint="Nhập điểm đến"
+        android:text="Nhà thở đức bà"
         android:padding="7dp"/>
 
 
@@ -74,5 +76,11 @@
         android:id="@+id/findMap"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="250dp" />
+    <WebView
+        android:id="@+id/webview_Maps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </WebView>
 </LinearLayout>

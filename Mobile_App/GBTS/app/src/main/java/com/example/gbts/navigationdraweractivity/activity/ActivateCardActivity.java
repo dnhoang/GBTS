@@ -97,6 +97,7 @@ public class ActivateCardActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
+                finish();
             } else {
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
             }

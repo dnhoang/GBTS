@@ -15,6 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -73,17 +75,19 @@ public class ActivityGoogleFindPath extends AppCompatActivity
     private static final String TYPE_SEARCH = "/search";
     private static final String TYPE_DETAILS = "/details";
     private static final String OUT_JSON = "/json";
-//    private static final String API_KEY = "AIzaSyAnG0oOnOt1pNqhpbU_uwmCbaPjeBYl6VU";
+    //    private static final String API_KEY = "AIzaSyAnG0oOnOt1pNqhpbU_uwmCbaPjeBYl6VU";
     private static final String API_KEY = "AIzaSyA65-eqSvIefv4lY3vARmN4fwVc1d4lPaE";
 
 
     GoogleMap mMap;
     private Button btnFindPath;
+    private WebView webView;
     AutoCompleteTextView atcltOrigin, atcltDestination;
     private List<Marker> originMarkers = new ArrayList<>();
     private List<Marker> destinationMarkers = new ArrayList<>();
     private List<Polyline> polylinePaths = new ArrayList<>();
     private ProgressDialog progressDialog;
+    private List<String> html = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +141,8 @@ public class ActivityGoogleFindPath extends AppCompatActivity
     private void sendRequest() {
         String origin = atcltOrigin.getText().toString();
         String destination = atcltDestination.getText().toString();
-
+//        Log.d("anhtruongne ", "origin" + origin);
+//        Log.d("anhtruongne ", "destination" + destination);
         if (origin.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập điểm bắt đầu ", Toast.LENGTH_SHORT).show();
             return;
@@ -148,6 +153,7 @@ public class ActivityGoogleFindPath extends AppCompatActivity
         }
         try {
             new DirectionFinder(this, origin, destination).execute();
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -229,13 +235,21 @@ public class ActivityGoogleFindPath extends AppCompatActivity
 
             PolylineOptions polylineOptions = new PolylineOptions().
                     geodesic(true).
-                    color(Color.BLUE).
-                    width(10);
+                    color(Color.GREEN).
+                    width(12);
 
             for (int i = 0; i < route.points.size(); i++)
                 polylineOptions.add(route.points.get(i));
 
             polylinePaths.add(mMap.addPolyline(polylineOptions));
+
+            webView = (WebView) findViewById(R.id.webview_Maps);
+            WebSettings settings = webView.getSettings();
+            settings.setDefaultTextEncodingName("UTF-8");
+            webView.loadData("<html><body>" + route.html_instructions + "</body></html>", "text/html; charset=UTF-8", null);
+//            Log.d("truongtq ", "intruc " + intruc);
+
+            Log.d("truongtq ", "sendRequest " + route.html_instructions);
         }
     }
     //AUTO COMPLETE TEXTVIEW
