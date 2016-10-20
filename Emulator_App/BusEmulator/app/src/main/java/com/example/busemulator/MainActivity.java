@@ -146,18 +146,111 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                //TicketResult ticketResult = new TicketResult();
-                //new VerifyTicket().execute(params);
 
 
             } else {
-                Toast.makeText(this, "Không thể kết nối với máy chủ!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Không thể kết nối với máy chủ!", Toast.LENGTH_SHORT).show();
+                mytag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+                String[] techList = mytag.getTechList();
+                String searchedTech = Ndef.class.getName();
+
+                for (String tech : techList) {
+                    if (searchedTech.equals(tech)) {
+                        new NdefReaderTaskOffline().execute(mytag);
+
+                        break;
+                    }
+                }
             }
         }
 
 //Verify ticket Async
     }
+    private class NdefReaderTaskOffline extends AsyncTask<Tag, Void, String> {
 
+        @Override
+        protected String doInBackground(Tag... params) {
+            Tag tag = params[0];
+
+            Ndef ndef = Ndef.get(tag);
+            if (ndef == null) {
+                // NDEF is not supported by this Tag.
+                return null;
+            }
+
+            NdefMessage ndefMessage = ndef.getCachedNdefMessage();
+
+            NdefRecord[] records = ndefMessage.getRecords();
+            for (NdefRecord ndefRecord : records) {
+                if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_TEXT)) {
+                    try {
+                        return readText(ndefRecord);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private String readText(NdefRecord record) throws UnsupportedEncodingException {
+
+            byte[] payload = record.getPayload();
+
+            // Get the Text Encoding
+            String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
+
+            // Get the Language Code
+            int languageCodeLength = payload[0] & 0063;
+
+            // String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
+            // e.g. "en"
+
+            // Get the Text
+            return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result != null) {
+
+                Utility utility = new Utility();
+                String cardData[] = utility.getCardDataFromEncryptedString(result);
+                SharedPreferences sharedPreferences=getSharedPreferences(setting,MODE_PRIVATE);
+                Integer price=Integer.parseInt(sharedPreferences.getString("price","0"));
+                cardBalance = cardData[0];
+                Long cardBalanceLong=Long.parseLong(cardBalance);
+                if (cardBalanceLong>=price){
+
+                    String dataVersion=utility.getDataVersion();
+                    String dataToWrite=""+(cardBalanceLong-price)+"|"+dataVersion;
+                    //For debug
+                    cardBalance = dataToWrite;
+                    try {
+                        utility.writeCard(dataToWrite,mytag);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (FormatException e) {
+                        e.printStackTrace();
+                    }
+                    successTicket = (RelativeLayout) findViewById(R.id.container);
+                    successTicket.setVisibility(View.VISIBLE);
+                    changeLayout(true);
+
+                } else{
+
+                    failTicket = (RelativeLayout) findViewById(R.id.containerfail);
+                    failTicket.setVisibility(View.VISIBLE);
+                    changeLayout(false);
+                }
+
+
+
+
+            }
+        }
+    }
     //Read NDEF message
     private class NdefReaderTask extends AsyncTask<Tag, Void, String> {
 
@@ -188,15 +281,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private String readText(NdefRecord record) throws UnsupportedEncodingException {
-        /*
-         * See NFC forum specification for "Text Record Type Definition" at 3.2.1
-         *
-         * http://www.nfc-forum.org/specs/
-         *
-         * bit_7 defines encoding
-         * bit_6 reserved for future use, must be 0
-         * bit_5..0 length of IANA language code
-         */
 
             byte[] payload = record.getPayload();
 
@@ -314,6 +398,8 @@ public class MainActivity extends AppCompatActivity {
                     updateCard(needUpdate,mytag,balance,amount,version,Long.parseLong(cardBalance),Long.parseLong(cardDataVersion));
                     //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
+
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (FormatException e) {
@@ -355,13 +441,18 @@ public class MainActivity extends AppCompatActivity {
         if (checkUpdate){
             Utility utility=new Utility();
             String dataToWrite=balance+"|"+dataVersion;
-            Log.d("INFO!!!true",dataToWrite);
+
             utility.writeCard(dataToWrite,tag);
+
+            //For debug
+            this.cardBalance = dataToWrite;
         } else{
             Utility utility=new Utility();
             String dataToWrite=(cardBalance-amount)+"|"+cardVersion;
-            Log.d("INFO!!!false",dataToWrite);
+
             utility.writeCard(dataToWrite,tag);
+            //For debug
+            this.cardBalance = dataToWrite;
         }
     }
 
@@ -385,8 +476,10 @@ public class MainActivity extends AppCompatActivity {
                     fab.show();
                     FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
                     fabOffline.show();
+
                 } else {
                     //fail
+
                     fail.setVisibility(View.INVISIBLE);
                     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                     fab.show();
@@ -394,7 +487,7 @@ public class MainActivity extends AppCompatActivity {
                     fabOffline.show();
 
                 }
-
+                Toast.makeText(getApplicationContext(),"So tiền trên thẻ hiện tại " +cardBalance, Toast.LENGTH_SHORT).show();
             }
         };
         timer.start();
