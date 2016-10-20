@@ -16,6 +16,7 @@ namespace Green_Bus_Ticket_System_Data.Services
         Card AddCard(string cardId, int balance);
         IEnumerable<Card> GetCardsByUser(int userId);
         bool IsCardExist(string cardId);
+        int GetNewActivateCardNum(DateTime beginDate, DateTime endDate);
     }
 
     public class CardService : EntityService<Card>, ICardService
@@ -54,6 +55,15 @@ namespace Green_Bus_Ticket_System_Data.Services
         public bool IsCardExist(string cardId)
         {
             return GetCardByUID(cardId) != null;
+        }
+
+        public int GetNewActivateCardNum(DateTime beginDate, DateTime endDate)
+        {
+            return _repository.FindBy(c =>
+            c.Status != (int)StatusReference.CardStatus.NON_ACTIVATED
+            && c.RegistrationDate >= beginDate
+            && c.RegistrationDate <= endDate
+            ).ToList().Count;
         }
     }
 }

@@ -52,6 +52,7 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
 
             ViewBag.Total = total;
 
+
             return View();
         }
 

@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "Bảng điều khiển";
+    List<Green_Bus_Ticket_System_Data.Card> cards = (List<Green_Bus_Ticket_System_Data.Card>)ViewBag.Cards;
+}
+
+<!-- Start Row -->
+<div class="row padding-t-20">
+    <div class="col-md-12">
+        <!-- Start Quick Menu -->
+        <ul class="panel quick-menu clearfix">
+            <li class="col-sm-3">
+                <a href="/Manager/Plans"><i class="fa fa-money"></i>GÓI NẠP TIỀN</a>
+            </li>
+            <li class="col-sm-3">
+                <a href="/Manager/Tickets"><i class="fa fa-ticket"></i>GIÁ VÉ</a>
+            </li>
+            <li class="col-sm-3">
+                <a href="/Manager/Report"><i class="fa fa-pie-chart"></i>BÁO CÁO</a>
+            </li>
+            <li class="col-sm-3">
+                <a href="/Manager/Promotions"><i class="fa fa-paper-plane"></i>QUẢNG CÁO</a>
+            </li>
+        </ul>
+        <!-- End Quick Menu -->
+    </div>
+</div>
+<!-- End Row -->
+<div class="row">
+    <div class="col-md-12">
+        <h4>HOẠT ĐỘNG THÁNG NÀY</h4>
+        <!-- Start Today Activity -->
+        <div class="panel panel-widget hboder">
+            <div class="panel-body">
+                <ul class="widget-inline-list clearfix">
+                    <li class="col-4"><h3 class="activity-title hcolor-red">@ViewBag.TicketNum Vé</h3><i class="fa fa-ticket"></i> VÉ ĐÃ MUA</li>
+                    <li class="col-4"><h3 class="activity-title hcolor-green">@ViewBag.Total.ToString("#,##0") đ</h3><i class="fa fa-money"></i> DOANH THU</li>
+                    <li class="col-4"><h3 class="activity-title hcolor-blue">@ViewBag.NumCard Thẻ</h3><i class="fa fa-credit-card"></i> KÍCH HOẠT MỚI</li>
+                </ul>
+                <div id="todayactivity" class="chart-on-bottom"></div>
+            </div>
+        </div>
+        <!-- End Today Activity -->
+    </div>
+    <!-- End Left -->
+   
+
+</div>
+<!-- End Row -->

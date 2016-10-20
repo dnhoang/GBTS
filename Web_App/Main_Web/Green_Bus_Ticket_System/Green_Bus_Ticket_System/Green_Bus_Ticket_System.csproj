@@ -262,6 +262,9 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Areas\Manager\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Manager\Controllers\PlansController.cs" />
+    <Compile Include="Areas\Manager\ManagerAreaRegistration.cs" />
     <Compile Include="Areas\Passenger\Controllers\BusController.cs" />
     <Compile Include="Areas\Passenger\Controllers\CardController.cs" />
     <Compile Include="Areas\Passenger\Controllers\HomeController.cs" />
@@ -431,7 +434,17 @@
     <Content Include="Areas\Passenger\Views\Bus\RouteDetails.cshtml" />
     <Content Include="Areas\Passenger\Views\Bus\Direction.cshtml" />
     <Content Include="Areas\Passenger\Views\Report\GetReport.cshtml" />
+    <Content Include="Areas\Manager\Views\web.config" />
+    <Content Include="Areas\Manager\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Manager\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\Plans\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\Plans\AddPlan.cshtml" />
     <None Include="Properties\PublishProfiles\GBTS.pubxml" />
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.map" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jmelosegui.googlemap.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
@@ -465,6 +478,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Manager\Models\" />
     <Folder Include="Areas\Passenger\Models\" />
     <Folder Include="Areas\Staff\Models\" />
     <Folder Include="Views\Api\" />

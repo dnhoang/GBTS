@@ -13,6 +13,7 @@ namespace Green_Bus_Ticket_System_Data.Services
     {
         Ticket GetTicket(int id);
         List<Ticket> GetTicketByDateRange(int userId, DateTime beginDate, DateTime endDate);
+        List<Ticket> GetSoldTicketByDateRange(DateTime beginDate, DateTime endDate);
     }
 
     public class TicketService : EntityService<Ticket>, ITicketService
@@ -34,8 +35,17 @@ namespace Green_Bus_Ticket_System_Data.Services
         public List<Ticket> GetTicketByDateRange(int userId, DateTime beginDate, DateTime endDate)
         {
             return _repository.FindBy(t => 
-            t.Card.UserId == userId 
+            t.IsNoCard == false
+            && t.Card.UserId == userId 
             && t.BoughtDated >= beginDate 
+            && t.BoughtDated <= endDate
+            ).OrderByDescending(p => p.BoughtDated).ToList();
+        }
+
+        public List<Ticket> GetSoldTicketByDateRange(DateTime beginDate, DateTime endDate)
+        {
+            return _repository.FindBy(t =>
+            t.BoughtDated >= beginDate
             && t.BoughtDated <= endDate
             ).OrderByDescending(p => p.BoughtDated).ToList();
         }

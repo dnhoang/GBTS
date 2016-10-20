@@ -24,6 +24,7 @@
           <Property Name="Balance" Type="float" Nullable="false" />
           <Property Name="Status" Type="int" Nullable="false" />
           <Property Name="UserId" Type="int" />
+          <Property Name="DataVersion" Type="bigint" />
         </EntityType>
         <EntityType Name="CreditPlan">
           <Key>
@@ -31,7 +32,6 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="Price" Type="int" Nullable="false" />
           <Property Name="Status" Type="int" Nullable="false" />
         </EntityType>
@@ -77,11 +77,12 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CardId" Type="int" Nullable="false" />
-          <Property Name="TicketTypeId" Type="int" Nullable="false" />
+          <Property Name="CardId" Type="int" />
+          <Property Name="TicketTypeId" Type="int" />
           <Property Name="BusRouteId" Type="int" Nullable="false" />
           <Property Name="Total" Type="int" Nullable="false" />
           <Property Name="BoughtDated" Type="datetime" Nullable="false" />
+          <Property Name="IsNoCard" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="TicketType">
           <Key>
@@ -154,7 +155,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Ticket_Card">
-          <End Role="Card" Type="Self.Card" Multiplicity="1" />
+          <End Role="Card" Type="Self.Card" Multiplicity="0..1" />
           <End Role="Ticket" Type="Self.Ticket" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Card">
@@ -166,7 +167,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Ticket_TicketType">
-          <End Role="TicketType" Type="Self.TicketType" Multiplicity="1" />
+          <End Role="TicketType" Type="Self.TicketType" Multiplicity="0..1" />
           <End Role="Ticket" Type="Self.Ticket" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TicketType">
@@ -242,17 +243,6 @@
           <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Tickets" Relationship="GreenBusModel.FK_Ticket_BusRoute" FromRole="BusRoute" ToRole="Ticket" />
         </EntityType>
-        <EntityType Name="CreditPlan">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Price" Type="Int32" Nullable="false" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="PaymentTransactions" Relationship="GreenBusModel.FK_PaymentTransaction_CreditPlan" FromRole="CreditPlan" ToRole="PaymentTransaction" />
-        </EntityType>
         <EntityType Name="Promotion">
           <Key>
             <PropertyRef Name="Id" />
@@ -302,19 +292,22 @@
           <Property Name="Status" Type="Int32" Nullable="false" />
           <Property Name="RoleId" Type="Int32" Nullable="false" />
           <Property Name="NotificationCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Cards" Relationship="GreenBusModel.FK_Card_User" FromRole="User" ToRole="Card" />
           <NavigationProperty Name="Role" Relationship="GreenBusModel.FK_User_Role" FromRole="User" ToRole="Role" />
+          <NavigationProperty Name="Cards" Relationship="GreenBusModel.FK_Card_User" FromRole="User" ToRole="Card" />
         </EntityType>
         <EntityContainer Name="GreenBusEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="BusRoutes" EntityType="Self.BusRoute" />
-          <EntitySet Name="CreditPlans" EntityType="Self.CreditPlan" />
           <EntitySet Name="Promotions" EntityType="Self.Promotion" />
           <EntitySet Name="Roles" EntityType="Self.Role" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="TicketTypes" EntityType="Self.TicketType" />
           <EntitySet Name="Users" EntityType="Self.User" />
-          <EntitySet Name="Cards" EntityType="GreenBusModel.Card" />
           <EntitySet Name="PaymentTransactions" EntityType="GreenBusModel.PaymentTransaction" />
+          <AssociationSet Name="FK_User_Role" Association="GreenBusModel.FK_User_Role">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <EntitySet Name="Cards" EntityType="GreenBusModel.Card" />
           <EntitySet Name="Tickets" EntityType="GreenBusModel.Ticket" />
           <AssociationSet Name="FK_Ticket_BusRoute" Association="GreenBusModel.FK_Ticket_BusRoute">
             <End Role="BusRoute" EntitySet="BusRoutes" />
@@ -332,34 +325,16 @@
             <End Role="Card" EntitySet="Cards" />
             <End Role="Ticket" EntitySet="Tickets" />
           </AssociationSet>
-          <AssociationSet Name="FK_PaymentTransaction_CreditPlan" Association="GreenBusModel.FK_PaymentTransaction_CreditPlan">
-            <End Role="CreditPlan" EntitySet="CreditPlans" />
-            <End Role="PaymentTransaction" EntitySet="PaymentTransactions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_User_Role" Association="GreenBusModel.FK_User_Role">
-            <End Role="Role" EntitySet="Roles" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
           <AssociationSet Name="FK_Ticket_TicketType" Association="GreenBusModel.FK_Ticket_TicketType">
             <End Role="TicketType" EntitySet="TicketTypes" />
             <End Role="Ticket" EntitySet="Tickets" />
           </AssociationSet>
+          <EntitySet Name="CreditPlans" EntityType="GreenBusModel.CreditPlan" />
+          <AssociationSet Name="FK_PaymentTransaction_CreditPlan" Association="GreenBusModel.FK_PaymentTransaction_CreditPlan">
+            <End Role="CreditPlan" EntitySet="CreditPlans" />
+            <End Role="PaymentTransaction" EntitySet="PaymentTransactions" />
+          </AssociationSet>
         </EntityContainer>
-        <EntityType Name="Card">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UniqueIdentifier" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CardName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="RegistrationDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Balance" Type="Double" Nullable="false" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
-          <Property Name="UserId" Type="Int32" />
-          <NavigationProperty Name="User" Relationship="GreenBusModel.FK_Card_User" FromRole="Card" ToRole="User" />
-          <NavigationProperty Name="PaymentTransactions" Relationship="GreenBusModel.FK_PaymentTransaction_Card" FromRole="Card" ToRole="PaymentTransaction" />
-          <NavigationProperty Name="Tickets" Relationship="GreenBusModel.FK_Ticket_Card" FromRole="Card" ToRole="Ticket" />
-        </EntityType>
         <EntityType Name="PaymentTransaction">
           <Key>
             <PropertyRef Name="Id" />
@@ -373,16 +348,45 @@
           <NavigationProperty Name="Card" Relationship="GreenBusModel.FK_PaymentTransaction_Card" FromRole="PaymentTransaction" ToRole="Card" />
           <NavigationProperty Name="CreditPlan" Relationship="GreenBusModel.FK_PaymentTransaction_CreditPlan" FromRole="PaymentTransaction" ToRole="CreditPlan" />
         </EntityType>
+        <Association Name="FK_User_Role">
+          <End Type="GreenBusModel.Role" Role="Role" Multiplicity="1" />
+          <End Type="GreenBusModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Card">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UniqueIdentifier" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CardName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RegistrationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Balance" Type="Double" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="DataVersion" Type="Int64" />
+          <NavigationProperty Name="User" Relationship="GreenBusModel.FK_Card_User" FromRole="Card" ToRole="User" />
+          <NavigationProperty Name="PaymentTransactions" Relationship="GreenBusModel.FK_PaymentTransaction_Card" FromRole="Card" ToRole="PaymentTransaction" />
+          <NavigationProperty Name="Tickets" Relationship="GreenBusModel.FK_Ticket_Card" FromRole="Card" ToRole="Ticket" />
+        </EntityType>
         <EntityType Name="Ticket">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CardId" Type="Int32" Nullable="false" />
-          <Property Name="TicketTypeId" Type="Int32" Nullable="false" />
+          <Property Name="CardId" Type="Int32" />
+          <Property Name="TicketTypeId" Type="Int32" />
           <Property Name="BusRouteId" Type="Int32" Nullable="false" />
           <Property Name="Total" Type="Int32" Nullable="false" />
           <Property Name="BoughtDated" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsNoCard" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="BusRoute" Relationship="GreenBusModel.FK_Ticket_BusRoute" FromRole="Ticket" ToRole="BusRoute" />
           <NavigationProperty Name="Card" Relationship="GreenBusModel.FK_Ticket_Card" FromRole="Ticket" ToRole="Card" />
           <NavigationProperty Name="TicketType" Relationship="GreenBusModel.FK_Ticket_TicketType" FromRole="Ticket" ToRole="TicketType" />
@@ -424,7 +428,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Ticket_Card">
-          <End Type="GreenBusModel.Card" Role="Card" Multiplicity="1" />
+          <End Type="GreenBusModel.Card" Role="Card" Multiplicity="0..1" />
           <End Type="GreenBusModel.Ticket" Role="Ticket" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Card">
@@ -435,6 +439,28 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Ticket_TicketType">
+          <End Type="GreenBusModel.TicketType" Role="TicketType" Multiplicity="0..1" />
+          <End Type="GreenBusModel.Ticket" Role="Ticket" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TicketType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Ticket">
+              <PropertyRef Name="TicketTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CreditPlan">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="PaymentTransactions" Relationship="GreenBusModel.FK_PaymentTransaction_CreditPlan" FromRole="CreditPlan" ToRole="PaymentTransaction" />
+        </EntityType>
         <Association Name="FK_PaymentTransaction_CreditPlan">
           <End Type="GreenBusModel.CreditPlan" Role="CreditPlan" Multiplicity="1" />
           <End Type="GreenBusModel.PaymentTransaction" Role="PaymentTransaction" Multiplicity="*" />
@@ -444,30 +470,6 @@
             </Principal>
             <Dependent Role="PaymentTransaction">
               <PropertyRef Name="CreditPlanId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_User_Role">
-          <End Type="GreenBusModel.Role" Role="Role" Multiplicity="1" />
-          <End Type="GreenBusModel.User" Role="User" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Role">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="User">
-              <PropertyRef Name="RoleId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Ticket_TicketType">
-          <End Type="GreenBusModel.TicketType" Role="TicketType" Multiplicity="1" />
-          <End Type="GreenBusModel.Ticket" Role="Ticket" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TicketType">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Ticket">
-              <PropertyRef Name="TicketTypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -483,17 +485,6 @@
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CreditPlans">
-            <EntityTypeMapping TypeName="GreenBusModel.CreditPlan">
-              <MappingFragment StoreEntitySet="CreditPlan">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -550,19 +541,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Cards">
-            <EntityTypeMapping TypeName="GreenBusModel.Card">
-              <MappingFragment StoreEntitySet="Card">
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Balance" ColumnName="Balance" />
-                <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
-                <ScalarProperty Name="CardName" ColumnName="CardName" />
-                <ScalarProperty Name="UniqueIdentifier" ColumnName="UniqueIdentifier" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="PaymentTransactions">
             <EntityTypeMapping TypeName="GreenBusModel.PaymentTransaction">
               <MappingFragment StoreEntitySet="PaymentTransaction">
@@ -575,14 +553,39 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Cards">
+            <EntityTypeMapping TypeName="GreenBusModel.Card">
+              <MappingFragment StoreEntitySet="Card">
+                <ScalarProperty Name="DataVersion" ColumnName="DataVersion" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
+                <ScalarProperty Name="CardName" ColumnName="CardName" />
+                <ScalarProperty Name="UniqueIdentifier" ColumnName="UniqueIdentifier" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Tickets">
             <EntityTypeMapping TypeName="GreenBusModel.Ticket">
               <MappingFragment StoreEntitySet="Ticket">
+                <ScalarProperty Name="IsNoCard" ColumnName="IsNoCard" />
                 <ScalarProperty Name="BoughtDated" ColumnName="BoughtDated" />
                 <ScalarProperty Name="Total" ColumnName="Total" />
                 <ScalarProperty Name="BusRouteId" ColumnName="BusRouteId" />
                 <ScalarProperty Name="TicketTypeId" ColumnName="TicketTypeId" />
                 <ScalarProperty Name="CardId" ColumnName="CardId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CreditPlans">
+            <EntityTypeMapping TypeName="GreenBusModel.CreditPlan">
+              <MappingFragment StoreEntitySet="CreditPlan">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

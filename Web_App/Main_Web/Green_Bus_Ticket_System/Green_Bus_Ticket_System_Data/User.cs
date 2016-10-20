@@ -28,8 +28,8 @@ namespace Green_Bus_Ticket_System_Data
         public int RoleId { get; set; }
         public string NotificationCode { get; set; }
     
+        public virtual Role Role { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Card> Cards { get; set; }
-        public virtual Role Role { get; set; }
     }
 }

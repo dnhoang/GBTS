@@ -15,11 +15,12 @@ namespace Green_Bus_Ticket_System_Data
     public partial class Ticket
     {
         public int Id { get; set; }
-        public int CardId { get; set; }
-        public int TicketTypeId { get; set; }
+        public Nullable<int> CardId { get; set; }
+        public Nullable<int> TicketTypeId { get; set; }
         public int BusRouteId { get; set; }
         public int Total { get; set; }
         public System.DateTime BoughtDated { get; set; }
+        public bool IsNoCard { get; set; }
     
         public virtual BusRoute BusRoute { get; set; }
         public virtual Card Card { get; set; }

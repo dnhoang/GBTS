@@ -35,7 +35,6 @@
         <a href="#" class="sidebar-open-button-mobile"><i class="fa fa-bars"></i></a>
         <!-- End Sidebar Show Hide Button -->
         <!-- Start Top Menu -->
-
         <!-- End Top Menu -->
         <!-- Start Top Right -->
         <ul class="top-right">
@@ -55,16 +54,17 @@
     <!-- START SIDEBAR -->
     <div class="sidebar sidebar-colorful clearfix">
         <ul class="sidebar-panel nav">
-            <li class="sidetitle">KHÁCH HÀNG</li>
-            <li><a href="/Passenger/Home"><span class="icon color5"><i class="fa fa-home"></i></span>BẢNG ĐIỀU KHIỂN</a></li>
-            <li><a href="/Passenger/Card"><span class="icon color1"><i class="fa fa-credit-card"></i></span>THẺ CỦA BẠN</a></li>
-            <li><a href="/Passenger/Bus"><span class="icon color9"><i class="fa fa-bus"></i></span>TRA CỨU TUYẾN</a></li>
-            <li><a href="/Passenger/Bus/Direction"><span class="icon color3"><i class="fa fa-search"></i></span>TÌM XE BUÝT</a></li>
-            <li><a href="/Passenger/Report"><span class="icon color7"><i class="fa fa-pie-chart"></i></span>BÁO CÁO CHI TIÊU</a></li>
+            <li class="sidetitle">QUẢN LÝ</li>
+            <li><a href="/Manager/Home"><span class="icon color5"><i class="fa fa-home"></i></span>BẢNG ĐIỀU KHIỂN</a></li>
+            <li><a href="/Manager/Plans"><span class="icon color1"><i class="fa fa-money"></i></span>QUẢN LÝ GÓI NẠP TIỀN</a></li>
+            <li><a href="/Manager/Tickets"><span class="icon color3"><i class="fa fa-ticket"></i></span>QUẢN LÝ GIÁ VÉ</a></li>
+            <li><a href="/Manager/Report"><span class="icon color7"><i class="fa fa-pie-chart"></i></span>BÁO CÁO THU NHẬP</a></li>
+            <li><a href="/Manager/Promotions"><span class="icon color8"><i class="fa fa-paper-plane"></i></span>TẠO QUẢNG CÁO</a></li>
+
         </ul>
         <ul class="sidebar-panel nav">
             <li class="sidetitle">TÀI KHOẢN</li>
-            <li><a href="/Passenger/Home/Profiles"><span class="icon color4"><i class="fa fa-gear"></i></span>CÀI ĐẶT</a></li>
+            <li><a href="/Manager/Home/Profiles"><span class="icon color4"><i class="fa fa-gear"></i></span>CÀI ĐẶT</a></li>
             <li><a href="/Access/Logout"><span class="icon color6"><i class="fa fa-sign-out"></i></span>ĐĂNG XUẤT</a></li>
         </ul>
 
@@ -76,7 +76,11 @@
     <div class="content">
         <!-- Start Page Header -->
         <div class="page-header">
-            <h1 class="title">@ViewBag.Title</h1>
+            <h1 class="title pull-left">@ViewBag.Title</h1>
+            @if (IsSectionDefined("CustomHeader"))
+            {
+                @RenderSection("CustomHeader", required: false);
+            }
         </div>
         <!-- End Page Header -->
         <!-- //////////////////////////////////////////////////////////////////////////// -->

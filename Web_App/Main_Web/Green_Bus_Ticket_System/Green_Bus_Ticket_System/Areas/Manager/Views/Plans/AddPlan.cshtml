@@ -1,0 +1,22 @@
+﻿@{ 
+    bool login = ViewBag.Login;
+    Green_Bus_Ticket_System_Data.CreditPlan item = (Green_Bus_Ticket_System_Data.CreditPlan)ViewBag.Plan;
+}
+
+@if (login)
+{
+    <p class="hcolor-red">Bạn chưa đăng nhập! </p>
+}
+else
+{
+    <div class="col col-md-6 chat" id="plan-@item.Id">
+        <div class="title">
+            <h1 class="name">@item.Name</h1>
+            <p><b>Giá gói:</b> <span class="price">@item.Price.ToString("#,##0")</span> đ</p>
+            <div class="btn-group" role="group" aria-label="...">
+                <button type="button" class="btn btn-icon btn-sm btn-light edit" id="@item.Id"><i class="fa fa-pencil-square-o"></i></button>
+                <button type="button" class="btn btn-icon btn-sm btn-light remove" id="@item.Id"><i class="fa fa-trash"></i></button>
+            </div>
+        </div>
+    </div>
+}

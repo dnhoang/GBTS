@@ -4140,6 +4140,10 @@ Widgets
 .hcolor-green{
     color: #26a65b;
 }
+
+.hcolor-blue{
+    color: #0781bf;
+}
 .page-header {
     overflow: auto;
 }
@@ -4223,4 +4227,18 @@ img.adp-marker {
 }
  table.dataTable.no-footer {
     border-bottom: none!important;
+}
+ .chat {
+    border-left: none;
+    margin-left: 0px;
+}
+.chat .title {
+    height: 79px;
+    padding: 12px 20px;
+    background: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    position: relative;
+    margin: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
