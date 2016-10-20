@@ -19,6 +19,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -219,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
                 String cardData[] = utility.getCardDataFromEncryptedString(result);
                 cardBalance = cardData[0];
                 cardDataVersion = cardData[1];
+
                 String[] params = {cardId, ticketTypeId, routeCode, cardBalance, cardDataVersion};
                 new VerifyTicket().execute(params);
             }
@@ -255,8 +257,9 @@ public class MainActivity extends AppCompatActivity {
             cardId = params[0];
             ticketTypeId = params[1];
             routeCode = params[2];
-            cardDataVersion = params[3];
-            cardBalance = params[4];
+            cardBalance = params[3];
+            cardDataVersion = params[4];
+            Log.d("INFO!!!",cardBalance.toString()+"|"+cardDataVersion+" cardId "+cardId);
             SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
             hostAddress = sharedPreferences.getString("host", "https://grinbuzz.com");
             String strURL = hostAddress + "/Api/SellTicket?key=gbts_2016_capstone&cardId=" + cardId +
@@ -267,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrl(strURL);
+            Log.d("INFO!!!",strURL);
             return json;
         }
 
@@ -286,6 +290,8 @@ public class MainActivity extends AppCompatActivity {
             if (success) {
                 FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                 fab.hide();
+                FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
+                fabOffline.hide();
                 successTicket = (RelativeLayout) findViewById(R.id.container);
                 successTicket.setVisibility(View.VISIBLE);
                 MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
@@ -307,6 +313,7 @@ public class MainActivity extends AppCompatActivity {
                     version=jsonObject.getLong("version");
                     updateCard(needUpdate,mytag,balance,amount,version,Long.parseLong(cardBalance),Long.parseLong(cardDataVersion));
                     //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (FormatException e) {
@@ -320,6 +327,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                 fab.hide();
+                FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
+                fabOffline.hide();
                 failTicket = (RelativeLayout) findViewById(R.id.containerfail);
                 failTicket.setVisibility(View.VISIBLE);
                 MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
@@ -334,6 +343,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
                 changeLayout(false);
             }
 
@@ -342,13 +352,15 @@ public class MainActivity extends AppCompatActivity {
     }
     private void updateCard(Boolean checkUpdate,Tag tag, Long balance, Integer amount,
                             Long dataVersion, Long cardBalance, Long cardVersion) throws IOException, FormatException {
-        if (checkUpdate=true){
+        if (checkUpdate){
             Utility utility=new Utility();
             String dataToWrite=balance+"|"+dataVersion;
+            Log.d("INFO!!!true",dataToWrite);
             utility.writeCard(dataToWrite,tag);
         } else{
             Utility utility=new Utility();
             String dataToWrite=(cardBalance-amount)+"|"+cardVersion;
+            Log.d("INFO!!!false",dataToWrite);
             utility.writeCard(dataToWrite,tag);
         }
     }
@@ -382,6 +394,7 @@ public class MainActivity extends AppCompatActivity {
                     fabOffline.show();
 
                 }
+
             }
         };
         timer.start();
