@@ -51,6 +51,10 @@ public class SettingActivity extends AppCompatActivity {
         //addPreferencesFromResource(R.xml.setting_preferences);
         final SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
         setContentView(R.layout.activity_setting);
+
+        TextView tvOfflineTicketSold=(TextView)findViewById(R.id.tvOfflineTicketSold);
+        tvOfflineTicketSold.setText("Số lượng vé ngoại tuyến đã bán: "+sharedPreferences.getInt("OfflineTicket",0));
+
         EditText edtHost = (EditText) findViewById(R.id.edtHost);
         edtHost.setText(sharedPreferences.getString("host","https://grinbuz.com"));
         EditText edtRoute=(EditText)findViewById(R.id.edtRoute);

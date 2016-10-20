@@ -2,6 +2,12 @@ package Util;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.nfc.FormatException;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.Tag;
+import android.nfc.tech.Ndef;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -14,12 +20,128 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+
 /**
  * Created by ducdmse61486 on 10/4/2016.
  */
-
+//Encrypt
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import android.util.Base64;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+    //
 public class Utility {
+        //Get Version number
+        public static String getDataVersion(){
+            DateFormat df = new SimpleDateFormat("ddMMyyyyhhmmss");
+            String dataVersion = df.format(new Date());
+            return dataVersion;
+        }
+        //End version
+     //encrypt
+        //Read NDEF message
 
+     final String keyAES = "ssshhhhhhhhhhh!!!!";
+     private static SecretKeySpec secretKey;
+        private static byte[] key;
+
+        public static void setKey(String myKey)
+        {
+            MessageDigest sha = null;
+            try {
+                key = myKey.getBytes("UTF-8");
+                sha = MessageDigest.getInstance("SHA-1");
+                key = sha.digest(key);
+                key = Arrays.copyOf(key, 16);
+                secretKey = new SecretKeySpec(key, "AES");
+            }
+            catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public static String encrypt(String strToEncrypt, String secret)
+        {
+            try
+            {
+                setKey(secret);
+                Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+                cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+                return Base64.encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")),Base64.DEFAULT);
+            }
+            catch (Exception e)
+            {
+                System.out.println("Error while encrypting: " + e.toString());
+            }
+            return null;
+        }
+        public String[] getCardDataFromEncryptedString(String cardData){
+            String decryptedCardData=decrypt(cardData, keyAES);
+            String result[] = decryptedCardData.split("[|]");
+            String data[]=new String[2];
+            int i=0;
+            for(String r : result){
+                data[i]=r;
+                i++;
+            }
+            return data;
+        }
+        public static String decrypt(String strToDecrypt, String secret)
+        {
+            try
+            {
+                setKey(secret);
+                Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+                cipher.init(Cipher.DECRYPT_MODE, secretKey);
+                return new String(cipher.doFinal(Base64.decode(strToDecrypt,Base64.DEFAULT)));
+            }
+            catch (Exception e)
+            {
+                System.out.println("Error while decrypting: " + e.toString());
+            }
+            return null;
+        }
+        //End encrypt
+        //Write NFC
+        public NdefRecord createRecord(String text) throws UnsupportedEncodingException {
+
+            //create the message in according with the standard
+            String lang = "en";
+            byte[] textBytes = text.getBytes();
+            byte[] langBytes = lang.getBytes("US-ASCII");
+            int langLength = langBytes.length;
+            int textLength = textBytes.length;
+
+            byte[] payload = new byte[1 + langLength + textLength];
+            payload[0] = (byte) langLength;
+
+            // copy langbytes and textbytes into payload
+            System.arraycopy(langBytes, 0, payload, 1, langLength);
+            System.arraycopy(textBytes, 0, payload, 1 + langLength, textLength);
+
+            NdefRecord recordNFC = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], payload);
+            return recordNFC;
+        }
+
+        public void writeCard(String text, Tag tag) throws IOException, FormatException {
+            String encryptedString = encrypt(text, keyAES) ;
+            NdefRecord[] records = { createRecord(encryptedString) };
+            NdefMessage message = new NdefMessage(records);
+            Ndef ndef = Ndef.get(tag);
+            ndef.connect();
+            ndef.writeNdefMessage(message);
+            ndef.close();
+        }
+        //End writeNFC
     static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";

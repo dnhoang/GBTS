@@ -1,15 +1,14 @@
 package com.example.gbts.navigationdraweractivity.module.google.mapsAPI;
 
-
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
 /**
- * Created by truon on 10/13/2016.
+ * Created by truon on 10/20/2016.
  */
 
-public class Route {
+public class Steps {
     public Distance distance;
     public Duration duration;
     public String endAddress;
@@ -18,4 +17,5 @@ public class Route {
     public LatLng startLocation;
     public String html_instructions;
     public List<LatLng> points;
+    public String travel_mode;
 }

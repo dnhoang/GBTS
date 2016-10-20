@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity
 
                 mytag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
-
                 String cardId = bin2hex(mytag.getId());
                 SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
                 String phone = preferences.getString(PREF_USERNAME, "");
@@ -192,8 +191,6 @@ public class MainActivity extends AppCompatActivity
             }
             if (success) {
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
             } else {
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
             }

@@ -53,8 +53,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(new Intent(getBaseContext(), MainActivity.class));
-                new JSONParse().execute();
+                startActivity(new Intent(getBaseContext(), MainActivity.class));
+//                new JSONParse().execute();
                 doLogin();
             }
         });
