@@ -7,6 +7,7 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -29,12 +30,23 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import android.util.Base64;
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
     //
 public class Utility {
+        //Get Version number
+        public static String getDataVersion(){
+            DateFormat df = new SimpleDateFormat("ddMMyyyyhhmmss");
+            String dataVersion = df.format(new Date());
+            return dataVersion;
+        }
+        //End version
      //encrypt
+        //Read NDEF message
+
      final String keyAES = "ssshhhhhhhhhhh!!!!";
      private static SecretKeySpec secretKey;
         private static byte[] key;
@@ -72,7 +84,17 @@ public class Utility {
             }
             return null;
         }
-
+        public String[] getCardDataFromEncryptedString(String cardData){
+            String decryptedCardData=decrypt(cardData, keyAES);
+            String result[] = decryptedCardData.split("[|]");
+            String data[]=new String[2];
+            int i=0;
+            for(String r : result){
+                data[i]=r;
+                i++;
+            }
+            return data;
+        }
         public static String decrypt(String strToDecrypt, String secret)
         {
             try

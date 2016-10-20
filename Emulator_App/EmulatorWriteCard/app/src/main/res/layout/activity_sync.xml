@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_sync"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.emulatorwritecard.SyncActivity">
+
+    <TextView
+        android:text="Vui lòng chạm và giữ thẻ để đồng bộ"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvSyncCommand"
+        android:textSize="36sp"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="190dp" />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="80dp"
+        android:src="@drawable/nfc_logo"
+        android:id="@+id/imageViewSync"
+        android:layout_marginTop="11dp"
+        android:layout_below="@+id/tvSyncCommand"
+        android:layout_centerHorizontal="true" />
+
+
+</RelativeLayout>

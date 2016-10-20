@@ -13,6 +13,7 @@ import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -42,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SharedPreferences sharedPreferences=getSharedPreferences(settings,MODE_PRIVATE);
-        hostAddress=sharedPreferences.getString("host","https://grinbuzz.com");
+        SharedPreferences sharedPreferences = getSharedPreferences(settings, MODE_PRIVATE);
+        hostAddress = sharedPreferences.getString("host", "https://grinbuzz.com");
         getSupportActionBar().hide();
         succesLayout = (RelativeLayout) findViewById(R.id.container);
         succesLayout.setVisibility(View.INVISIBLE);
@@ -58,11 +59,11 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Utility.isNetworkConnected(getApplicationContext())){
+                if (Utility.isNetworkConnected(getApplicationContext())) {
                     Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
                     startActivity(intent);
-                } else{
-                    Toast.makeText(getApplicationContext(),"Vui lòng kiểm tra kết nối!",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Vui lòng kiểm tra kết nối!", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -116,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
             cardId = params[0];
             phone = params[1];
             String strURL = hostAddress + "/Api/RequestAddCard?key=gbts_2016_capstone&phone=" + phone + "&cardId=" + cardId;
-
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrl(strURL);
             return json;
@@ -195,6 +195,9 @@ public class MainActivity extends AppCompatActivity {
                 if (result == true) {
                     sucess.setVisibility(View.INVISIBLE);
                     fab.show();
+                    Intent intent = new Intent(getApplicationContext(), SyncActivity.class);
+                    startActivity(intent);
+
                 } else {
                     //fail
                     fail.setVisibility(View.INVISIBLE);

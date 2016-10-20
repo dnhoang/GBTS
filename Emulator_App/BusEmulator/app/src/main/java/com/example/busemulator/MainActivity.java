@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 
 import Util.Utility;
@@ -52,7 +53,10 @@ public class MainActivity extends AppCompatActivity {
     String cardId;
     String ticketTypeId;
     String routeCode;
+    String cardDataVersion;
+    String cardBalance;
     final String secretKey = "ssshhhhhhhhhhh!!!!";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,9 +133,20 @@ public class MainActivity extends AppCompatActivity {
                 cardId = bin2hex(mytag.getId());
                 ticketTypeId = sharedPreferences.getString("ticketTypeId", "");
                 routeCode = sharedPreferences.getString("code", "");
-                String[] params = {cardId, ticketTypeId, routeCode};
+
+                //String[] params = {cardId, ticketTypeId, routeCode};
+                //Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+                String[] techList = mytag.getTechList();
+                String searchedTech = Ndef.class.getName();
+
+                for (String tech : techList) {
+                    if (searchedTech.equals(tech)) {
+                        new NdefReaderTask().execute(mytag);
+                        break;
+                    }
+                }
                 //TicketResult ticketResult = new TicketResult();
-                new VerifyTicket().execute(params);
+                //new VerifyTicket().execute(params);
 
 
             } else {
@@ -142,13 +157,82 @@ public class MainActivity extends AppCompatActivity {
 //Verify ticket Async
     }
 
+    //Read NDEF message
+    private class NdefReaderTask extends AsyncTask<Tag, Void, String> {
+
+        @Override
+        protected String doInBackground(Tag... params) {
+            Tag tag = params[0];
+
+            Ndef ndef = Ndef.get(tag);
+            if (ndef == null) {
+                // NDEF is not supported by this Tag.
+                return null;
+            }
+
+            NdefMessage ndefMessage = ndef.getCachedNdefMessage();
+
+            NdefRecord[] records = ndefMessage.getRecords();
+            for (NdefRecord ndefRecord : records) {
+                if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_TEXT)) {
+                    try {
+                        return readText(ndefRecord);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private String readText(NdefRecord record) throws UnsupportedEncodingException {
+        /*
+         * See NFC forum specification for "Text Record Type Definition" at 3.2.1
+         *
+         * http://www.nfc-forum.org/specs/
+         *
+         * bit_7 defines encoding
+         * bit_6 reserved for future use, must be 0
+         * bit_5..0 length of IANA language code
+         */
+
+            byte[] payload = record.getPayload();
+
+            // Get the Text Encoding
+            String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
+
+            // Get the Language Code
+            int languageCodeLength = payload[0] & 0063;
+
+            // String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
+            // e.g. "en"
+
+            // Get the Text
+            return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result != null) {
+                Utility utility = new Utility();
+                String cardData[] = utility.getCardDataFromEncryptedString(result);
+                cardBalance = cardData[0];
+                cardDataVersion = cardData[1];
+                String[] params = {cardId, ticketTypeId, routeCode, cardBalance, cardDataVersion};
+                new VerifyTicket().execute(params);
+            }
+        }
+    }
+
+    //End read NDEF message
     static String bin2hex(byte[] data) {
         return String.format("%0" + (data.length * 2) + "X", new BigInteger(1, data));
     }
 
     private class VerifyTicket extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
-        String cardId, ticketTypeId, routeCode;
+        String cardId, ticketTypeId, routeCode, cardDataVersion, cardBalance;
 
         @Override
         protected void onPreExecute() {
@@ -171,9 +255,15 @@ public class MainActivity extends AppCompatActivity {
             cardId = params[0];
             ticketTypeId = params[1];
             routeCode = params[2];
+            cardDataVersion = params[3];
+            cardBalance = params[4];
             SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
             hostAddress = sharedPreferences.getString("host", "https://grinbuzz.com");
-            String strURL = hostAddress + "/Api/SellTicket?key=gbts_2016_capstone&cardId=" + cardId + "&ticketTypeId=" + ticketTypeId + "&routeCode=" + routeCode;
+            String strURL = hostAddress + "/Api/SellTicket?key=gbts_2016_capstone&cardId=" + cardId +
+                    "&ticketTypeId=" + ticketTypeId +
+                    "&routeCode=" + routeCode +
+                    "&currentBalance=" + cardBalance +
+                    "&dataVersion=" + cardDataVersion;
 
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrl(strURL);
@@ -201,18 +291,27 @@ public class MainActivity extends AppCompatActivity {
                 MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
                 mediaPlayer.start();
 
-                //Encrypt !!!!
-                String originalString = "howtodoinjava.com";
-                String encryptedString = Utility.encrypt(originalString, secretKey) ;
-                String decryptedString = Utility.decrypt(encryptedString, secretKey) ;
-                //Toast.makeText(getApplicationContext(), decryptedString, Toast.LENGTH_SHORT).show();
+
 
                 //End encrypt
                 String message = null;
+                Boolean needUpdate;
+                Long balance;
+                Integer amount;
+                Long version;
                 try {
                     message = jsonObject.getString("message");
+                    needUpdate=jsonObject.getBoolean("needUpdate");
+                    balance=jsonObject.getLong("balance");
+                    amount=jsonObject.getInt("amount");
+                    version=jsonObject.getLong("version");
+                    updateCard(needUpdate,mytag,balance,amount,version,Long.parseLong(cardBalance),Long.parseLong(cardDataVersion));
                     //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (FormatException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 final TextView tvSuccessPrice = (TextView) findViewById(R.id.tvSuccessPrice);
@@ -239,6 +338,18 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
+        }
+    }
+    private void updateCard(Boolean checkUpdate,Tag tag, Long balance, Integer amount,
+                            Long dataVersion, Long cardBalance, Long cardVersion) throws IOException, FormatException {
+        if (checkUpdate=true){
+            Utility utility=new Utility();
+            String dataToWrite=balance+"|"+dataVersion;
+            utility.writeCard(dataToWrite,tag);
+        } else{
+            Utility utility=new Utility();
+            String dataToWrite=(cardBalance-amount)+"|"+cardVersion;
+            utility.writeCard(dataToWrite,tag);
         }
     }
 
@@ -278,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onPause() {
         super.onPause();
-        ReadModeOff();
+        ReadAndWriteModeOff();
     }
 
     @Override
@@ -291,15 +402,15 @@ public class MainActivity extends AppCompatActivity {
         routeNumber.setText("Tuyến " + sharedPreferences.getString("code", "Chưa chọn tuyến"));
         TextView price = (TextView) findViewById(R.id.tvPrice);
         price.setText("Giá vé: " + sharedPreferences.getString("price", "") + " đồng");
-        ReadModeOn();
+        ReadAndWriteModeOn();
     }
 
-    private void ReadModeOn() {
+    private void ReadAndWriteModeOn() {
         writeMode = true;
         adapter.enableForegroundDispatch(this, pendingIntent, writeTagFilters, null);
     }
 
-    private void ReadModeOff() {
+    private void ReadAndWriteModeOff() {
         writeMode = false;
         adapter.disableForegroundDispatch(this);
     }
