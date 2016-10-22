@@ -41,5 +41,11 @@ namespace Green_Bus_Ticket_System_Utils
             ACTIVATED = 1,
         };
 
+        public enum PromotionStatus : int
+        {
+            SENDING = 0,
+            SENT = 1,
+            CANCELLED = 2,
+        };
     }
 }

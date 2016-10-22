@@ -79,7 +79,7 @@
                     url: '/Manager/Plans/UpdatePlan',
                     dataType: 'json',
                     data: { id: currentPlan, name: name, price: price },
-                    method: 'GET',
+                    method: 'POST',
                     success: function (data) {
                         if (data.success) {
                             $("#plan-" + currentPlan + " .name").html(data.data.Name);
@@ -107,7 +107,7 @@
 
             if (price < 0 || price > 10000000 || tmpPrice.length == 0) {
                 $("#validate").removeClass("hidden");
-                $("#validate").html("Giá vé từ 0-10000000đ");
+                $("#validate").html("Giá gói từ 0-10000000đ");
                 return false;
             }
             $("#validate").addClass("hidden");
@@ -130,7 +130,7 @@
                     url: '/Manager/Plans/AddPlan',
                     dataType: 'html',
                     data: { name: name, price: price },
-                    method: 'GET',
+                    method: 'POST',
                     success: function (data) {
                         $(".container-padding").append(data);
                         $("#planModal").modal("hide");

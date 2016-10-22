@@ -18,5 +18,6 @@ namespace Green_Bus_Ticket_System_Data
         public string Name { get; set; }
         public string Description { get; set; }
         public int Status { get; set; }
+        public System.DateTime CreatedDate { get; set; }
     }
 }

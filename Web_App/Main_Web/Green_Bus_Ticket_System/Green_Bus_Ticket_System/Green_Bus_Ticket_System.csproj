@@ -264,6 +264,8 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Areas\Manager\Controllers\HomeController.cs" />
     <Compile Include="Areas\Manager\Controllers\PlansController.cs" />
+    <Compile Include="Areas\Manager\Controllers\PromotionsController.cs" />
+    <Compile Include="Areas\Manager\Controllers\TicketsController.cs" />
     <Compile Include="Areas\Manager\ManagerAreaRegistration.cs" />
     <Compile Include="Areas\Passenger\Controllers\BusController.cs" />
     <Compile Include="Areas\Passenger\Controllers\CardController.cs" />
@@ -440,6 +442,9 @@
     <Content Include="Areas\Manager\Views\Home\Index.cshtml" />
     <Content Include="Areas\Manager\Views\Plans\Index.cshtml" />
     <Content Include="Areas\Manager\Views\Plans\AddPlan.cshtml" />
+    <Content Include="Areas\Manager\Views\Tickets\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\Tickets\AddTicketType.cshtml" />
+    <Content Include="Areas\Manager\Views\Promotions\Index.cshtml" />
     <None Include="Properties\PublishProfiles\GBTS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

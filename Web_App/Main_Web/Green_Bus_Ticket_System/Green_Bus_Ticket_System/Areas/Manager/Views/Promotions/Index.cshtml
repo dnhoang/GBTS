@@ -1,0 +1,139 @@
+﻿@{
+    ViewBag.Title = "Quảng cáo";
+    List<Green_Bus_Ticket_System_Data.Promotion> promos = (List<Green_Bus_Ticket_System_Data.Promotion>)ViewBag.Promos;
+}
+
+
+<div class="container-padding">
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-title">
+                    TẠO QUẢNG CÁO
+                </div>
+                <div class="panel-body">
+                        <div id="summernote"></div>
+                        <button class="btn btn-default" id="send"><i class="fa fa-paper-plane"></i> GỬI</button>
+                        <p class="hcolor-red pull-right padding-l-20 hidden" id="validate"></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-12">
+            @if (promos.Count <= 0)
+            {
+                <p>Bạn chưa có thẻ nào!</p>
+            }
+            else
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <td>TÊN QUẢNG CÁO</td>
+                            <td>NGÀY TẠO</td>
+                            <td>TRẠNG THÁI</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Green_Bus_Ticket_System_Data.Promotion item in promos)
+                {
+
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.PromotionStatus.SENDING)
+                                {
+                                    <td><span class="label label-primary">ĐANG GỬI...</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary view" id="@item.Id"><i class="fa fa-eye"></i> CHI TIẾT</button>
+                                        <button type="button" class="btn btn-danger stop" id="@item.Id"><i class="fa fa-remove"></i> HỦY</button>
+                                    </td>
+                                }
+                                else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.PromotionStatus.SENT)
+                                {
+                                    <td><span class="label label-success">ĐÃ GỬI</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary view" id="@item.Id"><i class="fa fa-eye"></i> CHI TIẾT</button>
+                                        <button type="button" class="btn disabled"><i class="fa fa-remove"></i> HỦY</button>
+                                    </td>
+                                }
+                                else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.PromotionStatus.CANCELLED)
+                                {
+                                    <td><span class="label label-danger">ĐÃ HỦY</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary view" id="@item.Id"><i class="fa fa-eye"></i> CHI TIẾT</button>
+                                        <button type="button" class="btn disabled"><i class="fa fa-remove"></i> HỦY</button>
+                                    </td>
+                                }
+
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+
+        <!-- Modal -->
+                <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Chi tiết</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <p class="text-center f-bold" id="info-title"> sada sasdasd asdsd </p>
+                                    <div id="info-content">dđsdssdsdsdsd</div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-white" data-dismiss="modal"><i class="fa fa-times"></i> ĐÓNG</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+          <!-- End Moda Code -->
+
+            }
+        </div>
+    </div>
+</div>
+
+        @section CustomJs{
+            <!-- ================================================
+            Summernote
+            ================================================ -->
+            <script src="~/Content/front/js/summernote/summernote.min.js"></script>
+            <script>
+                /* SUMMERNOTE*/
+                $(document).ready(function () {
+                    $('#summernote').summernote();
+                });
+                function validate() {
+                    var content = $('#summernote').code().trim().length;
+                    if (content <= 2) {
+                        $("#validate").removeClass("hidden");
+                        $("#validate").html("Vui lòng nhập nội dung tối thiểu 20 ký tự.");
+                        return false;
+                    }
+
+                    $("#validate").addClass("hidden");
+                    return true;
+                }
+                $("#send").click(function () {
+                    if (validate()) {
+                        var content = $('#summernote').code();
+                        alert(content);
+                    }
+                });
+            </script>
+        }

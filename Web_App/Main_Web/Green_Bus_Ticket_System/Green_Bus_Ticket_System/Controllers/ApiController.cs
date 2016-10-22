@@ -129,7 +129,7 @@ namespace Green_Bus_Ticket_System.Controllers
             return Json(new { success = success, message = message, data = result }, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult PushOfflineData(string key, string cardId, int ticketTypeId, string routeCode)
+        public JsonResult PushOfflineData(string key, string cardId, int ticketTypeId, string routeCode, string boughtDate)
         {
             string message = "";
             bool success = false;
@@ -153,6 +153,8 @@ namespace Green_Bus_Ticket_System.Controllers
                 else if (busRoute == null) message = "Tuyến xe không tồn tại.";
                 else
                 {
+                    string current = DateTime.Now.ToString("hh:mm:ss tt");
+                    DateTime bought = DateTime.ParseExact(boughtDate + " " + current, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
 
                     card.Balance = card.Balance - ticketType.Price;
                     card.DataVersion = long.Parse(DateTime.Now.ToString("ddMMyyyyhhmmss"));
@@ -162,7 +164,7 @@ namespace Green_Bus_Ticket_System.Controllers
                     ticket.CardId = card.Id;
                     ticket.BusRouteId = busRoute.Id;
                     ticket.TicketTypeId = ticketType.Id;
-                    ticket.BoughtDated = DateTime.Now;
+                    ticket.BoughtDated = bought;
                     ticket.Total = ticketType.Price;
                     ticket.IsNoCard = false;
 
@@ -172,7 +174,7 @@ namespace Green_Bus_Ticket_System.Controllers
                     message = "Thành công.";
 
                     //Check balance is running out & if user have installed mobile app
-                    if (card.Balance <= minBalance && card.User.NotificationCode != null)
+                    if (card.Balance <= minBalance && card.User != null && card.User.NotificationCode != null)
                     {
                         string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
                         if (card.Balance < _creditPlanService.GetMinPlan())
@@ -190,7 +192,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 message = "Hệ thống đang bận, thử lại sau.";
             }
 
-            return Json(new { success = success, message = message}, JsonRequestBehavior.AllowGet);
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetBusStop(string key, string routeCode)
@@ -685,7 +687,7 @@ namespace Green_Bus_Ticket_System.Controllers
                             version = card.DataVersion;
 
                             //Check balance is running out & if user have installed mobile app
-                            if (card.Balance <= minBalance && card.User.NotificationCode != null)
+                            if (card.Balance <= minBalance && card.User != null && card.User.NotificationCode != null)
                             {
                                 string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
                                 if (card.Balance < _creditPlanService.GetMinPlan())
@@ -726,7 +728,7 @@ namespace Green_Bus_Ticket_System.Controllers
                             amount = ticketType.Price;
                             version = dataVersion;
                             //Check balance is running out & if user have installed mobile app
-                            if (card.Balance <= minBalance && card.User.NotificationCode != null)
+                            if (card.Balance <= minBalance && card.User != null && card.User.NotificationCode != null)
                             {
                                 string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
                                 if (card.Balance < _creditPlanService.GetMinPlan())
@@ -746,6 +748,103 @@ namespace Green_Bus_Ticket_System.Controllers
             }
 
             return Json(new { success = success, message = message, needUpdate = needUpdate, balance = balance, amount = amount, version = version }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult SellCashTicket(string key, int ticketTypeId, string routeCode)
+        {
+            bool success = false;
+            string message = "";
+
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+            try
+            {
+                TicketType ticketType = _ticketTypeService.GetTicketType(ticketTypeId);
+                BusRoute busRoute = _busRouteService.GetBusRouteByCode(routeCode);
+
+                if (ticketType == null) message = "Loại vé không tồn tại.";
+                else if (busRoute == null) message = "Tuyến xe không tồn tại.";
+                else
+                {
+
+                    Ticket ticket = new Ticket();
+                    ticket.BusRouteId = busRoute.Id;
+                    ticket.TicketTypeId = ticketType.Id;
+                    ticket.BoughtDated = DateTime.Now;
+                    ticket.Total = ticketType.Price;
+                    ticket.IsNoCard = true;
+
+                    _ticketService.Create(ticket);
+
+                    success = true;
+                    message = "Mua vé thành công.";
+
+
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e.Message);
+                message = "Hệ thống đang bận, thử lại sau.";
+            }
+
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult PushCashTicketOffline(string key, int ticketTypeId, string routeCode, string boughtDate)
+        {
+            bool success = false;
+            string message = "";
+
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+            try
+            {
+                TicketType ticketType = _ticketTypeService.GetTicketType(ticketTypeId);
+                BusRoute busRoute = _busRouteService.GetBusRouteByCode(routeCode);
+
+                if (ticketType == null) message = "Loại vé không tồn tại.";
+                else if (busRoute == null) message = "Tuyến xe không tồn tại.";
+                else
+                {
+                    string current = DateTime.Now.ToString("hh:mm:ss tt");
+                    DateTime bought = DateTime.ParseExact(boughtDate + " " + current, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
+
+
+                    Ticket ticket = new Ticket();
+                    ticket.BusRouteId = busRoute.Id;
+                    ticket.TicketTypeId = ticketType.Id;
+                    ticket.BoughtDated = bought;
+                    ticket.Total = ticketType.Price;
+                    ticket.IsNoCard = true;
+
+                    _ticketService.Create(ticket);
+
+                    success = true;
+                    message = "Cập nhật thành công.";
+
+
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e.Message);
+                message = "Hệ thống đang bận, thử lại sau.";
+            }
+
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+
         }
 
         //POST: Login

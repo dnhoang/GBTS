@@ -6,7 +6,6 @@
     <edmx:Diagrams>
       <Diagram DiagramId="afb937a0a5a84fb99e13ec0e7e4156cd" Name="Diagram1" ZoomLevel="72">
         <EntityTypeShape EntityType="GreenBusModel.BusRoute" Width="1.5" PointX="8.25" PointY="1.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="GreenBusModel.Promotion" Width="1.5" PointX="0.75" PointY="8.5" IsExpanded="true" />
         <EntityTypeShape EntityType="GreenBusModel.Role" Width="1.5" PointX="0.75" PointY="5" IsExpanded="true" />
         <EntityTypeShape EntityType="GreenBusModel.sysdiagram" Width="1.5" PointX="2.75" PointY="8.5" IsExpanded="true" />
         <EntityTypeShape EntityType="GreenBusModel.TicketType" Width="1.5" PointX="8.25" PointY="8" IsExpanded="true" />
@@ -22,6 +21,7 @@
         <AssociationConnector Association="GreenBusModel.FK_Ticket_TicketType" />
         <EntityTypeShape EntityType="GreenBusModel.CreditPlan" Width="1.5" PointX="0.75" PointY="0.875" />
         <AssociationConnector Association="GreenBusModel.FK_PaymentTransaction_CreditPlan" />
+        <EntityTypeShape EntityType="GreenBusModel.Promotion" Width="1.5" PointX="3.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

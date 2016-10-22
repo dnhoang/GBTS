@@ -1,0 +1,215 @@
+﻿@{
+    ViewBag.Title = "Quản lý loại vé";
+    List<Green_Bus_Ticket_System_Data.TicketType> ticketTypes = (List<Green_Bus_Ticket_System_Data.TicketType>)ViewBag.TicketTypes;
+}
+@section CustomHeader{
+    <button class="btn btn-success pull-right" id="addButton"><i class="fa fa-plus"></i> THÊM LOẠI VÉ</button>
+}
+<div class="container-padding">
+    @if (ticketTypes.Count <= 0)
+    {
+        <p>Chưa có loại vé nào!</p>
+    }
+    else
+    {
+
+        foreach (Green_Bus_Ticket_System_Data.TicketType item in ticketTypes)
+        {
+            <div class="col col-md-6 chat" id="plan-@item.Id">
+                <div class="title">
+                    <h1 class="name">@item.Name</h1>
+                    <p><b>Giá gói:</b> <span class="price">@item.Price.ToString("#,##0")</span> đ
+                    <br/>
+                    <b>Mô tả:</b> <span class="des">@item.Description</span></p>
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-icon btn-sm btn-light edit" id="@item.Id"><i class="fa fa-pencil-square-o"></i></button>
+                        <button type="button" class="btn btn-icon btn-sm btn-light remove" id="@item.Id"><i class="fa fa-trash"></i></button>
+                    </div>
+                </div>
+            </div>
+        }
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="planModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Chỉnh sửa</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group" style="overflow: auto;">
+                            <label class="col-sm-2 control-label form-label">Loại vé</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="edit-name" class="form-control">
+                            </div>
+                            <label class="col-sm-2 control-label form-label">Giá vé</label>
+                            <div class="col-sm-4">
+                                <input type="number" id="edit-price" class="form-control">
+                            </div>
+                            
+                            <label class="col-sm-2 control-label form-label margin-t-20">Mô tả</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control margin-t-20" id="edit-des"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal"><i class="fa fa-times"></i> HỦY</button>
+                        <button type="button" class="btn btn-default" id="save"><i class="fa fa-floppy-o"></i> LƯU</button>
+                        <button type="button" class="btn btn-default hidden" id="add"><i class="fa fa-floppy-o"></i> LƯU</button>
+                        <p class="hcolor-red pull-left padding-l-20 hidden" id="validate"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+          <!-- End Moda Code -->
+
+    }
+</div>
+
+@section CustomJs{
+
+    <script src="~/Content/front/js/sweet-alert/sweet-alert.min.js"></script>
+    <script>
+        var currentPlan = 0;
+
+        $("#save").click(function () {
+            if (validate()) {
+                var name = $("#edit-name").val().trim();
+                var price = $("#edit-price").val().trim();
+                var des = $("#edit-des").val().trim();
+                $.ajax({
+                    url: '/Manager/Tickets/UpdateTicketType',
+                    dataType: 'json',
+                    data: { id: currentPlan, name: name, price: price, description: des },
+                    method: 'POST',
+                    success: function (data) {
+                        if (data.success) {
+                            $("#plan-" + currentPlan + " .name").html(data.data.Name);
+                            $("#plan-" + currentPlan + " .price").html(data.data.Price);
+                            $("#plan-" + currentPlan + " .des").html(data.data.Description);
+                            $("#planModal").modal("hide");
+                        } else {
+                            $("#validate").removeClass("hidden");
+                            $("#validate").html(data.message);
+                        }
+                    }
+                });
+            }
+        });
+
+        function validate() {
+            var name = $("#edit-name").val().trim().length;
+            var tmpPrice = $("#edit-price").val().trim();
+            var price = Number(tmpPrice);
+
+            if (name < 6 || name > 250) {
+                $("#validate").removeClass("hidden");
+                $("#validate").html("Tên loại vé từ 6-250 ký tự!");
+                return false;
+            }
+
+            if (price < 0 || price > 1000000 || tmpPrice.length == 0) {
+                $("#validate").removeClass("hidden");
+                $("#validate").html("Giá vé từ 0-1000000đ");
+                return false;
+            }
+            $("#validate").addClass("hidden");
+            return true;
+        }
+        $("#addButton").click(function () {
+            $("#edit-name").val("");
+            $("#edit-price").val("");
+            $("#edit-des").val("");
+            $("#add").removeClass("hidden");
+            $("#save").addClass("hidden");
+
+            $("#planModal").modal("show");
+        });
+
+        $("#add").click(function () {
+            if (validate()) {
+                var name = $("#edit-name").val().trim();
+                var price = $("#edit-price").val().trim();
+                var des = $("#edit-des").val().trim();
+                $.ajax({
+                    url: '/Manager/Tickets/AddTicketType',
+                    dataType: 'html',
+                    data: { name: name, price: price, description: des },
+                    method: 'POST',
+                    success: function (data) {
+                        $(".container-padding").append(data);
+                        $("#planModal").modal("hide");
+                    }
+                });
+            }
+        });
+
+        $(document).on("click", ".edit", function () {
+            var id = this.id;
+            $("#edit-name").val("");
+            $("#edit-price").val("");
+            $("#edit-des").val("");
+            $("#save").removeClass("hidden");
+            $("#add").addClass("hidden");
+            currentPlan = id;
+            $.ajax({
+                url: '/Manager/Tickets/GetTicketType',
+                dataType: 'json',
+                data: { id: id },
+                method: 'GET',
+                success: function (data) {
+                    if (data.success) {
+                        $("#edit-name").val(data.data.Name);
+                        $("#edit-price").val(data.data.Price);
+                        $("#edit-des").val(data.data.Description);
+                        $("#planModal").modal("show");
+                    } else {
+                        swal({
+                            title: "",
+                            text: data.message,
+                            type: "error"
+                        });
+                    }
+                }
+            });
+        });
+
+        $(document).on("click", ".remove", function () {
+            var id = this.id;
+            swal({
+                title: "",
+                text: "Bạn có chắc chắn muốn xóa!",
+                type: "warning", showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "XÓA",
+                cancelButtonText: "HỦY",
+                closeOnConfirm: true
+            }, function () {
+                $.ajax({
+                    url: '/Manager/Tickets/DeleteTicketType',
+                    dataType: 'json',
+                    data: { id: id },
+                    method: 'GET',
+                    success: function (data) {
+                        if (data.success) {
+                            $("#plan-" + id).remove();
+                        } else {
+                            swal({
+                                title: "",
+                                text: data.message,
+                                type: "error"
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+
+    </script>
+}

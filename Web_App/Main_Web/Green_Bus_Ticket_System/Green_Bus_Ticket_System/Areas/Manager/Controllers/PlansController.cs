@@ -62,6 +62,7 @@ namespace Green_Bus_Ticket_System.Areas.Manager.Controllers
 
             return Json(new { success = success, message = message, data = result }, JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
         public JsonResult UpdatePlan(int id, string name, int price)
         {
             bool success = false;
@@ -98,6 +99,8 @@ namespace Green_Bus_Ticket_System.Areas.Manager.Controllers
 
             return Json(new { success = success, message = message, data = result }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
         public ActionResult AddPlan(string name, int price)
         {
 

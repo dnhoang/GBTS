@@ -4233,7 +4233,7 @@ img.adp-marker {
     margin-left: 0px;
 }
 .chat .title {
-    height: 79px;
+    height: auto;
     padding: 12px 20px;
     background: #fff;
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
@@ -4241,4 +4241,10 @@ img.adp-marker {
     margin: 5px;
     border: 1px solid #ddd;
     border-radius: 5px;
+}
+.note-editor .note-editable {
+    overflow: auto;
+    min-height: 200px!important;
+    outline: 0;
+    padding: 10px;
 }
