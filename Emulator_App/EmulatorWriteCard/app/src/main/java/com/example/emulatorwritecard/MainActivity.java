@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         SharedPreferences sharedPreferences = getSharedPreferences(settings, MODE_PRIVATE);
         hostAddress = sharedPreferences.getString("host", "https://grinbuzz.com");
         getSupportActionBar().hide();
@@ -130,48 +131,52 @@ public class MainActivity extends AppCompatActivity {
             pDialog.dismiss();
             boolean success = false;
             //check success
-            try {
-                success = jsonObject.getBoolean("success");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            if (success) {
-
-
-                succesLayout = (RelativeLayout) findViewById(R.id.container);
-                succesLayout.setVisibility(View.VISIBLE);
-                MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
-                mediaPlayer.start();
-                String message = null;
+            if (jsonObject!=null){
                 try {
-                    message = jsonObject.getString("message");
+                    success = jsonObject.getBoolean("success");
+                    if (success) {
 
-                    //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+                        succesLayout = (RelativeLayout) findViewById(R.id.container);
+                        succesLayout.setVisibility(View.VISIBLE);
+                        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
+                        mediaPlayer.start();
+                        String message = null;
+                        try {
+                            message = jsonObject.getString("message");
+
+                            //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        messageResult = (TextView) findViewById(R.id.tvSuccess);
+                        messageResult.setText(message);
+
+                        changeLayout(true);
+                    } else {
+                        failLayout = (RelativeLayout) findViewById(R.id.containerfail);
+                        failLayout.setVisibility(View.VISIBLE);
+                        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
+                        mediaPlayer.start();
+
+                        String message = null;
+                        try {
+                            message = jsonObject.getString("message");
+
+                            //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        messageResult = (TextView) findViewById(R.id.tvFail);
+                        messageResult.setText(message);
+                        changeLayout(false);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                messageResult = (TextView) findViewById(R.id.tvSuccess);
-                messageResult.setText(message);
-
-                changeLayout(true);
-            } else {
-                failLayout = (RelativeLayout) findViewById(R.id.containerfail);
-                failLayout.setVisibility(View.VISIBLE);
-                MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
-                mediaPlayer.start();
-
-                String message = null;
-                try {
-                    message = jsonObject.getString("message");
-
-                    //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                messageResult = (TextView) findViewById(R.id.tvFail);
-                messageResult.setText(message);
-                changeLayout(false);
             }
+
+
 
 
         }

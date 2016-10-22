@@ -57,45 +57,41 @@ public class SettingActivity extends AppCompatActivity {
             boolean success = false;
             String message = "";
             //check success
-            try {
-                success = jsonObject.getBoolean("success");
-                message = jsonObject.getString("message");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            if (success) {
-                JSONObject data = null;
+            if (jsonObject!=null){
                 try {
-                    data = jsonObject.getJSONObject("data");
-
-                    String userId = data.getString("UserId");
-                    String phoneNumber = data.getString("PhoneNumber");
-                    String fullname = data.getString("Fullname");
-                    SharedPreferences sharedPreferences = getSharedPreferences(settings, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                    editor.putString("id", userId);
-                    editor.putString("phone", phoneNumber);
-                    editor.putString("name", fullname);
-
-                    editor.commit();
-                    TextView tvName = (TextView) findViewById(R.id.tvName);
-                    tvName.setText(fullname);
-                    EditText edtPhone=(EditText)findViewById(R.id.edtPhone);
-                    edtPhone.setText(phoneNumber);
+                    success = jsonObject.getBoolean("success");
+                    message = jsonObject.getString("message");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                if (success) {
+                    try {
+                        JSONObject data = jsonObject.getJSONObject("data");
 
+                        String userId = data.getString("UserId");
+                        String phoneNumber = data.getString("PhoneNumber");
+                        String fullname = data.getString("Fullname");
+                        SharedPreferences sharedPreferences = getSharedPreferences(settings, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                //editor.putString("status", ticketType.getStatus());
-                //editor.putString("ticket", ticketType.getTickets());
-            } else {
+                        editor.putString("id", userId);
+                        editor.putString("phone", phoneNumber);
+                        editor.putString("name", fullname);
 
-
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-
+                        editor.commit();
+                        TextView tvName = (TextView) findViewById(R.id.tvName);
+                        tvName.setText(fullname);
+                        EditText edtPhone=(EditText)findViewById(R.id.edtPhone);
+                        edtPhone.setText(phoneNumber);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                }
             }
+
+
         }
     }
 

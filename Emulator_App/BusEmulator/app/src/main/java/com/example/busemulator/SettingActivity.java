@@ -46,9 +46,6 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//        StrictMode.setThreadPolicy(policy);
-        //addPreferencesFromResource(R.xml.setting_preferences);
         final SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
         setContentView(R.layout.activity_setting);
 
@@ -60,14 +57,7 @@ public class SettingActivity extends AppCompatActivity {
         EditText edtRoute=(EditText)findViewById(R.id.edtRoute);
         edtRoute.setText(sharedPreferences.getString("code",""));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //Spinner
 
-        //Get all ticket type
-//        try {
-//            getAllTicketType();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         new getAllTicketType().execute();
 
 
@@ -186,6 +176,7 @@ public class SettingActivity extends AppCompatActivity {
             Utility jParser = new Utility();
             SharedPreferences sharedPreferences=getSharedPreferences(setting,MODE_PRIVATE);
             hostAddress=sharedPreferences.getString("host","https://grinbuz.com");
+            //hostAddress="https://grinbuz.com";
             String strURL = hostAddress + "/Api/GetAllTicketType?key=gbts_2016_capstone";
 
             // Getting JSON from URL

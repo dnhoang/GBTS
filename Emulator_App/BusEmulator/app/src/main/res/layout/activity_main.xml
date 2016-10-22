@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
     <TextView
-        android:text=" Vui lòng chạm thẻ vào đây"
+        android:text="Chạm và giữ thẻ"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvPrice"
@@ -64,7 +64,17 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="13dp"
         android:layout_below="@+id/tvHeaderRouteName"/>
-
+        <TextView
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/tvError"
+            android:textSize="18sp"
+            android:textColor="#ff0000"
+            android:layout_marginTop="18dp"
+            android:textAlignment="center" />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
