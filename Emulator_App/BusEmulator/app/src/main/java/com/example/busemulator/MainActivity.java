@@ -108,10 +108,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!Utility.isNetworkConnected(getApplicationContext())) {
-                    SharedPreferences sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
-                    Integer offlineTicket = sharedPreferences.getInt("OfflineTicket", 0);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putInt("OfflineTicket", offlineTicket + 1);
+                    SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+
+                    ticketTypeId = sharedPreferences.getString("ticketTypeId", "");
+                    routeCode = sharedPreferences.getString("code", "");
+                    boughtDate = Utility.getBoughtDateString();
+
+                    dbAdapter.insertOfflineCashTicket(ticketTypeId, routeCode, boughtDate);
                     fabOffline.hide();
                     fab.hide();
                     successTicket = (RelativeLayout) findViewById(R.id.container);
@@ -135,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 mytag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
 
-                final SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
                 cardId = bin2hex(mytag.getId());
                 ticketTypeId = sharedPreferences.getString("ticketTypeId", "");
                 routeCode = sharedPreferences.getString("code", "");
@@ -206,7 +209,6 @@ public class MainActivity extends AppCompatActivity {
                             // Get the Text
                             String result = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
                             if (result != null) {
-                                Log.d("TICKET", "Result khac null");
                                 Utility utility = new Utility();
                                 String cardData[] = utility.getCardDataFromEncryptedString(result);
                                 SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
@@ -270,16 +272,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (Utility.isNetworkConnected(getApplicationContext())) {
-                    if (!dbAdapter.isEmpty()) {
+                    if (!dbAdapter.isOfflineDataEmpty()) {
                         List<OfflineTicket> list = dbAdapter.getAllOfflineTicket();
                         for (OfflineTicket ticket : list
                                 ) {
                             //Send request
-                            if (!dbAdapter.isEmpty()) {
-                                String[] params = {ticket.getCardid(), ticket.getRoutecode(), ticket.getBoughtdate(), ticket.getId() + ""};
+                            if (!dbAdapter.isOfflineDataEmpty()) {
+                                String[] params = {ticket.getCardid(), ticket.getTickettypeid(), ticket.getRoutecode(), ticket.getBoughtdate(), ticket.getId() + ""};
                                 new PushOfflineData().execute(params);
                             }
-                            Log.d("TICKET", ticket.toString());
+
+                        }
+                    }
+                    if (!dbAdapter.isOfflineCashDataEmpty()) {
+                        List<OfflineTicket> list = dbAdapter.getAllOfflineCashTicket();
+                        for (OfflineTicket ticket : list
+                                ) {
+                            //Send request
+                            if (!dbAdapter.isOfflineCashDataEmpty()) {
+
+                                String[] params = {ticket.getTickettypeid(), ticket.getRoutecode(), ticket.getBoughtdate(), ticket.getId() + ""};
+                                new PushOfflineCashData().execute(params);
+                            }
 
                         }
                     }
@@ -443,8 +457,6 @@ public class MainActivity extends AppCompatActivity {
                             version = jsonObject.getLong("version");
                             updateCard(needUpdate, mytag, balance, amount, version, Long.parseLong(cardBalance), Long.parseLong(cardDataVersion));
                             //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                            Log.d("INFO!!!Card", cardBalance.toString() + "|" + cardDataVersion);
-                            Log.d("INFO!!!Server", balance + "|" + version + "|" + amount);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (FormatException e) {
@@ -588,11 +600,12 @@ public class MainActivity extends AppCompatActivity {
         protected JSONObject doInBackground(String... params) {
             Utility jParser = new Utility();
             cardId = params[0];
+
+            ticketTypeId = params[1];
+            routeCode = params[2];
+            boughtDate = params[3];
+            id = params[4];
             SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
-            ticketTypeId = sharedPreferences.getString("ticketTypeId", "");
-            routeCode = params[1];
-            boughtDate = params[2];
-            id = params[3];
             hostAddress = sharedPreferences.getString("host", "https://grinbuzz.com");
             String strURL = hostAddress + "/Api/PushOfflineData?key=gbts_2016_capstone&cardId=" + cardId +
                     "&ticketTypeId=" + ticketTypeId +
@@ -630,6 +643,57 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //End push offline data
+
+    //Push offline cash data
+    private class PushOfflineCashData extends AsyncTask<String, String, JSONObject> {
+
+        String ticketTypeId, routeCode, boughtDate, id;
+
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            Utility jParser = new Utility();
+
+            ticketTypeId = params[0];
+            routeCode = params[1];
+            boughtDate = params[2];
+            id = params[3];
+            SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+            hostAddress = sharedPreferences.getString("host", "https://grinbuzz.com");
+            String strURL = hostAddress + "/Api/PushCashTicketOffline?key=gbts_2016_capstone" +
+                    "&ticketTypeId=" + ticketTypeId +
+                    "&routeCode=" + routeCode +
+                    "&boughtDate=" + boughtDate;
+            // Getting JSON from URL
+            JSONObject json = jParser.getJSONFromUrl(strURL);
+            Log.d("TICKET", strURL);
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            super.onPostExecute(jsonObject);
+            // Hide dialog
+
+            boolean success;
+            //check success
+            if (jsonObject != null) {
+                try {
+                    success = jsonObject.getBoolean("success");
+                    if (success) {
+                        dbAdapter.deleteOfflineCashTicket(Long.parseLong(id));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    //End push offline cash data
+
     private class SellCashTicketOnline extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
         String ticketTypeId, routeCode;

@@ -300,8 +300,7 @@ public class SettingActivity extends AppCompatActivity {
                     editor.putString("typeName", ticketType.getName());
                     editor.putString("description", ticketType.getDescription());
                     editor.putString("price", ticketType.getPrice());
-                    //editor.putString("status", ticketType.getStatus());
-                    //editor.putString("ticket", ticketType.getTickets());
+
                 }
                 editor.commit();
                 TextView routeName = (TextView) findViewById(R.id.tvRouteName);

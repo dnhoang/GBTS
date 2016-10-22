@@ -27,6 +27,13 @@ public class OfflineTicket {
         return id;
     }
 
+    public OfflineTicket(Integer id, String tickettypeid, String routecode, String boughtdate) {
+        this.id = id;
+        this.tickettypeid = tickettypeid;
+        this.routecode = routecode;
+        this.boughtdate = boughtdate;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }
