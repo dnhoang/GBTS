@@ -200,8 +200,8 @@ public class MainActivity extends AppCompatActivity {
                 if (result == true) {
                     sucess.setVisibility(View.INVISIBLE);
                     fab.show();
-                    Intent intent = new Intent(getApplicationContext(), SyncActivity.class);
-                    startActivity(intent);
+//                    Intent intent = new Intent(getApplicationContext(), SyncActivity.class);
+//                    startActivity(intent);
 
                 } else {
                     //fail
