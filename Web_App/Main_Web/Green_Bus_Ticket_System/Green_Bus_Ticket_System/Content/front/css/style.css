@@ -4223,7 +4223,7 @@ img.adp-marker {
  .reportform .input-group {
     display: inline-table;
     vertical-align: middle;
-    max-width: 160px;
+    max-width: 200px;
 }
  table.dataTable.no-footer {
     border-bottom: none!important;
@@ -4244,7 +4244,19 @@ img.adp-marker {
 }
 .note-editor .note-editable {
     overflow: auto;
-    min-height: 200px!important;
+    min-height: 150px!important;
     outline: 0;
     padding: 10px;
+}
+
+.ct-chart.ct-perfect-fourth:before {
+    padding-bottom: 320px!important;
+}
+
+.ct-series-a .ct-line {
+  stroke: red!important;
+}
+
+.ct-series-a .ct-point {
+  stroke: red!important;
 }
