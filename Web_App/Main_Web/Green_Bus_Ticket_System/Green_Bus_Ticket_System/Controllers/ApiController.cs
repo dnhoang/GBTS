@@ -444,6 +444,63 @@ namespace Green_Bus_Ticket_System.Controllers
 
         }
 
+        public JsonResult AddCardBalanceByCash(string key, string cardId, int creditPlanId, string staffPhone)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            CreditPlan plan = _creditPlanService.GetCreditPlan(creditPlanId);
+            User staff = _userService.GetUserByPhone(staffPhone);
+            if (!_cardService.IsCardExist(cardId))
+            {
+                success = false;
+                message = "Mã thẻ không tồn tại.";
+            }
+            else if (plan == null)
+            {
+                success = false;
+                message = "Mã gói nạp không tồn tại.";
+            }
+            else if (staff == null)
+            {
+                success = false;
+                message = "Số điện thoại nhân viên không tồn tại.";
+            }
+            else if (staff.Role.Id != (int) StatusReference.RoleID.STAFF)
+            {
+                success = false;
+                message = "Đăng nhập sai vai trò - chỉ staff mới được quyền thực hiện.";
+            }
+            else
+            {
+                Card card = _cardService.GetCardByUID(cardId);
+
+                card.Balance = card.Balance + plan.Price;
+                _cardService.Update(card);
+
+                PaymentTransaction payment = new PaymentTransaction();
+                payment.CardId = card.Id;
+                payment.CreditPlanId = creditPlanId;
+                payment.TransactionId = "CASH_PAYMENT_BY_STAFF_"+ staffPhone;
+                payment.PaymentDate = DateTime.Now;
+                payment.Total = plan.Price;
+                _paymentTransactionService.Create(payment);
+
+                success = true;
+                message = "Cập nhật số dư thành công";
+            }
+
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+
+        }
+
         //GET: GetUserInfo
 
         public JsonResult GetStaffInfo(string key, string phone)

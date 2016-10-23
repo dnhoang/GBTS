@@ -4,7 +4,7 @@
 }
 
 
-<div class="container-padding">
+<div class="container-padding" style="overflow: hidden;">
     <div class="row">
 
         <div class="col-md-12">
@@ -13,9 +13,18 @@
                     TẠO QUẢNG CÁO
                 </div>
                 <div class="panel-body">
+                    <form>
+                        <div class="form-group" style="overflow: auto;">
+                            <label class="col-sm-2 control-label form-label">Tên quảng cáo</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="name" name="name" class="form-control">
+                            </div>
+                        </div>
+                        <input type="hidden" name="content" id="content"/>
                         <div id="summernote"></div>
                         <button class="btn btn-default" id="send"><i class="fa fa-paper-plane"></i> GỬI</button>
                         <p class="hcolor-red pull-right padding-l-20 hidden" id="validate"></p>
+                    </form>
                 </div>
             </div>
         </div>
@@ -40,16 +49,16 @@
                             <td></td>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="list-promo">
                         @foreach (Green_Bus_Ticket_System_Data.Promotion item in promos)
-                {
+                        {
 
                             <tr>
                                 <td>@item.Name</td>
                                 <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
                                 @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.PromotionStatus.SENDING)
                                 {
-                                    <td><span class="label label-primary">ĐANG GỬI...</span></td>
+                                    <td><span class="label label-primary" id="status-@item.Id">ĐANG GỬI...</span></td>
                                     <td>
                                         <button type="button" class="btn btn-primary view" id="@item.Id"><i class="fa fa-eye"></i> CHI TIẾT</button>
                                         <button type="button" class="btn btn-danger stop" id="@item.Id"><i class="fa fa-remove"></i> HỦY</button>
@@ -57,7 +66,7 @@
                                 }
                                 else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.PromotionStatus.SENT)
                                 {
-                                    <td><span class="label label-success">ĐÃ GỬI</span></td>
+                                    <td><span class="label label-success" id="status-@item.Id">ĐÃ GỬI</span></td>
                                     <td>
                                         <button type="button" class="btn btn-primary view" id="@item.Id"><i class="fa fa-eye"></i> CHI TIẾT</button>
                                         <button type="button" class="btn disabled"><i class="fa fa-remove"></i> HỦY</button>
@@ -65,7 +74,7 @@
                                 }
                                 else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.PromotionStatus.CANCELLED)
                                 {
-                                    <td><span class="label label-danger">ĐÃ HỦY</span></td>
+                                    <td><span class="label label-danger" id="status-@item.Id">ĐÃ HỦY</span></td>
                                     <td>
                                         <button type="button" class="btn btn-primary view" id="@item.Id"><i class="fa fa-eye"></i> CHI TIẾT</button>
                                         <button type="button" class="btn disabled"><i class="fa fa-remove"></i> HỦY</button>
@@ -89,8 +98,8 @@
                             </div>
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <p class="text-center f-bold" id="info-title"> sada sasdasd asdsd </p>
-                                    <div id="info-content">dđsdssdsdsdsd</div>
+                                    <p class="text-center f-bold" id="info-title"></p>
+                                    <div id="info-content"></div>
                                 </div>
 
                             </div>
@@ -113,6 +122,7 @@
             Summernote
             ================================================ -->
             <script src="~/Content/front/js/summernote/summernote.min.js"></script>
+            <script src="~/Content/front/js/sweet-alert/sweet-alert.min.js"></script>
             <script>
                 /* SUMMERNOTE*/
                 $(document).ready(function () {
@@ -120,7 +130,15 @@
                 });
                 function validate() {
                     var content = $('#summernote').code().trim().length;
-                    if (content <= 2) {
+                    var name = $("#name").val().trim().length;
+
+                    if (name < 6) {
+                        $("#validate").removeClass("hidden");
+                        $("#validate").html("Tên quảng cáo ít nhất 6 ký tự.");
+                        return false;
+                    }
+
+                    if (content < 20) {
                         $("#validate").removeClass("hidden");
                         $("#validate").html("Vui lòng nhập nội dung tối thiểu 20 ký tự.");
                         return false;
@@ -129,11 +147,84 @@
                     $("#validate").addClass("hidden");
                     return true;
                 }
-                $("#send").click(function () {
+
+                $("form").submit(function (e) {
+                    e.preventDefault();
                     if (validate()) {
                         var content = $('#summernote').code();
-                        alert(content);
+                        var name = $("#name").val().trim();
+                        $("#content").val(content);
+                        $.ajax({
+                            url: "/Manager/Promotions/AddPromo",
+                            dataType: "html",
+                            data: $('form').serialize(),
+                            method: 'POST',
+                            success: function (data) {
+                                $('#list-promo').prepend(data);
+                                var content = $('#summernote').code("");
+                                var name = $("#name").val("");
+                            }
+                        });
                     }
+                });
+
+                $(document).on("click", ".view", function () {
+                    var id = this.id;
+                    $.ajax({
+                        url: "/Manager/Promotions/GetPromo",
+                        dataType: "json",
+                        data: { id: id },
+                        method: 'GET',
+                        success: function (data) {
+                            if (data.success) {
+                                $("#info-title").html(data.data.Name);
+                                $("#info-content").html(data.data.Description);
+                                $("#detailsModal").modal("show");
+                            } else {
+                                swal({
+                                    title: "",
+                                    text: data.message,
+                                    type: "error"
+                                });
+                            }
+                        }
+                    });
+                });
+
+                $(document).on("click", ".stop", function () {
+                    var id = this.id;
+                    var cur = $(this);
+                    swal({
+                        title: "",
+                        text: "Bạn có chắc chắn muốn hủy gửi quảng cáo này!",
+                        type: "warning", showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "XÁC NHẬN",
+                        cancelButtonText: "ĐÓNG",
+                        closeOnConfirm: true
+                    }, function () {
+                        $.ajax({
+                            url: "/Manager/Promotions/CancelPromo",
+                            dataType: "json",
+                            data: { id: id },
+                            method: 'GET',
+                            success: function (data) {
+                                if (data.success) {
+                                    cur.removeClass("btn-danger");
+                                    cur.addClass("disabled");
+                                    $("#status-" + id).removeClass("label-primary");
+                                    $("#status-" + id).addClass("label-danger");
+                                    $("#status-" + id).html("ĐÃ HỦY");
+                                } else {
+                                    swal({
+                                        title: "",
+                                        text: data.message,
+                                        type: "error"
+                                    });
+                                }
+                            }
+                        });
+                    });
                 });
             </script>
         }

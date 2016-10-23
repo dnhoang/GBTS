@@ -32,6 +32,92 @@ namespace Green_Bus_Ticket_System.Areas.Manager.Controllers
             return View();
         }
 
+        public JsonResult GetPromo(int id)
+        {
+            bool success = false;
+            string message = "";
+            if (!AuthorizeRequest())
+            {
+                success = false;
+                message = "Bạn chưa đăng nhập!";
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            Promotion promo = _promotionService.GetPromotion(id);
+            Object result = new { };
+            if (promo != null)
+            {
+                result = new
+                {
+                    Id = promo.Id,
+                    Name = promo.Name,
+                    Description = promo.Description
+                };
+                success = true;
+            }
+            else
+            {
+                message = "Quảng cáo không tồn tại!";
+            }
+
+
+            return Json(new { success = success, message = message, data = result }, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult CancelPromo(int id)
+        {
+            bool success = false;
+            string message = "";
+            if (!AuthorizeRequest())
+            {
+                success = false;
+                message = "Bạn chưa đăng nhập!";
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            Promotion promo = _promotionService.GetPromotion(id);
+            Object result = new { };
+            if (promo != null)
+            {
+                promo.Status = (int)StatusReference.PromotionStatus.CANCELLED;
+                _promotionService.Update(promo);
+
+                success = true;
+            }
+            else
+            {
+                message = "Quảng cáo không tồn tại!";
+            }
+
+
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+
+        }
+
+
+        [HttpPost, ValidateInput(false)]
+        public ActionResult AddPromo(FormCollection form)
+        {
+            if (!AuthorizeRequest())
+            {
+                ViewBag.Login = true;
+            }
+            else
+            {
+
+                Promotion promo = new Promotion();
+                promo.Name = form["name"];
+                promo.Description = form["content"];
+                promo.CreatedDate = DateTime.Now;
+                promo.Status = (int)StatusReference.PromotionStatus.SENDING;
+                _promotionService.Create(promo);
+
+                ViewBag.Login = false;
+                ViewBag.Promo = promo;
+            }
+            return PartialView();
+        }
         private bool AuthorizeRequest()
         {
             User user = (User)Session["user"];
