@@ -8,6 +8,7 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
+import android.nfc.tech.NdefFormatable;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -184,6 +185,47 @@ public class Utility  extends Application{
 
         // return JSON OBJECT
         return jObj;
+
+    }
+    public boolean writeNFCCard(String inputString, Tag mytag) {
+        String encryptedString = Utility.encrypt(inputString, keyAES);
+
+        try {
+            NdefRecord[] records = new NdefRecord[]{Utility.createRecord(encryptedString)};
+            NdefMessage message = new NdefMessage(records);
+
+            Ndef ndef = Ndef.get(mytag);
+            if (ndef != null) {
+                ndef.connect();
+                ndef.writeNdefMessage(message);
+                ndef.close();
+            } else {
+                NdefFormatable ndefFormatable = NdefFormatable.get(mytag);
+                if (ndefFormatable != null) {
+                    // initialize tag with new NDEF message
+
+                    try {
+                        ndefFormatable.connect();
+                        ndefFormatable.format(message);
+                    } finally {
+                        try {
+                            ndefFormatable.close();
+                        } catch (Exception e) {
+                        }
+                    }
+                }
+            }
+            return true;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return false;
+        } catch (FormatException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
 
     }
 }

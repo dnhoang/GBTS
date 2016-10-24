@@ -47,11 +47,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         new GetAllCreditPlan().execute();
         getSupportActionBar().hide();
-        final FloatingActionButton fab=(FloatingActionButton)findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(MainActivity.this,SettingActivity.class);
+                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
                 startActivity(intent);
 
             }
@@ -70,10 +70,18 @@ public class MainActivity extends AppCompatActivity {
             if (Utility.isNetworkConnected(MainActivity.this)) {
 
                 tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                Intent topupIntent = new Intent(this, TopupActivity.class);
-                topupIntent.putExtra("cardId", Utility.bin2hex(tag.getId()));
+                //Read card balance and dataversion
+                Utility utility = new Utility();
+                String cardData = utility.readNDEFMessage(tag);
+                if (cardData != null) {
+                    String data[]=utility.getCardDataFromEncryptedString(cardData);
+                    Intent topupIntent = new Intent(this, TopupActivity.class);
+                    topupIntent.putExtra("cardId", Utility.bin2hex(tag.getId()));
+                    topupIntent.putExtra("cardData",data);
+                    startActivity(topupIntent);
+                }
 
-                startActivity(topupIntent);
+
             }
         }
     }

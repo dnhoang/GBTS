@@ -1,6 +1,7 @@
 package Utility;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
@@ -10,6 +11,9 @@ import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,18 +48,21 @@ public class Utility {
         String dataVersion = df.format(new Date());
         return dataVersion;
     }
+
     //Get Version number
     public static String getDataVersion() {
         DateFormat df = new SimpleDateFormat("ddMMyyyyhhmmss");
         String dataVersion = df.format(new Date());
         return dataVersion;
     }
+
     //End version
     //encrypt
     //Read NDEF message
     public static String bin2hex(byte[] data) {
         return String.format("%0" + (data.length * 2) + "X", new BigInteger(1, data));
     }
+
     final String keyAES = "ssshhhhhhhhhhh!!!!";
     private static SecretKeySpec secretKey;
     private static byte[] key;
@@ -99,6 +106,44 @@ public class Utility {
         return data;
     }
 
+    public String readNDEFMessage(Tag tag) {
+        Ndef ndef = Ndef.get(tag);
+
+
+        NdefMessage ndefMessage = ndef.getCachedNdefMessage();
+        if (ndefMessage != null) {
+            NdefRecord[] records = ndefMessage.getRecords();
+            if (records != null) {
+                for (NdefRecord ndefRecord : records) {
+                    if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_TEXT)) {
+                        try {
+                            byte[] payload = ndefRecord.getPayload();
+
+                            // Get the Text Encoding
+                            String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
+
+                            // Get the Language Code
+                            int languageCodeLength = payload[0] & 0063;
+
+                            // String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
+                            // e.g. "en"
+
+                            // Get the Text
+                            String result = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
+                            if (result != null) {
+                                return result;
+                            }
+                        } catch (UnsupportedEncodingException e) {
+
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+
     public static String decrypt(String strToDecrypt, String secret) {
         try {
             setKey(secret);
@@ -113,7 +158,8 @@ public class Utility {
 
     //End encrypt
     //Write NFC
-    public static NdefRecord createRecord(String text) throws UnsupportedEncodingException {
+    public static NdefRecord createRecord(String text) throws
+            UnsupportedEncodingException {
 
         //create the message in according with the standard
         String lang = "en";
@@ -133,7 +179,8 @@ public class Utility {
         return recordNFC;
     }
 
-    public boolean writeCard(String text, Tag tag) throws IOException, FormatException {
+    public boolean writeCard(String text, Tag tag) throws
+            IOException, FormatException {
         String encryptedString = Utility.encrypt(text, keyAES);
 
         try {
@@ -223,7 +270,7 @@ public class Utility {
                 } else {
 
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
 

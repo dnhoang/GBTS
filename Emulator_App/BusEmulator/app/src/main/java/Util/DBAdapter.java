@@ -53,7 +53,7 @@ public class DBAdapter extends SQLiteOpenHelper {
     }
 
     public boolean isOfflineDataEmpty() {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         String count = "SELECT count(*) FROM "+TABLE_NAME;
         Cursor mcursor = db.rawQuery(count, null);
         mcursor.moveToFirst();
@@ -61,7 +61,7 @@ public class DBAdapter extends SQLiteOpenHelper {
         return icount == 0;
     }
     public boolean isOfflineCashDataEmpty() {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         String count = "SELECT count(*) FROM "+TABLE_CASH;
         Cursor mcursor = db.rawQuery(count, null);
         mcursor.moveToFirst();

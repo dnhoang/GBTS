@@ -149,6 +149,12 @@ public class MainActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        //Write card balance and dataversion
+                        String dataToWrite="15000|0";
+                        Utility utility=new Utility();
+                        boolean check=utility.writeNFCCard(dataToWrite,mytag);
+                        if (check==false) Toast.makeText(MainActivity.this,"Vui lòng chạm và giữ thẻ!",Toast.LENGTH_SHORT).show();
+                        //End writec card
                         messageResult = (TextView) findViewById(R.id.tvSuccess);
                         messageResult.setText(message);
 

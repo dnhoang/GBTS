@@ -625,7 +625,7 @@ public class MainActivity extends AppCompatActivity {
             boolean success;
             //check success
             if (jsonObject != null) {
-                Log.d("TICKET", "JSON khac null");
+                Log.d("TICKET", jsonObject.toString());
                 try {
                     success = jsonObject.getBoolean("success");
                     if (success) {
