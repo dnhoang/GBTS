@@ -1,15 +1,6 @@
 ﻿@{
     ViewBag.Title = "Báo cáo thu nhập";
-    List<Green_Bus_Ticket_System_Data.Card> cards =
-        (List<Green_Bus_Ticket_System_Data.Card>)ViewBag.Cards;
-    var count = 0;
-    foreach (var item in cards)
-    {
-        if (item.Tickets.Count > 0)
-        {
-            count++;
-        }
-    }
+    
 }
 
 
@@ -36,8 +27,9 @@
     <div class="panel-body margin-t-20 margin-b-20" style="border: 1px solid #ddd; overflow: auto;">
         <div class="ct-chart ct-perfect-fourth"></div>
     </div>
-    <div class="panel-body" style="border: 1px solid #ddd; overflow: auto;">
-        <div role="tabpanel">
+    <div class="panel-body" id="data" style="border: 1px solid #ddd; overflow: auto;">
+
+        <div role="tabpanel" class="hidden">
 
             <!-- Nav tabs -->
             <ul class="nav nav-tabs tabcolor7-bg" role="tablist">
@@ -48,10 +40,32 @@
             <!-- Tab panes -->
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="via-card">
-                    
+                    <table id="card-table" class="table display">
+                        <thead>
+                            <tr>
+                                <th>TUYẾN XE BUÝT</th>
+                                <th>TỔNG SỐ VÉ</th>
+                                <th>TỔNG SỐ TIỀN THU VỀ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                        </tbody>
+                    </table>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="via-cash">
-
+                    <table id="cash-table" class="table display">
+                        <thead>
+                            <tr>
+                                <th>TUYẾN XE BUÝT</th>
+                                <th>TỔNG SỐ VÉ</th>
+                                <th>TỔNG SỐ TIỀN THU VỀ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -62,26 +76,47 @@
 </div>
 
 @section CustomJs{
+    <!-- ================================================
+    Moment.js
+    ================================================ -->
+    <script type="text/javascript" src="~/Content/front/js/moment/moment.min.js"></script>
+
+    <!-- ================================================
+    Bootstrap Date Range Picker
+    ================================================ -->
+    <script type="text/javascript" src="~/Content/front/js/date-range-picker/daterangepicker.js"></script>
+    <!-- ================================================
+    Data Tables
+    ================================================ -->
+    <script src="~/Content/front/js/datatables/datatables.min.js"></script>
+
+    <!-- ================================================
+    Sweet Alert
+    ================================================ -->
+    <script src="~/Content/front/js/sweet-alert/sweet-alert.min.js"></script>
     <script src="~/Content/front/js/chartist/chartist.js"></script>
     <script>
         var options = {
             height: 300,
             axisY: {
                 // Lets offset the chart a bit from the labels
-                offset: 60,
+                offset: 100,
                 // The label interpolation function enables you to modify the values
                 // used for the labels on each axis. Here we are converting the
                 // values into million pound.
                 labelInterpolationFnc: function (value) {
                     return  value + ' đ';
                 }
-            }
+            },
+            lineSmooth: Chartist.Interpolation.simple({
+                divisor: 2
+            }),
         };
 
         var data = {
-            labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+            labels: [],
             series: [
-              [12, 9, 7, 8, 5, 4, 6, 2, 3, 3, 4, 6]
+              []
             ]
         };
 
@@ -167,7 +202,131 @@
             } 
         });
 
-       
+        
+        $('#card-table').DataTable({
+            'order': [],
+            'aLengthMenu': [[10, 50, 100, -1], [10, 50, 100, 'All']],
+            'iDisplayLength': 10,
+            columnDefs: [
+                { width: 100, targets: 1 },
+                { width: 150, targets: 2 }
+            ]
+        });
+
+        $('#cash-table').DataTable({
+            'order': [],
+            'aLengthMenu': [[10, 50, 100, -1], [10, 50, 100, 'All']],
+            'iDisplayLength': 10,
+            columnDefs: [
+                { width: 100, targets: 1 },
+                { width: 150, targets: 2 }
+            ]
+        });
+
+        $('#date-picker-begin').daterangepicker({
+            singleDatePicker: true,
+            format: 'DD/MM/YYYY',
+            maxDate: new Date()
+
+        }, function (start, end, lable) {
+            var newEndDate = moment(start).add(30, "days");
+            if (newEndDate > moment()) {
+                newEndDate = moment();
+            }
+            $('#date-picker-end').data("daterangepicker").setStartDate(newEndDate);
+            $('#date-picker-end').data("daterangepicker").setEndDate(newEndDate);
+        });
+
+        $('#date-picker-end').daterangepicker({
+            singleDatePicker: true,
+            format: 'DD/MM/YYYY',
+            maxDate: new Date()
+        }, function (start, end, lable) {
+            var newBeginDate = moment(start).subtract(30, "days");
+            $('#date-picker-begin').data("daterangepicker").setStartDate(newBeginDate);
+            $('#date-picker-begin').data("daterangepicker").setEndDate(newBeginDate);
+        });
+
+
+        $("#get-report").click(function () {
+            var beginDate = $('#date-picker-begin').val();
+            var endDate = $('#date-picker-end').val();
+            $("#get-report").html('<i class="fa fa-spinner fa-pulse fa-fw"></i>');
+            $(".report").html("");
+            $.ajax({
+                url: "/Manager/Report/GetReport",
+                dataType: "html",
+                data: { beginDate: beginDate, endDate: endDate },
+                method: "GET",
+                success: function (data) {
+         
+                        $("#data").html(data);
+
+                        $('#card-table').DataTable().destroy();
+                        $('#cash-table').DataTable().destroy();
+
+                        $('#card-table').DataTable({
+                            'order': [],
+                            'aLengthMenu': [[10, 50, 100, -1], [10, 50, 100, 'All']],
+                            'iDisplayLength': 10,
+                            columnDefs: [
+                                { width: 100, className: "dt-center", targets: 1 },
+                                { width: 150, className: "dt-center", targets: 2 }
+                            ]
+                        });
+
+                        $('#cash-table').DataTable({
+                            'order': [],
+                            'aLengthMenu': [[10, 50, 100, -1], [10, 50, 100, 'All']],
+                            'iDisplayLength': 10,
+                            columnDefs: [
+                                { width: 100, className: "dt-center", targets: 1 },
+                                { width: 150, className: "dt-center", targets: 2 }
+                            ]
+                        });
+
+                        drawChart();
+
+                        $("#get-report").html('<i class="fa fa-search"></i>');
+
+
+                }
+            });
+
+        });
+
+        function drawChart() {
+            var beginDate = $('#date-picker-begin').val();
+            var endDate = $('#date-picker-end').val();
+            
+            $.ajax({
+                url: "/Manager/Report/DrawChart",
+                dataType: "json",
+                data: { beginDate: beginDate, endDate: endDate },
+                method: "GET",
+                success: function (response) {
+                    if (response.success) {
+                        var newdata = {
+                            labels: response.lables,
+                            series: [
+                              response.incomes
+                            ]
+                        };
+                        chart.update(newdata, options);
+                    } else {
+                        swal({
+                            title: "",
+                            text: response.message,
+                            type: "warning"
+                        });
+                    }
+                    
+                }
+            });
+
+        }
+
+        $("#get-report").trigger("click");
 
     </script>
 }

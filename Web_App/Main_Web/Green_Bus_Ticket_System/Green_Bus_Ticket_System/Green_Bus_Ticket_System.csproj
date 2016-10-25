@@ -449,6 +449,7 @@
     <Content Include="Areas\Manager\Views\Promotions\Index.cshtml" />
     <Content Include="Areas\Manager\Views\Promotions\AddPromo.cshtml" />
     <Content Include="Areas\Manager\Views\Report\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\Report\GetReport.cshtml" />
     <None Include="Properties\PublishProfiles\GBTS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

@@ -59,9 +59,9 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
             {
                 return Redirect("/Access/Login");
             }
-            String current = DateTime.Now.ToString("hh:mm:ss tt");
+
             DateTime begin = DateTime.ParseExact(beginDate + " 00:00:00 AM", "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
-            DateTime end = DateTime.ParseExact(endDate + " " + current, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
+            DateTime end = DateTime.ParseExact(endDate + " 11:59:59 PM", "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
 
            
             var cards = _cardService.GetCardsByUser(GetCurrentUser().UserId);
