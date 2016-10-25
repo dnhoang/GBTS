@@ -16046,7 +16046,7 @@ Extension point: Edit card name
 <XPD:OBJ name="OwnedViews[2]" type="UMLSwimlaneView" guid="rH1Sf8e4PE+nlnUJGo6F2AAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Left" type="integer">28</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">36</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">24</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">213</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">345</XPD:ATTR>
