@@ -53,9 +53,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(), MainActivity.class));
-//                new JSONParse().execute();
-                doLogin();
+//                startActivity(new Intent(getBaseContext(), MainActivity.class));
+                new JSONParse().execute();
+//                doLogin();
             }
         });
     }
@@ -138,8 +138,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             edtPhone = (EditText) findViewById(R.id.edtPhone);
             edtPass = (EditText) findViewById(R.id.edtPassword);
+            checkBox = (CheckBox) findViewById(R.id.saveLoginCheckBox);
             phone = edtPhone.getText().toString();
             pwd = edtPass.getText().toString();
+
 
             pDialog = new ProgressDialog(LoginActivity.this);
             pDialog.setMessage("Getting Data ...");
@@ -152,8 +154,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         protected JSONObject doInBackground(String... params) {
             JSONParser jParser = new JSONParser();
 
-            String strURL = Constance.API_LOGIN + "&phone=" + phone.trim() + "&password=" + pwd.trim();
-//            String strURL = Constance.API_LOGIN + "&phone=01212184802&password=123456";
+//            String strURL = Constance.API_LOGIN + "&phone=" + phone.trim() + "&password=" + pwd.trim();
+            String strURL = Constance.API_LOGIN + "&phone=01212184802&password=123456";
+            Log.d("meow", "url " + strURL);
 
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrl(strURL);
@@ -183,8 +186,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
+                if (checkBox.isChecked()) {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    rememberMe(phone, pwd);
+                } else {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
             } else {
                 Toast.makeText(getApplicationContext(), "Sai điện thoại hoặc mật khẩu!", Toast.LENGTH_LONG).show();
             }

@@ -46,7 +46,5 @@ public class FireBaseIDTask extends AsyncTask<String, Void, JSONObject> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 }

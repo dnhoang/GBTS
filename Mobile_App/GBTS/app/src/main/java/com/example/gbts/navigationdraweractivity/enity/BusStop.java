@@ -9,7 +9,7 @@ import java.util.List;
 public class BusStop {
     private String StopId;
     private String Code;
-    private List<String> Name;
+    private String Name;
     private String StopType;
     private String Zone;
     private String Wall;
@@ -42,11 +42,11 @@ public class BusStop {
         Code = code;
     }
 
-    public List<String> getName() {
+    public String getName() {
         return Name;
     }
 
-    public void setName(List<String> name) {
+    public void setName(String name) {
         Name = name;
     }
 

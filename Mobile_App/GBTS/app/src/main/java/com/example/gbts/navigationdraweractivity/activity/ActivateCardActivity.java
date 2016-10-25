@@ -31,6 +31,7 @@ public class ActivateCardActivity extends AppCompatActivity {
     String setting = "Info";
 
     String hostAddress = "https://grinbuz.com";
+//    String hostAddress = "http://172.20.10.3:11856";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

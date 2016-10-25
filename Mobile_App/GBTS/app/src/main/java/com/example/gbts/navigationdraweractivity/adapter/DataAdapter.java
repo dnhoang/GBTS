@@ -41,7 +41,7 @@ public class DataAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.customgrid,
+            convertView = mInflater.inflate(R.layout.fragment_test,
                     parent, false);
             System.out.println("ADAPTER convertView " + convertView);
             holder = new ViewHolder();

@@ -144,9 +144,6 @@ public class CreditCard extends Fragment {
                         }
                         Toast.makeText(getActivity(), "You click at " + listCard.get(position).get(TAG_CARD_NAME), Toast.LENGTH_SHORT).show();
 
-                        //SEND cardId to Paypal Activity
-
-
                     }
                 });
 

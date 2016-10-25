@@ -2,8 +2,8 @@ package com.example.gbts.navigationdraweractivity.module.google.mapsAPI;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
-import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -28,9 +28,11 @@ import java.util.List;
 public class DirectionFinder {
     private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?language=vi&";
     private static final String GOOGLE_API_KEY = "AIzaSyC_Nn1lgcszdfpjEH0ySBjdYdIQD8QChaQ";
-    //        private static final String GOOGLE_API_KEY = "AIzaSyAxvdx9eKV_HPzrxGWiiNLL9I7WoDe0FSE";
-//    private static final String GOOGLE_API_KEY = "AIzaSyA4EpKiXWt_UHlotCQjv1EWqdHrND8nTmA";
-    private static final String GOOGLE_MODE = "bus";
+    private static final String MODE = "transit";
+    private static final String TRANSIT_MODE = "bus";
+    //    private static final String TRANSIT_ROUTING_PREFERENCE = "less_walking";
+    private static final String TRANSIT_ROUTING_PREFERENCE = "less_walking";
+    private static final String DEPARTURE_TIME = "1482237000";
     private DirectionFinderListener listener;
     private String origin;
     private String destination;
@@ -47,11 +49,9 @@ public class DirectionFinder {
     }
 
     private String createUrl() throws UnsupportedEncodingException {
-        String urlOrigin = URLEncoder.encode(origin, "utf-8");
-        String urlDestination = URLEncoder.encode(destination, "utf-8");
-
-        return DIRECTION_URL_API + "origin=" + urlOrigin + "&destination=" + urlDestination + "&mode=" + GOOGLE_MODE + "&key=" + GOOGLE_API_KEY;
-//        return DIRECTION_URL_API + "origin=" + urlOrigin + "&destination=" + urlDestination + "&key=" + GOOGLE_API_KEY;
+        String urlOrigin = URLEncoder.encode(origin, "UTF-8");
+        String urlDestination = URLEncoder.encode(destination, "UTF-8");
+        return DIRECTION_URL_API + "origin=" + urlOrigin + "&destination=" + urlDestination + "&mode=" + MODE + "&transit_mode=" + TRANSIT_MODE + "&transit_routing_preference=" + TRANSIT_ROUTING_PREFERENCE + "&alternatives=true" + "&traffic_model=optimistic" + "&key=" + GOOGLE_API_KEY;
     }
 
     private class DownloadRawData extends AsyncTask<String, Void, String> {
@@ -100,64 +100,66 @@ public class DirectionFinder {
             return;
 
         List<Route> routes = new ArrayList<>();
-        List<Steps> stepsList = new ArrayList<>();
+        List<Step> stepsList = new ArrayList<>();
         JSONObject jsonData = new JSONObject(data);
         JSONArray jsonRoutes = jsonData.getJSONArray("routes");
-        List<String> htmlInstruct = new ArrayList<>();
+        if (jsonRoutes.length() == 0) {
+            Log.d("anhtruongne ", "jsonRoutes not existed");
+            return;
+        }
         Route route = new Route();
+        Step steps = new Step();
         /** Traversing all routes */
-        for (int i = 0; i < jsonRoutes.length(); i++) {
-            JSONObject jsonRoute = jsonRoutes.getJSONObject(i);
+        List<List<String>> results = new ArrayList<>();
+//        for (int i = 0; i < jsonRoutes.length(); i++) {
+        JSONObject jsonRoute = jsonRoutes.getJSONObject(0);
 
-            JSONObject overview_polylineJson = jsonRoute.getJSONObject("overview_polyline");
-            JSONArray jsonLegs = jsonRoute.getJSONArray("legs");
+        JSONObject overview_polylineJson = jsonRoute.getJSONObject("overview_polyline");
+        JSONArray jsonLegs = jsonRoute.getJSONArray("legs");
+//            Log.d("meoww", "jsonsLegsObject " + jsonLegs.toString());
+        /** Traversing all legs */
+        JSONObject js = jsonLegs.getJSONObject(0);
+        JSONArray jsonSteps = js.getJSONArray("steps");
 
-            /** Traversing all legs */
-            JSONObject js = jsonLegs.getJSONObject(0);
-            JSONArray jsonSteps = js.getJSONArray("steps");
+        List<String> busList = new ArrayList<>();
+        for (int j = 0; j < jsonSteps.length(); j++) {
+            JSONObject singleStep = jsonSteps.getJSONObject(j);
 
-            /** Traversing all steps */
-            for (int j = 0; j < jsonSteps.length(); j++) {
-                JSONObject singleStep = jsonSteps.getJSONObject(j);
-                try {
-                    byte[] tmp = singleStep.getString("html_instructions").getBytes("UTF-8");
-                    String htmls = new String(tmp, "UTF-8");
-                    htmlInstruct.add(htmls);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+            if (singleStep.getString("travel_mode").equals("TRANSIT")) {
+//                JSONObject html_instructions = singleStep.getJSONObject("html_instructions");
+                JSONObject transit_details = singleStep.getJSONObject("transit_details");
+                JSONObject line = transit_details.getJSONObject("line");
+                String busName = line.getString("name");
+                JSONObject vehicle = line.getJSONObject("vehicle");
+                busList.add(busName);
             }
-
-            JSONObject jsonLeg = jsonLegs.getJSONObject(0);
-            JSONObject jsonDistance = jsonLeg.getJSONObject("distance");
-            JSONObject jsonDuration = jsonLeg.getJSONObject("duration");
-            JSONObject jsonEndLocation = jsonLeg.getJSONObject("end_location");
-            JSONObject jsonStartLocation = jsonLeg.getJSONObject("start_location");
-
-
-            route.distance = new Distance(jsonDistance.getString("text"), jsonDistance.getInt("value"));
-            route.duration = new Duration(jsonDuration.getString("text"), jsonDuration.getInt("value"));
-            route.endAddress = jsonLeg.getString("end_address");
-            route.startAddress = jsonLeg.getString("start_address");
-            route.startLocation = new LatLng(jsonStartLocation.getDouble("lat"), jsonStartLocation.getDouble("lng"));
-            route.endLocation = new LatLng(jsonEndLocation.getDouble("lat"), jsonEndLocation.getDouble("lng"));
-            route.points = decodePolyLine(overview_polylineJson.getString("points"));
-            String html = "";
-            for (String item : htmlInstruct) {
-                html += item + "<br/>";
-            }
-            try {
-                byte[] tmp = html.getBytes("UTF-8");
-                String htmls = new String(tmp, "UTF-8");
-                route.html_instructions = htmls;
-                Log.d("htmls ", htmls);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            routes.add(route);
         }
 
+//        results.add(busList);
+        JSONObject jsonLeg = jsonLegs.getJSONObject(0);
+        JSONObject jsonDistance = jsonLeg.getJSONObject("distance");
+        JSONObject jsonDuration = jsonLeg.getJSONObject("duration");
+        JSONObject jsonEndLocation = jsonLeg.getJSONObject("end_location");
+        JSONObject jsonStartLocation = jsonLeg.getJSONObject("start_location");
+
+
+        route.distance = new Distance(jsonDistance.getString("text"), jsonDistance.getInt("value"));
+        route.duration = new Duration(jsonDuration.getString("text"), jsonDuration.getInt("value"));
+        route.endAddress = jsonLeg.getString("end_address");
+        route.startAddress = jsonLeg.getString("start_address");
+        route.startLocation = new LatLng(jsonStartLocation.getDouble("lat"), jsonStartLocation.getDouble("lng"));
+        route.endLocation = new LatLng(jsonEndLocation.getDouble("lat"), jsonEndLocation.getDouble("lng"));
+        route.points = decodePolyLine(overview_polylineJson.getString("points"));
+        String html = "";
+        String before = "<li><a href=\"#\"><img src=\"http://i.imgur.com/iSVvT7G.png\" /> ";
+        String after = "</a></li>";
+        for (String item : busList) {
+            html += before + item + after;
+        }
+        route.html_instructions = "<strong>Bạn cần đi qua " + busList.size() + " tuyến xe bus:</strong>  <br/><br/>" + html;
+        routes.add(route);
+//        }
+        Log.d("meoww", "jsonsLresultst " + busList.toString());
         listener.onDirectionFinderSuccess(routes);
     }
 

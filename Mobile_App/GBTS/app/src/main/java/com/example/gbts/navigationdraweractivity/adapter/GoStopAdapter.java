@@ -45,8 +45,8 @@ public class GoStopAdapter extends ArrayAdapter<BusStop> {
         BusStop busStop = getItem(position);
         Log.d("GoStopAdapter", "busStop " + busStop.toString());
         Log.d("GoStopAdapter", "getStopId " + busStop.getStopId());
+        txtBusStopName.setText("- " + busStop.getName());
 
-        txtBusStopName.setText("-" + busStop.getName());
         Log.d("GoStopAdapter", "txtBusStopName " + "-" + busStop.getName());
 
         return convertView;

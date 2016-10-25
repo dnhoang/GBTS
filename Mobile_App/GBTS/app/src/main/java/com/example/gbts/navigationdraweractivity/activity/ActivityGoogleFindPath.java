@@ -2,6 +2,7 @@ package com.example.gbts.navigationdraweractivity.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -11,6 +12,7 @@ import android.location.LocationListener;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.LogWriter;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -60,100 +62,42 @@ import java.util.List;
 import java.util.Locale;
 
 public class ActivityGoogleFindPath extends AppCompatActivity
-        implements OnMapReadyCallback, DirectionFinderListener, LocationListener {
-
-
-    private ArrayList<AutoCompleteBean> resultList;
-    private ArrayList<Double> locationResult;
-    GoogleMap googleMap;
-    double latitude = 0;
-    double longitude = 0;
-
-    private static final String LOG_TAG = "ExampleApp";
-    private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
-    private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
-    private static final String TYPE_SEARCH = "/search";
-    private static final String TYPE_DETAILS = "/details";
-    private static final String OUT_JSON = "/json";
-    //    private static final String API_KEY = "AIzaSyAnG0oOnOt1pNqhpbU_uwmCbaPjeBYl6VU";
-    private static final String API_KEY = "AIzaSyA65-eqSvIefv4lY3vARmN4fwVc1d4lPaE";
-
+        implements OnMapReadyCallback, DirectionFinderListener {
 
     GoogleMap mMap;
-    private Button btnFindPath;
     private WebView webView;
-    AutoCompleteTextView atcltOrigin, atcltDestination;
     private List<Marker> originMarkers = new ArrayList<>();
     private List<Marker> destinationMarkers = new ArrayList<>();
     private List<Polyline> polylinePaths = new ArrayList<>();
     private ProgressDialog progressDialog;
-    private List<String> html = new ArrayList<>();
+    ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_find_path);
+
+        //Display Home As Up Enabled
+        actionBar = getSupportActionBar();
+        actionBar.hide();
+//        actionBar.setDisplayHomeAsUpEnabled(true);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.findMap);
         mapFragment.getMapAsync(this);
 
-        atcltOrigin = (AutoCompleteTextView) findViewById(R.id.atcltOrigin);
-        atcltOrigin.setAdapter(new PlacesAutoCompleteAdapter(this, R.layout.list_item));
-        atcltOrigin.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                Log.d(LOG_TAG, "atcltOrigin click");
-                System.out.println(resultList.get(position).getDescription());
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        locationResult = Details(resultList.get(position).getDescription(), resultList.get(position).getReference());
-                    }
-                }).start();
-            }
-        });
+        Intent intent = getIntent();
+        String origin = intent.getStringExtra("origin");
+        String destination = intent.getStringExtra("destination");
 
-        atcltDestination = (AutoCompleteTextView) findViewById(R.id.atcltDestination);
-        atcltDestination.setAdapter(new PlacesAutoCompleteAdapter(this, R.layout.list_item));
-        atcltDestination.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                Log.d(LOG_TAG, "atcltOrigin click");
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        locationResult = Details(resultList.get(position).getDescription(), resultList.get(position).getReference());
-                    }
-                }).start();
-            }
-        });
-
-        btnFindPath = (Button) findViewById(R.id.btnFindPath);
-        btnFindPath.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendRequest();
-            }
-        });
-
-    }
-
-    private void sendRequest() {
-        String origin = atcltOrigin.getText().toString();
-        String destination = atcltDestination.getText().toString();
-//        Log.d("anhtruongne ", "origin" + origin);
-//        Log.d("anhtruongne ", "destination" + destination);
         if (origin.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập điểm bắt đầu ", Toast.LENGTH_SHORT).show();
             return;
         }
         if (destination.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập điểm đến ", Toast.LENGTH_SHORT).show();
             return;
         }
         try {
             new DirectionFinder(this, origin, destination).execute();
-
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -165,12 +109,13 @@ public class ActivityGoogleFindPath extends AppCompatActivity
         mMap = googleMap;
 
         // Add a marker in FPT and move the camera
-        LatLng fptUni = new LatLng(10.852862, 106.629524);
-        mMap.addMarker(new MarkerOptions()
-                .position(fptUni)
-                .title("Fpt University HCM")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.bus_pushpin)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(fptUni, 18));// di chuyen marker den vi tri FPT zoom 18
+//        LatLng fptUni = new LatLng(10.852862, 106.629524);
+//        mMap.addMarker(new MarkerOptions()
+//                .position(fptUni)
+//                .title("Fpt University HCM")
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.bus_pushpin)));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(fptUni, 18));
+        // di chuyen marker den vi tri FPT zoom 18
 //        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -235,7 +180,7 @@ public class ActivityGoogleFindPath extends AppCompatActivity
 
             PolylineOptions polylineOptions = new PolylineOptions().
                     geodesic(true).
-                    color(Color.GREEN).
+                    color(Color.GRAY).
                     width(12);
 
             for (int i = 0; i < route.points.size(); i++)
@@ -246,222 +191,13 @@ public class ActivityGoogleFindPath extends AppCompatActivity
             webView = (WebView) findViewById(R.id.webview_Maps);
             WebSettings settings = webView.getSettings();
             settings.setDefaultTextEncodingName("UTF-8");
-            webView.loadData("<html><body>" + route.html_instructions + "</body></html>", "text/html; charset=UTF-8", null);
+            String before = "<html> <head> <style> .list-type1{ margin-left: 20px; } .list-type1 ul{ list-style: none; font-size: 15px; padding: 0; } .list-type1 ul li{ padding-top: 10px; } .list-type1 a { position: relative; display: block; padding: 0px 10px; background: #f3f3f3 ; color: #000; text-decoration: none; } .list-type1 a img{ border-radius: 50%; margin-left: -30px; border: 2px solid #03a234 ; padding: 10px; max-width: 48px; background: #03a234 ; vertical-align: middle; } </style> <head> <body> <div class=\"list-type1\"> <ul>";
+            String after = "</ul></div></body></html>";
+            webView.loadData(before + route.html_instructions + after, "text/html; charset=UTF-8", null);
 //            Log.d("truongtq ", "intruc " + intruc);
 
             Log.d("truongtq ", "sendRequest " + route.html_instructions);
         }
-    }
-    //AUTO COMPLETE TEXTVIEW
-
-
-    @Override
-    public void onLocationChanged(Location location) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        LatLng latLng = new LatLng(latitude, longitude);
-        System.out.println("latitude :::: " + latitude + " longitude :::: " + longitude);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-
-    private class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
-        private ArrayList<String> result;
-
-        public PlacesAutoCompleteAdapter(Context context, int textViewResourceId) {
-            super(context, textViewResourceId);
-        }
-
-        @Override
-        public int getCount() {
-            return resultList.size();
-        }
-
-        @Override
-        public String getItem(int index) {
-            return resultList.get(index).getDescription();
-        }
-
-
-        @Override
-        public Filter getFilter() {
-            Filter filter = new Filter() {
-                @Override
-                protected FilterResults performFiltering(CharSequence constraint) {
-                    FilterResults filterResults = new FilterResults();
-                    if (constraint != null) {
-                        // Retrieve the autocomplete results.
-                        System.out.println("truongtq click");
-                        resultList = autocomplete(constraint.toString());
-                        result = new ArrayList<String>(resultList.size());
-                        // Assign the data to the FilterResults
-                        filterResults.values = resultList;
-                        filterResults.count = resultList.size();
-                    }
-                    return filterResults;
-                }
-
-                @Override
-                protected void publishResults(CharSequence constraint, FilterResults results) {
-                    if (results != null && results.count > 0) {
-                        notifyDataSetChanged();
-                    } else {
-                        notifyDataSetInvalidated();
-                    }
-                }
-            };
-
-            return filter;
-        }
-    }
-
-    private ArrayList<AutoCompleteBean> autocomplete(String input) {
-
-        ArrayList<AutoCompleteBean> resultList = null;
-
-        HttpURLConnection conn = null;
-        StringBuilder jsonResults = new StringBuilder();
-        try {
-            StringBuilder sb = new StringBuilder(PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON);
-            sb.append("?input=" + URLEncoder.encode(input, "utf-8"));
-            sb.append("&sensor=true&key=" + API_KEY);
-
-            URL url = new URL(sb.toString());
-            System.out.println("truongtq url" + url.toString());
-            conn = (HttpURLConnection) url.openConnection();
-            InputStreamReader in = new InputStreamReader(conn.getInputStream());
-
-            // Load the results into a StringBuilder
-            int read;
-            char[] buff = new char[1024];
-            while ((read = in.read(buff)) != -1) {
-                jsonResults.append(buff, 0, read);
-            }
-        } catch (MalformedURLException e) {
-            Log.e(LOG_TAG, "Error processing Places API URL", e);
-            return resultList;
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error connecting to Places API", e);
-            return resultList;
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-
-        try {
-            // Create a JSON object hierarchy from the results
-            JSONObject jsonObj = new JSONObject(jsonResults.toString());
-            JSONArray predsJsonArray = jsonObj.getJSONArray("predictions");
-
-            // Extract the Place descriptions from the results
-            resultList = new ArrayList<AutoCompleteBean>(predsJsonArray.length());
-            for (int i = 0; i < predsJsonArray.length(); i++) {
-                resultList.add(new AutoCompleteBean(predsJsonArray.getJSONObject(i).getString("description"),
-                        predsJsonArray.getJSONObject(i).getString("reference")));
-            }
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, "Cannot process JSON results", e);
-        }
-
-        return resultList;
-    }
-
-    private ArrayList<Double> Details(String description, String reference) {
-
-        ArrayList<Double> resultList = null;
-        HttpURLConnection conn = null;
-        StringBuilder jsonResults = new StringBuilder();
-
-        try {
-            StringBuilder sb = new StringBuilder(PLACES_API_BASE + TYPE_DETAILS + OUT_JSON);
-            sb.append("?reference=" + URLEncoder.encode(reference, "utf8"));
-            sb.append("&key=" + API_KEY);
-
-            URL url = new URL(sb.toString());
-            conn = (HttpURLConnection) url.openConnection();
-            InputStreamReader in = new InputStreamReader(conn.getInputStream());
-
-            // Load the results into a StringBuilder
-            int read;
-            char[] buff = new char[1024];
-            while ((read = in.read(buff)) != -1) {
-                jsonResults.append(buff, 0, read);
-            }
-        } catch (MalformedURLException e) {
-            Log.e(LOG_TAG, "Error processing Places API URL", e);
-            return resultList;
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error connecting to Places API", e);
-            return resultList;
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-        try {
-            // Create a JSON object hierarchy from the results
-            JSONObject jsonObj = new JSONObject(jsonResults.toString());
-            JSONObject jsonObjResult = jsonObj.getJSONObject("result");
-            JSONObject jsonObjGemmetry = jsonObjResult.getJSONObject("geometry");
-            JSONObject jsonObjLocation = jsonObjGemmetry.getJSONObject("location");
-
-            System.out.println("jsonObj.toString() :::: " + jsonObj.toString());
-            System.out.println("jsonObjLocation.toString() :::: " + jsonObjLocation.toString());
-
-            resultList = new ArrayList<Double>(2);
-            resultList.add(jsonObjLocation.getDouble("lat"));
-            resultList.add(jsonObjLocation.getDouble("lng"));
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, "Cannot process JSON results", e);
-        }
-
-        return resultList;
-    }
-
-    public String getAddress(double lat, double lng) {
-        String address = "";
-
-        Geocoder geocoder = new Geocoder(this, Locale.KOREA);
-
-        List<Address> list = null;
-
-        try {
-            list = geocoder.getFromLocation(lat, lng, 1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (list == null) {
-            Log.d(LOG_TAG, "List Address Null");
-            return null;
-        }
-
-        if (list.size() > 0) {
-            Address addr = list.get(0);
-            Log.d(String.valueOf(addr.getMaxAddressLineIndex()), addr.toString());
-            for (int j = 0; j <= addr.getMaxAddressLineIndex(); j++) {
-                address = address + addr.getAddressLine(j);
-            }
-
-        }
-
-        return address;
     }
 
 }

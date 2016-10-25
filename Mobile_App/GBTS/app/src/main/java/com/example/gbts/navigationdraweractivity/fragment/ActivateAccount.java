@@ -37,8 +37,10 @@ public class ActivateAccount extends DialogFragment {
     IntentFilter writeTagFilters[];
     boolean writeMode;
     Tag tag;
-    String setting="Info";
-    String hostAddress="http://grinbuz.com";
+    String setting = "Info";
+    //    String hostAddress="http://grinbuz.com";
+    String hostAddress = "https://grinbuz.com";
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,9 +51,11 @@ public class ActivateAccount extends DialogFragment {
         writeTagFilters = new IntentFilter[]{tagDetected};
         return inflater.inflate(R.layout.fragment_activate_account, container, false);
     }
+
     static String bin2hex(byte[] data) {
         return String.format("%0" + (data.length * 2) + "X", new BigInteger(1, data));
     }
+
     private class ActivateNFCCard extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
         String cardId, phone;
@@ -88,18 +92,18 @@ public class ActivateAccount extends DialogFragment {
             // Hide dialog
             pDialog.dismiss();
             boolean success = false;
-            String message="";
+            String message = "";
             //check success
             try {
                 success = jsonObject.getBoolean("success");
-                message=jsonObject.getString("message");
+                message = jsonObject.getString("message");
+                if (success) {
+                    Toast.makeText(getActivity(), "Đăng ký thẻ thành công", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "Thẻ đã đăng ký hoặc chưa tồn tại", Toast.LENGTH_LONG).show();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
-            }
-            if (success) {
-                Toast.makeText(getActivity(),message,Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(getActivity(),message,Toast.LENGTH_LONG).show();
             }
 
 

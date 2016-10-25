@@ -1,5 +1,6 @@
 package com.example.gbts.navigationdraweractivity.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.adapter.AllBusroutesAdapter;
@@ -36,7 +38,7 @@ public class BusStopActivity extends FragmentActivity
 
     List<BusStop> busStopList;
     GoStopAdapter goStopAdapter;
-    BusStop busStop;
+
     ListView listView;
 
     @Override
@@ -62,6 +64,7 @@ public class BusStopActivity extends FragmentActivity
 
 
     private class AsyncGoStop extends AsyncTask<String, Void, JSONObject> {
+        private ProgressDialog pDialog;
         Intent intent;
         String url;
         String busCode;
@@ -73,6 +76,12 @@ public class BusStopActivity extends FragmentActivity
             intent = getIntent();
             busCode = intent.getStringExtra("routeCode");
             Log.d("meow", "busCode " + busCode);
+
+            pDialog = new ProgressDialog(BusStopActivity.this);
+            pDialog.setMessage("Vui lòng đợi ...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
         }
 
         @Override
@@ -85,29 +94,24 @@ public class BusStopActivity extends FragmentActivity
 
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
-
+            // Hide dialog
+            pDialog.dismiss();
             Log.d("meow", "url " + url);
             String busStopName;
-            busStop = new BusStop();
             JSONArray jsonArray = null;
-            List<String> busName = new ArrayList<>();
+
             busStopList = new ArrayList<>();
             try {
                 jsonArray = jsonObject.optJSONArray("goStops");
                 for (int i = 0; i < jsonArray.length(); i++) {
+                    BusStop busStop = new BusStop();
                     JSONObject json = jsonArray.getJSONObject(i);
                     busStopName = json.optString("Name");
-                    busName.add(busStopName);
-
-                    busStop.setName(busName);
-
+                    busStop.setName(busStopName);
+                    busStopList.add(busStop);
                 }
-                Log.d("BusStopActivity1 ", "busName " + busStop.getName());
-                busStopList.add(busStop);
-//
-                Log.d("BusStopActivity1 ", "busStopList " + busStopList.size());
-                Log.d("BusStopActivity1 ", "busStopList " + busStopList.toString());
-
+//                Log.d("BusStopActivity1 ", "busName " + busName.toString());
+//                Log.d("BusStopActivity1 ", "busName " + busName.size());
 
                 listView = (ListView) findViewById(R.id.listViewBusStop);
                 goStopAdapter = new GoStopAdapter(getBaseContext(), busStopList);
@@ -115,7 +119,7 @@ public class BusStopActivity extends FragmentActivity
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        busStop = busStopList.get(position);
+                        BusStop busStop = busStopList.get(position);
                         // ID is tuyen duong
                     }
                 });

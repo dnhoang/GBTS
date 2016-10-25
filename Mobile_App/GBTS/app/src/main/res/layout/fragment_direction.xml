@@ -1,60 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
-    android:layout_height="350dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_gravity="center"
-    android:padding="10dp"
-    android:background="@drawable/background_table">
+    android:padding="5dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Tìm Đường"
-        android:textSize="30dp"
-        android:textStyle="bold"
-        android:background="#4CAF50"
-        android:padding="10dp"/>
-
-    <TextView
-        android:id="@+id/txtView1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Điểm khởi hành"
-        android:padding="10dp"
-        android:textSize="20dp"/>
-
-    <EditText
-        android:id="@+id/edtOrigin"
+    <LinearLayout
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:background="#E0E0E0"
-        android:padding="5dp"
-        android:hint="Nhập điểm khởi hành"/>
-
-    <TextView
-        android:id="@+id/txtView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Điểm đến"
-        android:padding="10dp"
-        android:textSize="20dp"/>
-
-    <EditText
-        android:id="@+id/edtDestination"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:background="#E0E0E0"
-        android:hint="Nhập điểm đến"/>
-
-    <Button
-        android:id="@+id/btnFind"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:layout_gravity="center"
-        android:padding="5dp"
-        android:layout_marginTop="30dp"
-        android:text="Tìm kiếm"/>
+        android:background="@drawable/background_table"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="#4CAF50"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Tìm Đường"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="Điểm khởi hành:"
+            android:textSize="15dp" />
+
+        <AutoCompleteTextView
+            android:id="@+id/AutoOrigin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/background_table"
+            android:hint="Nhập điểm đi"
+            android:text="Bệnh viện Tai mũi họng, Trần Quốc Thảo, Hồ Chí Minh, Việt Nam"
+            android:lines="1"
+            android:padding="5dp"/>
+
+        <TextView
+            android:id="@+id/txtView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="Điểm đến: "
+            android:textSize="15dp" />
+
+
+        <AutoCompleteTextView
+            android:id="@+id/AutoDestination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/background_table"
+            android:hint="Nhập điểm đến"
+            android:text="1A Lý Thường Kiệt, Hồ Chí Minh"
+            android:lines="1"
+            android:padding="5dp" />
+
+        <Button
+            android:id="@+id/btnFind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:padding="5dp"
+            android:text="Tìm kiếm" />
+    </LinearLayout>
 </LinearLayout>

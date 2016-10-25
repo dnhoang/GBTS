@@ -7,26 +7,12 @@
     android:orientation="vertical"
     tools:context="com.example.gbts.navigationdraweractivity.activity.ActivityGoogleFindPath">
 
-    <AutoCompleteTextView
-        android:id="@+id/atcltOrigin"
+
+    <fragment
+        android:id="@+id/findMap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/background_table"
-        android:hint="Nhập điểm đi"
-        android:text="Bến thành"
-        android:padding="7dp" />
-
-
-
-    <AutoCompleteTextView
-        android:id="@+id/atcltDestination"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/background_table"
-        android:hint="Nhập điểm đến"
-        android:text="Nhà thở đức bà"
-        android:padding="7dp"/>
-
+        android:layout_height="300dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -62,21 +48,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:text="0 min" />
-
-        <Button
-            android:id="@+id/btnFindPath"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:padding="5dp"
-            android:text="Tìm đường" />
     </LinearLayout>
 
-    <fragment
-        android:id="@+id/findMap"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="250dp" />
     <WebView
         android:id="@+id/webview_Maps"
         android:layout_width="match_parent"

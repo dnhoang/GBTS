@@ -8,7 +8,7 @@ import java.util.List;
  * Created by truon on 10/20/2016.
  */
 
-public class Steps {
+public class Step {
     public Distance distance;
     public Duration duration;
     public String endAddress;

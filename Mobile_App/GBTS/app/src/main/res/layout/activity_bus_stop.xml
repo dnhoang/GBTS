@@ -7,13 +7,24 @@
     android:orientation="vertical"
     tools:context="com.example.gbts.navigationdraweractivity.activity.BusStopActivity">
 
-    <fragment android:id="@+id/btMap"
+    <fragment
+        android:id="@+id/btMap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
+        android:layout_height="250dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="Trạm dừng"
+        android:textColor="#fff"
+        android:textSize="25dp" />
 
     <ListView
         android:id="@+id/listViewBusStop"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="wrap_content" />
 </LinearLayout>

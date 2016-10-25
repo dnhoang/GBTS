@@ -1,6 +1,5 @@
 package com.example.gbts.navigationdraweractivity;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.PendingIntent;
@@ -30,13 +29,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.gbts.navigationdraweractivity.activity.ActivityGoogleFindPath;
 import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
 import com.example.gbts.navigationdraweractivity.asyntask.FireBaseIDTask;
-import com.example.gbts.navigationdraweractivity.fragment.AccountInfo;
 import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
 import com.example.gbts.navigationdraweractivity.fragment.FragmentDirection;
-import com.example.gbts.navigationdraweractivity.fragment.FragmentReport;
 import com.example.gbts.navigationdraweractivity.fragment.GetAllButRoute;
 import com.example.gbts.navigationdraweractivity.fragment.GetReport;
 import com.example.gbts.navigationdraweractivity.fragment.GmapFragment;
@@ -75,6 +71,7 @@ public class MainActivity extends AppCompatActivity
     IntentFilter writeTagFilters[];
     boolean writeMode;
     Tag mytag;
+
     //End NFC Duc
     //Activate NFC card while logged in
     static String bin2hex(byte[] data) {
@@ -98,7 +95,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     protected void onNewIntent(Intent intent) {
 
 
@@ -116,7 +112,7 @@ public class MainActivity extends AppCompatActivity
                         this);
                 alertDialogBuilder
                         .setTitle("Phát hiện thẻ NFC!")
-                        .setMessage("Bạn có muốn kích hoạt thẻ này với số điện thoại "+phone+" không?")
+                        .setMessage("Bạn có muốn kích hoạt thẻ này với số điện thoại " + phone + " không?")
                         .setCancelable(false)
                         .setPositiveButton("Kích hoạt", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -194,10 +190,9 @@ public class MainActivity extends AppCompatActivity
             } else {
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
             }
-
-
         }
     }
+
     //End
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,18 +211,22 @@ public class MainActivity extends AppCompatActivity
         toolbar.setTitle("Xe bus thông minh");
         setSupportActionBar(toolbar);
 
-        //NOTIFICATION
-        FirebaseMessaging.getInstance().subscribeToTopic("GBTS");
-        String token = FirebaseInstanceId.getInstance().getToken();
-        Log.d("MainActivitytq token", token);
 
-        //Store phone number
+        //SHARED PREFERENCES PHONE NUMBER
         SharedPreferences preferences = getSharedPreferences("Info", MODE_PRIVATE);
         String phoneInfo = preferences.getString("Phonenumber", "Chào mừng bạn đến với thế giới hệ thống xe bus thông minh!!");
 
 
-        Log.d("MainActivitytq p", phoneInfo);
-        new FireBaseIDTask().execute(phoneInfo, token);
+        //NOTIFICATION
+        FirebaseMessaging.getInstance().subscribeToTopic("GBTS");
+        String token = FirebaseInstanceId.getInstance().getToken();
+        try {
+            new FireBaseIDTask().execute(phoneInfo, token);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //START FRAGMENT MAIN && INTEGRATION FB, PROMOTION
         if (savedInstanceState == null) {
             Fragment fragment = null;
             Class fragmentClass = null;
@@ -273,7 +272,7 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-        //Show Fragment
+        //Show Fragment Direction Google map
         final FragmentManager manager = getFragmentManager();
         final FragmentDirection direction = new FragmentDirection();
         final GetAllButRoute getAllButRoute = new GetAllButRoute();
@@ -281,9 +280,9 @@ public class MainActivity extends AppCompatActivity
         fab_direction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                direction.show(manager, "FragmentDirection");
-                Intent intent = new Intent(getApplicationContext(), ActivityGoogleFindPath.class);
-                startActivity(intent);
+                direction.show(manager, "FragmentDirection");
+//                Intent intent = new Intent(getApplicationContext(), ActivityGoogleFindPath.class);
+//                startActivity(intent);
             }
         });
         fab_search.setOnClickListener(new View.OnClickListener() {
@@ -312,10 +311,10 @@ public class MainActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         ReadModeOn();
+
         if (intent.getExtras() != null) {
 
             String check = intent.getStringExtra("afterPay");
-            Log.d("Hoangtest: ", check);
             if (check != null) {
                 Fragment fragment = null;
                 Class fragmentClass = null;
@@ -394,9 +393,6 @@ public class MainActivity extends AppCompatActivity
             switch (id) {
                 case R.id.nav_card:
                     toolbar.setTitle("Thẻ của bạn");
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("", "");
-//                    fragment.setArguments(bundle);
                     fragmentClass = CreditCard.class;
                     break;
                 case R.id.nav_getReport:
