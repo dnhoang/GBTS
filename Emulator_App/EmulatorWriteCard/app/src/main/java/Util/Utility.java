@@ -173,7 +173,7 @@ public class Utility  extends Application{
 //
 //                    Toast.makeText(getApplicationContext(), "Không thể kết nối với server!", Toast.LENGTH_SHORT).show();
 
-        }catch (IOException e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
         // try parse the string to a JSON object

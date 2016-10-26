@@ -5,7 +5,7 @@
 
     <!-- Set màu nền-->
     <solid
-        android:color="#006400" >
+        android:color="#008396" >
     </solid>
 
     <!-- đặt thuộc tính màu và độ rộng của đường viền -->
@@ -20,8 +20,8 @@
     </padding>
 
     <!-- và đây là bán kính đường tròn ở 4 góc -->
-    <corners
-        android:radius="10dp" >
-    </corners>
+    <!--<corners-->
+        <!--android:radius="10dp" >-->
+    <!--</corners>-->
 
 </shape>

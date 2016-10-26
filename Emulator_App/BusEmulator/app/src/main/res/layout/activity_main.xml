@@ -4,14 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
+    android:background="@drawable/gbbus"
     android:fitsSystemWindows="true"
-    tools:context="com.example.busemulator.MainActivity">
+    tools:context="com.example.busemulator.MainActivity"
+    android:backgroundTint="#ffffff">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <TextView
-        android:text="Chạm và giữ thẻ"
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/gbbus"
+            android:id="@+id/imageView2" />
+
+        <TextView
+        android:text=""
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvPrice"
@@ -22,7 +31,9 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="152dp"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:fontFamily="sans-serif"
+            android:textColor="#1e818d" />
 
     <TextView
         android:text=""
@@ -33,7 +44,8 @@
         android:layout_marginTop="64dp"
         android:id="@+id/tvRouteNumber"
         android:textSize="24sp"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textColor="#1e818d" />
 
     <TextView
         android:text=""
@@ -43,7 +55,8 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/tvRouteName"
         android:textSize="24sp"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textColor="#1e818d" />
     <TextView
         android:text=""
         android:layout_width="wrap_content"
@@ -52,18 +65,9 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/tvPrice"
         android:textSize="18sp"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textColor="#1e818d" />
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="80dp"
-        android:src="@drawable/nfc_logo"
-        android:id="@+id/imageView"
-        android:layout_gravity="center"
-
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="13dp"
-        android:layout_below="@+id/tvHeaderRouteName"/>
         <TextView
             android:text=""
             android:layout_width="wrap_content"
@@ -81,7 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         app:srcCompat="@drawable/ic_bus"
-        app:backgroundTint="#006400"
+        app:backgroundTint="#1e818d"
         android:layout_marginRight="19dp"
         android:layout_marginBottom="16dp"
         android:layout_alignParentBottom="true"
@@ -97,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             app:srcCompat="@drawable/ic_offline"
-            app:backgroundTint="#006400"
+            app:backgroundTint="#1e818d"
             android:layout_marginBottom="14dp"
             app:rippleColor="@android:color/background_light"
             app:elevation="8dp"

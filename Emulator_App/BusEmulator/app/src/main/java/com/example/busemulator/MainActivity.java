@@ -62,17 +62,35 @@ public class MainActivity extends AppCompatActivity {
     String ticketTypeId;
     String routeCode;
     String boughtDate;
+    boolean countdownisRunning=false;
     //    String cardDataVersion;
 //    String cardBalance;
     final String secretKey = "ssshhhhhhhhhhh!!!!";
-
+    CountDownTimer timer;
     private DBAdapter dbAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //TIMER
+        timer = new CountDownTimer(10*1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                //fabOffline.show();
+                countdownisRunning=true;
+                Log.d("TIMER","Running");
+            }
 
+            @Override
+            public void onFinish() {
+                FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
+                fabOffline.hide();
+                countdownisRunning=false;
+                Log.d("TIMER","Finished");
+            }
+        };
+        //
         dbAdapter = new DBAdapter(this);
         synchronizeOfflineTicket();
         //NFC
@@ -103,11 +121,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         final FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
-
+        fabOffline.hide();
         fabOffline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (countdownisRunning==true){
+
+                    countdownisRunning=false;
+                    showFabOffline();
+                }
                 if (!Utility.isNetworkConnected(getApplicationContext())) {
+
+
                     SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
 
                     ticketTypeId = sharedPreferences.getString("ticketTypeId", "");
@@ -121,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
                     successTicket.setVisibility(View.VISIBLE);
                     changeLayout(true);
                 } else {
+                    showFabOffline();
                     //Toast.makeText(getApplicationContext(), "Đã có kết nối mạng, vui lòng sử dụng thẻ!", Toast.LENGTH_LONG).show();
                     new SellCashTicketOnline().execute();
                 }
@@ -128,12 +154,25 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void showFabOffline() {
+        final FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
+        fabOffline.show();
+
+        timer.cancel();
+        Log.d("TIMER","Canceled");
+        countdownisRunning=true;
+        timer.start();
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
 
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
-
-            if (Utility.isNetworkConnected(MainActivity.this)) {
+            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            if (bin2hex(tag.getId()).equals("DD7F7F81")) {
+                showFabOffline();
+            }
+            else if (Utility.isNetworkConnected(MainActivity.this)) {
 
                 mytag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
@@ -183,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
 
 //Verify ticket Async
     }
+
 
     private void readNDEFMessage(Tag tag) {
         Ndef ndef = Ndef.get(tag);
@@ -435,8 +475,7 @@ public class MainActivity extends AppCompatActivity {
                     if (success) {
                         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                         fab.hide();
-                        FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
-                        fabOffline.hide();
+
                         successTicket = (RelativeLayout) findViewById(R.id.container);
                         successTicket.setVisibility(View.VISIBLE);
                         MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
@@ -470,8 +509,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                         fab.hide();
-                        FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
-                        fabOffline.hide();
+
                         failTicket = (RelativeLayout) findViewById(R.id.containerfail);
                         failTicket.setVisibility(View.VISIBLE);
                         MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
@@ -541,8 +579,7 @@ public class MainActivity extends AppCompatActivity {
 
                     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                     fab.show();
-                    FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
-                    fabOffline.show();
+
 
                 } else {
                     //fail
@@ -552,8 +589,7 @@ public class MainActivity extends AppCompatActivity {
                     tvFail.setText("Mua vé không thành công");
                     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                     fab.show();
-                    FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
-                    fabOffline.show();
+
 
                 }
                 //Toast.makeText(getApplicationContext(), "So tiền trên thẻ hiện tại " + cardBalance, Toast.LENGTH_SHORT).show();
@@ -598,6 +634,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected JSONObject doInBackground(String... params) {
+            int count=dbAdapter.countOfflineData();
+            Log.d("TICKET", "Số vé offline còn lại"+count+"");
             Utility jParser = new Utility();
             cardId = params[0];
 
@@ -629,6 +667,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     success = jsonObject.getBoolean("success");
                     if (success) {
+                        Toast.makeText(MainActivity.this,"Pushed offline data successfully",Toast.LENGTH_LONG);
                         Log.d("TICKET", "Push data success");
                         dbAdapter.deleteOfflineTicket(Long.parseLong(id));
                     }
@@ -680,6 +719,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     success = jsonObject.getBoolean("success");
                     if (success) {
+                        Toast.makeText(getApplicationContext(),"Pushed offline cash data successfully",Toast.LENGTH_SHORT);
                         dbAdapter.deleteOfflineCashTicket(Long.parseLong(id));
                     }
                 } catch (JSONException e) {

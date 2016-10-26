@@ -47,31 +47,65 @@ public class DBAdapter extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String query = DATABASE_CREATE;
-        String query2=DATABASE_CASHTABLE;
+        String query2 = DATABASE_CASHTABLE;
         db.execSQL(query);
         db.execSQL(query2);
     }
 
     public boolean isOfflineDataEmpty() {
         SQLiteDatabase db = this.getReadableDatabase();
-        String count = "SELECT count(*) FROM "+TABLE_NAME;
-        Cursor mcursor = db.rawQuery(count, null);
-        mcursor.moveToFirst();
-        int icount = mcursor.getInt(0);
-        return icount == 0;
+        try {
+
+            String count = "SELECT count(*) FROM " + TABLE_NAME;
+            Cursor mcursor = db.rawQuery(count, null);
+            mcursor.moveToFirst();
+            int icount = mcursor.getInt(0);
+            return icount == 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
+        return false;
+    }
+    public int countOfflineData() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        try {
+
+            String count = "SELECT count(*) FROM " + TABLE_NAME;
+            Cursor mcursor = db.rawQuery(count, null);
+            mcursor.moveToFirst();
+            int icount = mcursor.getInt(0);
+            return icount;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
+        return 0;
     }
     public boolean isOfflineCashDataEmpty() {
         SQLiteDatabase db = this.getReadableDatabase();
-        String count = "SELECT count(*) FROM "+TABLE_CASH;
-        Cursor mcursor = db.rawQuery(count, null);
-        mcursor.moveToFirst();
-        int icount = mcursor.getInt(0);
-        return icount == 0;
+        try {
+            String count = "SELECT count(*) FROM " + TABLE_CASH;
+            Cursor mcursor = db.rawQuery(count, null);
+            mcursor.moveToFirst();
+            int icount = mcursor.getInt(0);
+            db.close();
+            return icount == 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
+        return false;
+
     }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME+";");
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CASH+";");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME + ";");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CASH + ";");
         onCreate(db);
     }
 
@@ -93,7 +127,6 @@ public class DBAdapter extends SQLiteOpenHelper {
     public boolean deleteOfflineTicket(long rowId) {
         SQLiteDatabase db = this.getWritableDatabase();
         try {
-
             return db.delete(TABLE_NAME, KEY_ROWID + " =" + rowId, null) > 0;
         } catch (Exception e) {
             return false;

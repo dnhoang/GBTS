@@ -274,7 +274,7 @@ public class Utility {
 
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         // try parse the string to a JSON object

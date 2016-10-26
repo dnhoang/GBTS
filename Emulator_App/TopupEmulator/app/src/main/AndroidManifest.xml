@@ -13,7 +13,9 @@
         android:label="GBTS Top-up"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".TopupActivity"
+            android:label="Máy nạp tiền">
             <meta-data
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech" />
@@ -24,18 +26,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TopupActivity"
+        <activity
+            android:name=".SettingActivity"
             android:label="Quay về màn hình chính">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.topupemulator.MainActivity"/>
+                android:value="com.example.topupemulator.TopupActivity" />
         </activity>
-        <activity android:name=".SettingActivity"
-            android:label="Quay về màn hình chính">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.topupemulator.MainActivity"/>
-        </activity>
+        <activity android:name=".ConfirmActivity"></activity>
     </application>
 
 </manifest>
