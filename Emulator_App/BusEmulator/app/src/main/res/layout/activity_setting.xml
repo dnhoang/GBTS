@@ -81,4 +81,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tvOfflineTicketSold" />
+
+    <Button
+        android:text="Lưu địa chỉ máy chủ"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btSaveHost"
+        android:onClick="clickToSaveHost" />
 </LinearLayout>

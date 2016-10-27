@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.nfc.FormatException;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
@@ -31,6 +32,8 @@ public class ConfirmActivity extends AppCompatActivity {
     IntentFilter writeTagFilters[];
     boolean writeMode;
     String creditPlanId, amount, staffPhone;
+    String hostAddress="https://grinbuz.net";
+    String setting="settingPreference";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +101,9 @@ public class ConfirmActivity extends AppCompatActivity {
             staffPhone = params[2];
             amount = params[3];
             Utility utility = new Utility();
-            String strURL = "https://grinbuz.com/Api/AddCardBalanceByCash?key=gbts_2016_capstone" +
+            SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+            hostAddress = sharedPreferences.getString("host", "https://grinbuz.net");
+            String strURL = hostAddress+"/Api/AddCardBalanceByCash?key=gbts_2016_capstone" +
                     "&cardId=" + cardId +
                     "&creditPlanId=" + creditPlanId +
                     "&staffPhone=" + staffPhone;

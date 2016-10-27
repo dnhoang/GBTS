@@ -13,4 +13,11 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:paddingTop="10dp" />
+
+    <Button
+        android:text="Nạp bằng thẻ cào"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btTopUpByCard"
+        android:onClick="clickToTopUp" />
 </LinearLayout>
