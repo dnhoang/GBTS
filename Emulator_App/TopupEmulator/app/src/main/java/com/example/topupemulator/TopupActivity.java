@@ -56,11 +56,11 @@ public class TopupActivity extends AppCompatActivity {
         isSuccess = false;
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        FloatingActionButton fab=(FloatingActionButton)findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(TopupActivity.this,SettingActivity.class);
+                Intent intent = new Intent(TopupActivity.this, SettingActivity.class);
                 startActivity(intent);
             }
         });
@@ -85,10 +85,10 @@ public class TopupActivity extends AppCompatActivity {
                         .setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                Intent intent=new Intent(TopupActivity.this,ConfirmActivity.class);
-                                intent.putExtra("creditPlanId",creditPlanId);
-                                intent.putExtra("amount",amount);
-                                intent.putExtra("staffPhone",staffPhone);
+                                Intent intent = new Intent(TopupActivity.this, ConfirmActivity.class);
+                                intent.putExtra("creditPlanId", creditPlanId);
+                                intent.putExtra("amount", amount);
+                                intent.putExtra("staffPhone", staffPhone);
                                 startActivity(intent);
 
                             }
@@ -109,7 +109,6 @@ public class TopupActivity extends AppCompatActivity {
     }
 
 
-
     private class GetCardInfo extends AsyncTask<String, Void, JSONObject> {
         String cardId;
 
@@ -117,8 +116,9 @@ public class TopupActivity extends AppCompatActivity {
         protected JSONObject doInBackground(String... params) {
             Utility utility = new Utility();
             cardId = params[0];
-            String strURL = "\n" +
-                    "https://grinbuz.com/Api/GetCardInfo?key=gbts_2016_capstone&cardId=" + cardId;
+            SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+            hostAddress = sharedPreferences.getString("host", "https://grinbuz.net");
+            String strURL = hostAddress+"/Api/GetCardInfo?key=gbts_2016_capstone&cardId=" + cardId;
             // Getting JSON from URL
             JSONObject json = utility.getJSONFromUrl(strURL);
             return json;
@@ -167,6 +167,7 @@ public class TopupActivity extends AppCompatActivity {
 
     private class GetAllCreditPlan extends AsyncTask<String, Void, JSONObject> {
         ProgressDialog progressDialog;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -180,10 +181,10 @@ public class TopupActivity extends AppCompatActivity {
         @Override
         protected JSONObject doInBackground(String... params) {
             Utility utility = new Utility();
-            SharedPreferences sharedPreferences=getSharedPreferences(setting,MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
 
-            hostAddress=sharedPreferences.getString("host","https://grinbuz.com");
-            String strURL = hostAddress+"/Api/GetAllCreditPlan?key=gbts_2016_capstone";
+            hostAddress = sharedPreferences.getString("host", "https://grinbuz.net");
+            String strURL = hostAddress + "/Api/GetAllCreditPlan?key=gbts_2016_capstone";
             // Getting JSON from URL
             JSONObject json = utility.getJSONFromUrl(strURL);
             return json;
@@ -194,7 +195,7 @@ public class TopupActivity extends AppCompatActivity {
             //this method will be running on UI thread
             //Declare list of CreditPlan
             //listCreditPlan = new ArrayList<>();
-            Log.d("DUC", jsonObject.toString());
+//            Log.d("DUC", jsonObject.toString());
             if (jsonObject != null) {
                 boolean success;
                 try {
@@ -232,10 +233,12 @@ public class TopupActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            } else {
+                Intent intent=new Intent(TopupActivity.this,SettingActivity.class);
+                startActivity(intent);
             }
         }
     }
-
 
 
 }

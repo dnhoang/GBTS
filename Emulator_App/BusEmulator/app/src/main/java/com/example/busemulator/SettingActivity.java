@@ -36,10 +36,10 @@ public class SettingActivity extends AppCompatActivity {
     ArrayList<TicketType> listType = new ArrayList<TicketType>();
     ArrayList<String> ticketTypeName = new ArrayList<String>();
     String setting = "settingPreference";
-    String hostAddress = "https://grinbuz.com/";
+    String hostAddress = "https://grinbuz.net";
 
     Spinner spinner;
-    BusRoute busRoute=new BusRoute();
+    BusRoute busRoute = new BusRoute();
 
     ActionBar actionBar;
 
@@ -49,17 +49,15 @@ public class SettingActivity extends AppCompatActivity {
         final SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
         setContentView(R.layout.activity_setting);
 
-        TextView tvOfflineTicketSold=(TextView)findViewById(R.id.tvOfflineTicketSold);
-        tvOfflineTicketSold.setText("Số lượng vé ngoại tuyến đã bán: "+sharedPreferences.getInt("OfflineTicket",0));
+
 
         EditText edtHost = (EditText) findViewById(R.id.edtHost);
-        edtHost.setText(sharedPreferences.getString("host","https://grinbuz.com"));
-        EditText edtRoute=(EditText)findViewById(R.id.edtRoute);
-        edtRoute.setText(sharedPreferences.getString("code",""));
+        edtHost.setText(sharedPreferences.getString("host", "https://grinbuz.com"));
+        EditText edtRoute = (EditText) findViewById(R.id.edtRoute);
+        edtRoute.setText(sharedPreferences.getString("code", ""));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         new getAllTicketType().execute();
-
 
 
         spinner = (Spinner) findViewById(R.id.spinnerTick);
@@ -96,7 +94,7 @@ public class SettingActivity extends AppCompatActivity {
                         String code = edtRoute.getText().toString();
 
                         String ticketType = spinner.getSelectedItem().toString();
-                        if (ticketType!=null || code!=null){
+                        if (ticketType != null || code != null) {
                             try {
 //                                EditText edtHost = (EditText) findViewById(R.id.edtHost);
 //                                String host=edtHost.getText().toString().trim();
@@ -105,17 +103,23 @@ public class SettingActivity extends AppCompatActivity {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                        } else{
-                            Toast.makeText(getApplicationContext(),"Cấu hình chưa thay đổi",Toast.LENGTH_SHORT).show();
-                        }
+                        } else {
 
+                            Toast.makeText(getApplicationContext(), "Cấu hình chưa thay đổi", Toast.LENGTH_SHORT).show();
+                        }
 
 
                     }
                 });
     }
-
-
+    public void clickToSaveHost(View view){
+        SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        EditText edtHost = (EditText) findViewById(R.id.edtHost);
+        String host = edtHost.getText().toString().trim();
+        editor.putString("host", host);
+        editor.commit();
+    }
 
     public TicketType getTicketTypeByName(String name) {
 
@@ -129,28 +133,26 @@ public class SettingActivity extends AppCompatActivity {
     }
 
 
-
     public void saveSetting(String code, String ticketTypeName) throws IOException {
         SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
         EditText edtHost = (EditText) findViewById(R.id.edtHost);
-        String host=edtHost.getText().toString().trim();
-        if (host.equals("")){
+        String host = edtHost.getText().toString().trim();
+        if (host.equals("")) {
 
-            SharedPreferences.Editor editor=sharedPreferences.edit();
-            editor.putString("host","https://grinbuz.com");
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("host", "https://grinbuz.net");
             editor.commit();
             new GetBusRouteByCode().execute(ticketTypeName);
-        } else{
-            hostAddress=edtHost.getText().toString().trim();
-            SharedPreferences.Editor editor=sharedPreferences.edit();
-            editor.putString("host",hostAddress);
+        } else {
+            hostAddress = edtHost.getText().toString().trim();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("host", hostAddress);
             editor.commit();
             new GetBusRouteByCode().execute(ticketTypeName);
         }
         //EditText edtRoute = (EditText) findViewById(R.id.edtRoute);
         //System.out.println(code);
         //BusRoute busRoute = getRouteByCode(code);
-
 
 
     }
@@ -174,8 +176,8 @@ public class SettingActivity extends AppCompatActivity {
         @Override
         protected JSONObject doInBackground(String... params) {
             Utility jParser = new Utility();
-            SharedPreferences sharedPreferences=getSharedPreferences(setting,MODE_PRIVATE);
-            hostAddress=sharedPreferences.getString("host","https://grinbuz.com");
+            SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+            hostAddress = sharedPreferences.getString("host", "https://grinbuz.net");
             //hostAddress="https://grinbuz.com";
             String strURL = hostAddress + "/Api/GetAllTicketType?key=gbts_2016_capstone";
 
@@ -190,48 +192,51 @@ public class SettingActivity extends AppCompatActivity {
             // Hide dialog
             pDialog.dismiss();
             //check success
+            if (jsonObject == null) {
 
-            try {
-
-                success = jsonObject.getBoolean("success");
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            if (success) {
+            } else {
                 try {
-                    JSONArray data = jsonObject.getJSONArray("data");
 
-                    for (int i = 0; i < data.length(); i++) {
-                        JSONObject json_data = data.getJSONObject(i);
+                    success = jsonObject.getBoolean("success");
 
-
-
-                        String id = json_data.getString("Id");
-                        String name = json_data.getString("Name");
-                        String description = json_data.getString("Description");
-                        String price = json_data.getString("Price");
-
-                        TicketType ticketType = new TicketType(id,name,description,price);
-                        listType.add(ticketType);
-                        ticketTypeName.add(name);
-
-
-                    }
-                    spinner = (Spinner) findViewById(R.id.spinnerTick);
-                    spinner.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, ticketTypeName));
                 } catch (JSONException e) {
                     e.printStackTrace();
-//
                 }
-            } else {
+
+                if (success) {
+                    try {
+                        JSONArray data = jsonObject.getJSONArray("data");
+
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject json_data = data.getJSONObject(i);
 
 
-                Toast.makeText(getApplicationContext(), "Không thể kết nối với máy chủ", Toast.LENGTH_LONG).show();
+                            String id = json_data.getString("Id");
+                            String name = json_data.getString("Name");
+                            String description = json_data.getString("Description");
+                            String price = json_data.getString("Price");
+
+                            TicketType ticketType = new TicketType(id, name, description, price);
+                            listType.add(ticketType);
+                            ticketTypeName.add(name);
 
 
+                        }
+                        spinner = (Spinner) findViewById(R.id.spinnerTick);
+                        spinner.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, ticketTypeName));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+//
+                    }
+                } else {
+
+
+                    Toast.makeText(getApplicationContext(), "Không thể kết nối với máy chủ", Toast.LENGTH_LONG).show();
+
+
+                }
             }
+
         }
     }
 
@@ -257,8 +262,8 @@ public class SettingActivity extends AppCompatActivity {
         @Override
         protected JSONObject doInBackground(String... params) {
             Utility jParser = new Utility();
-            ticketTypeName=params[0];
-            String strURL = hostAddress+"/Api/GetBusRouteByCode?key=gbts_2016_capstone&routeCode="+code;
+            ticketTypeName = params[0];
+            String strURL = hostAddress + "/Api/GetBusRouteByCode?key=gbts_2016_capstone&routeCode=" + code;
 
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrl(strURL);
@@ -278,18 +283,18 @@ public class SettingActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             if (success) {
-                JSONObject data=null;
+                JSONObject data = null;
                 try {
                     data = jsonObject.getJSONObject("data");
 
-                    String id=data.getString("Id");
-                    String code=data.getString("Code");
-                    String name=data.getString("Name");
-                    busRoute=new BusRoute(id,code,name);
+                    String id = data.getString("Id");
+                    String code = data.getString("Code");
+                    String name = data.getString("Name");
+                    busRoute = new BusRoute(id, code, name);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                SharedPreferences sharedPreferences=getSharedPreferences(setting,MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 if (busRoute != null) {
                     TicketType ticketType = getTicketTypeByName(ticketTypeName);
@@ -305,7 +310,7 @@ public class SettingActivity extends AppCompatActivity {
                 editor.commit();
                 TextView routeName = (TextView) findViewById(R.id.tvRouteName);
                 routeName.setText(busRoute.getName());
-                EditText edtRoute=(EditText)findViewById(R.id.edtRoute);
+                EditText edtRoute = (EditText) findViewById(R.id.edtRoute);
                 edtRoute.setText(busRoute.getCode());
 
             } else {
@@ -313,8 +318,6 @@ public class SettingActivity extends AppCompatActivity {
             }
         }
     }
-
-
 
 
 }
