@@ -1,9 +1,15 @@
 package com.example.gbts.navigationdraweractivity.module.google.mapsAPI;
 
+import android.app.FragmentManager;
+import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.gbts.navigationdraweractivity.activity.ActivityGoogleFindPath;
+import com.example.gbts.navigationdraweractivity.fragment.FragmentDirection;
+import com.example.gbts.navigationdraweractivity.fragment.GetAllButRoute;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -17,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +43,8 @@ public class DirectionFinder {
     private DirectionFinderListener listener;
     private String origin;
     private String destination;
+
+    private Context context;
 
     public DirectionFinder(DirectionFinderListener listener, String origin, String destination) {
         this.listener = listener;
@@ -62,7 +71,14 @@ public class DirectionFinder {
             String link = params[0];
             try {
                 url = new URL(link);
-                InputStream is = url.openConnection().getInputStream();
+                URLConnection urlConn = url.openConnection();
+//                SET TIMEOUT FOR URL Connection
+                urlConn.setConnectTimeout(10000);
+                urlConn.setReadTimeout(10000);
+                urlConn.setAllowUserInteraction(false);
+                urlConn.setDoOutput(true);
+
+                InputStream is = urlConn.getInputStream();
                 StringBuffer buffer = new StringBuffer();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
@@ -95,22 +111,22 @@ public class DirectionFinder {
     }
 
     private void parseJSon(String data) throws JSONException {
-//            Log.d("anhtruongne ", "parseJSon");
+
         if (data == null)
             return;
 
         List<Route> routes = new ArrayList<>();
-        List<Step> stepsList = new ArrayList<>();
         JSONObject jsonData = new JSONObject(data);
+        Route route = new Route();
+
+
         JSONArray jsonRoutes = jsonData.getJSONArray("routes");
+        //NOT routes
         if (jsonRoutes.length() == 0) {
-            Log.d("anhtruongne ", "jsonRoutes not existed");
+            Log.d("anhtruong", "Route don't exist");
             return;
         }
-        Route route = new Route();
-        Step steps = new Step();
         /** Traversing all routes */
-        List<List<String>> results = new ArrayList<>();
 //        for (int i = 0; i < jsonRoutes.length(); i++) {
         JSONObject jsonRoute = jsonRoutes.getJSONObject(0);
 
@@ -130,7 +146,6 @@ public class DirectionFinder {
                 JSONObject transit_details = singleStep.getJSONObject("transit_details");
                 JSONObject line = transit_details.getJSONObject("line");
                 String busName = line.getString("name");
-                JSONObject vehicle = line.getJSONObject("vehicle");
                 busList.add(busName);
             }
         }
@@ -162,6 +177,7 @@ public class DirectionFinder {
         Log.d("meoww", "jsonsLresultst " + busList.toString());
         listener.onDirectionFinderSuccess(routes);
     }
+
 
     private List<LatLng> decodePolyLine(final String poly) {
         int len = poly.length();

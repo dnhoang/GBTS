@@ -5,25 +5,15 @@ package com.example.gbts.navigationdraweractivity.enity;
  */
 
 public class AllBusroutes {
-    private int busID;
     private String busCode;
     private String busName;
 
     public AllBusroutes() {
     }
 
-    public AllBusroutes(int busID, String busCode, String busName) {
-        this.busID = busID;
+    public AllBusroutes(String busCode, String busName) {
         this.busCode = busCode;
         this.busName = busName;
-    }
-
-    public int getBusID() {
-        return busID;
-    }
-
-    public void setBusID(int busID) {
-        this.busID = busID;
     }
 
     public String getBusCode() {
@@ -40,5 +30,13 @@ public class AllBusroutes {
 
     public void setBusName(String busName) {
         this.busName = busName;
+    }
+
+    @Override
+    public String toString() {
+        return "AllBusroutes{" +
+                "busCode='" + busCode + '\'' +
+                ", busName='" + busName + '\'' +
+                '}';
     }
 }

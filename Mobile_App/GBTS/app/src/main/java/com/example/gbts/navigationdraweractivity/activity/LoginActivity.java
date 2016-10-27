@@ -154,8 +154,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         protected JSONObject doInBackground(String... params) {
             JSONParser jParser = new JSONParser();
 
-//            String strURL = Constance.API_LOGIN + "&phone=" + phone.trim() + "&password=" + pwd.trim();
-            String strURL = Constance.API_LOGIN + "&phone=01212184802&password=123456";
+            String strURL = Constance.API_LOGIN + "&phone=" + phone.trim() + "&password=" + pwd.trim();
+//            String strURL = Constance.API_LOGIN + "&phone=01212184802&password=123456";
             Log.d("meow", "url " + strURL);
 
             // Getting JSON from URL

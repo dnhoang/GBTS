@@ -7,11 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
 import android.widget.TextView;
 
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.enity.BusStop;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,8 +22,8 @@ import java.util.List;
 
 public class GoStopAdapter extends ArrayAdapter<BusStop> {
 
-    List<BusStop> busStopList;
     Context context;
+    List<BusStop> busStopList;
 
     TextView txtBusStopName;
 
@@ -45,6 +47,7 @@ public class GoStopAdapter extends ArrayAdapter<BusStop> {
         BusStop busStop = getItem(position);
         Log.d("GoStopAdapter", "busStop " + busStop.toString());
         Log.d("GoStopAdapter", "getStopId " + busStop.getStopId());
+//        txtBusStopName.setText("- " + fillterBusStopList.get(position));
         txtBusStopName.setText("- " + busStop.getName());
 
         Log.d("GoStopAdapter", "txtBusStopName " + "-" + busStop.getName());
