@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity
     Animation FabOpen, FabClose, FabClockwise, FabantiClockwise;
     boolean isOpen = false;
     //Duc
-    String hostAddress = "https://grinbuz.com";
+    String hostAddress = "https://grinbuz.net";
 
     //NFC Duc
     NfcAdapter adapter;

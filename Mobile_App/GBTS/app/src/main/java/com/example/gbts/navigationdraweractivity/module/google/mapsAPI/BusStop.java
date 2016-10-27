@@ -1,4 +1,4 @@
-package com.example.gbts.navigationdraweractivity.enity;
+package com.example.gbts.navigationdraweractivity.module.google.mapsAPI;
 
 import java.util.List;
 
