@@ -27,7 +27,7 @@ import sample.dto.OfflineTicket;
  */
 public class DBAdapter extends SQLiteOpenHelper {
 
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
     private static final String DB_NAME = "GreenBus";
     private static final String TABLE_NAME = "ticketOff";
     private static final String TABLE_CASH = "ticketOffCash";

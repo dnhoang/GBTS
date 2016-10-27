@@ -678,35 +678,38 @@ public class MainActivity extends AppCompatActivity {
             if (!dbAdapter.isOfflineCashDataEmpty()) {
                 List<OfflineTicket> list = dbAdapter.getAllOfflineCashTicket();
                 for (OfflineTicket ticket : list) {
-                    Utility jParser = new Utility();
+                    if (!dbAdapter.isOfflineCashDataEmpty()) {
+                        Utility jParser = new Utility();
 
-                    ticketTypeId = ticket.getTickettypeid();
-                    routeCode = ticket.getRoutecode();
-                    boughtDate = ticket.getBoughtdate();
-                    id = ticket.getId() + "";
-                    SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
-                    hostAddress = sharedPreferences.getString("host", "https://grinbuzz.com");
-                    String strURL = hostAddress + "/Api/PushCashTicketOffline?key=gbts_2016_capstone" +
-                            "&ticketTypeId=" + ticketTypeId +
-                            "&routeCode=" + routeCode +
-                            "&boughtDate=" + boughtDate;
-                    // Getting JSON from URL
-                    JSONObject json = jParser.getJSONFromUrl(strURL);
-                    Log.d("TICKET", strURL);
-                    //check success
-                    if (json != null) {
-                        try {
-                            boolean success = json.getBoolean("success");
-                            if (success) {
-                                Toast.makeText(getApplicationContext(), "Pushed offline cash data successfully", Toast.LENGTH_SHORT);
-                                dbAdapter.deleteOfflineCashTicket(Long.parseLong(id));
+                        ticketTypeId = ticket.getTickettypeid();
+                        routeCode = ticket.getRoutecode();
+                        boughtDate = ticket.getBoughtdate();
+                        id = ticket.getId() + "";
+                        SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+                        hostAddress = sharedPreferences.getString("host", "https://grinbuzz.net");
+                        String strURL = hostAddress + "/Api/PushCashTicketOffline?key=gbts_2016_capstone" +
+                                "&ticketTypeId=" + ticketTypeId +
+                                "&routeCode=" + routeCode +
+                                "&boughtDate=" + boughtDate;
+                        // Getting JSON from URL
+                        JSONObject json = jParser.getJSONFromUrl(strURL);
+                        Log.d("TICKET", json.toString());
+                        //check success
+                        if (json != null) {
+                            try {
+                                boolean success = json.getBoolean("success");
+                                if (success) {
+                                    //Toast.makeText(getApplicationContext(), "Pushed offline cash data successfully", Toast.LENGTH_SHORT);
+                                    boolean check=dbAdapter.deleteOfflineCashTicket(Long.parseLong(id));
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
                     }
+
                 }
             }
             return null;
