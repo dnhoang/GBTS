@@ -27,6 +27,8 @@ namespace Green_Bus_Ticket_System.Controllers
         int minBalance = Int32.Parse(ConfigurationManager.AppSettings["AlertBalance"]);
         int defaultBalance = Int32.Parse(ConfigurationManager.AppSettings["DefaultBalance"]);
         string storageConn = ConfigurationManager.AppSettings["StorageConnection"];
+        int SilverCardCodeBalance = Int32.Parse(ConfigurationManager.AppSettings["SilverCardCodeBalance"]);
+        string SilverCardCode = ConfigurationManager.AppSettings["SilverCardCode"];
 
         ICardService _cardService;
         ITicketTypeService _ticketTypeService;
@@ -353,6 +355,46 @@ namespace Green_Bus_Ticket_System.Controllers
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult Topup(string key, string cardId, string code)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            Card card = _cardService.GetCardByUID(cardId);
+            
+            if (card != null)
+            {
+                if (code.Equals(SilverCardCode))
+                {
+                    card.Balance = card.Balance + SilverCardCodeBalance;
+                    _cardService.Update(card);
+
+                    success = true;
+                    message = "Nạp tiền vào thẻ thành công!";
+                }
+                else
+                {
+                    success = false;
+                    message = "Mã nạp tiền không hợp lệ";
+                }
+                
+            }
+            else
+            {
+                success = false;
+                message = "Thẻ không tồn tại";
+            }
+
+
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+        }
 
         public JsonResult GetCardInfo(string key, string cardId)
         {

@@ -5,6 +5,7 @@ using Green_Bus_Ticket_System_Utils;
 using log4net;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -15,6 +16,9 @@ namespace Green_Bus_Ticket_System.Controllers
 {
     public class SMSController : TwilioController
     {
+        int SilverCardCodeBalance = Int32.Parse(ConfigurationManager.AppSettings["SilverCardCodeBalance"]);
+        string SilverCardCode = ConfigurationManager.AppSettings["SilverCardCode"];
+
         private static readonly ILog log = LogManager.GetLogger("WebLog");
         ICardService _cardService;
         IUserService _userService;
@@ -23,10 +27,11 @@ namespace Green_Bus_Ticket_System.Controllers
             _cardService = cardService;
             _userService = userService;
         }
-        [HttpPost]
-        public ActionResult ActivateAccount(string From, string Body)
+
+        public JsonResult ActivateAccount(string From, string Body)
         {
             //Activate Account Format: GB Card_ID
+            string responseMessage = "";
             string phone = CommonUtils.VietnamingPhone(From);
             if (Body != null && Body.Length > 0)
             {
@@ -34,7 +39,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 string command = data[0];
                 string cardId = data[1];
 
-                string responseMessage = "";
+                
 
                 if (command.Equals("GB", StringComparison.CurrentCultureIgnoreCase))
                 {
@@ -76,6 +81,37 @@ namespace Green_Bus_Ticket_System.Controllers
                         responseMessage = "The khong ton tai, vui long kiem tra lai!";
                     }
                 }
+                else if (command.Equals("NT", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    Card card = _cardService.GetCardByUID(cardId);
+                    if (card != null)
+                    {
+                        if (card.Status == (int)StatusReference.CardStatus.BLOCKED)
+                        {
+                            responseMessage = "The nay da bi khoa, vui long kiem tra lai!";
+                        }
+                        else
+                        {
+                            string code = data[2];
+                            if (code.Equals(SilverCardCode))
+                            {
+                                card.Balance = card.Balance + SilverCardCodeBalance;
+                                _cardService.Update(card);
+
+                                responseMessage = "Nap tien vao the thanh cong!";
+                            }
+                            else
+                            {
+                                responseMessage = "Ma the nap khong hop le";
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        responseMessage = "The khong ton tai, vui long kiem tra lai!";
+                    }
+                }
                 else
                 {
                     responseMessage = "Sai cu phap, vui long kiem tra lai!";
@@ -84,7 +120,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 SMSMessage.SendSMS(From, responseMessage);
 
             }
-            return null;
+            return Json( new { message = responseMessage } ); ;
         }
     }
 }
