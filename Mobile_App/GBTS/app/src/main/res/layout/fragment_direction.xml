@@ -58,7 +58,7 @@
             android:layout_margin="5dp"
             android:background="@drawable/background_table"
             android:hint="Nhập điểm đến"
-            android:text="1A Lý Thường Kiệt, Hồ Chí Minh"
+            android:text="1A Lý Thường Kiệt, Hồ- Chí Minh"
             android:lines="1"
             android:padding="5dp" />
 

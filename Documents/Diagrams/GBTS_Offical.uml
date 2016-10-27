@@ -5930,7 +5930,7 @@ Extension point: Edit card name
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">172</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">36</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">1065</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">1105</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">669</XPD:ATTR>
 <XPD:REF name="Model">5Bz85B29AkSctVEHh7/SswAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="LabelView" guid="ZXWPxgnHEEOBvu2yFsZt1AAA">
@@ -6019,7 +6019,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">836</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">100</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">78</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">433</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">521</XPD:ATTR>
 <XPD:ATTR name="ShowProperty" type="boolean">True</XPD:ATTR>
 <XPD:REF name="Model">rcTAiJZktEaOpVu9t943eAAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="qtYgCfHzukKNlnZtnIcoqAAA">
@@ -6043,13 +6043,13 @@ Extension point: Edit card name
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">1124</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">100</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">70</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">132</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">565</XPD:ATTR>
 <XPD:REF name="Model">FGM9AYSMvUC6brHdiuwTFQAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="phgxw+/EUEGis/YWpXwjxwAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="gZntCxbn702K2zIf9phWbAAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">Database</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">DatabaseConnectActivity</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="V5W4wwtSmEOpqbZjhuMyWwAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -6246,7 +6246,7 @@ Extension point: Edit card name
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">881,190;1152,190</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">881,190;1183,190</XPD:ATTR>
 <XPD:REF name="Model">xU6TEHNdkk6PrROElys+6QAA</XPD:REF>
 <XPD:REF name="Head">Tq7H7V53dUOLwl2yvaPClAAA</XPD:REF>
 <XPD:REF name="Tail">yJCGy2EPJ0SGkYnGG8i8PQAA</XPD:REF>
@@ -6272,17 +6272,17 @@ Extension point: Edit card name
 <XPD:REF name="HostEdge">q0UaJLQmUESV/73SboA+kAAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="lrOFWsWXsEaNMIsnSTzhygAA">
-<XPD:ATTR name="Left" type="integer">1152</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">1183</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">190</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">323</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">411</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[13]" type="UMLSeqStimulusView" guid="CiU8dyPWKE+/3XLwr4cs9QAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">1152,208;881,208</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">1183,208;881,208</XPD:ATTR>
 <XPD:REF name="Model">MvJTr+03qkeNvLk9wHLz1gAA</XPD:REF>
 <XPD:REF name="Head">yJCGy2EPJ0SGkYnGG8i8PQAA</XPD:REF>
 <XPD:REF name="Tail">Tq7H7V53dUOLwl2yvaPClAAA</XPD:REF>
@@ -6649,7 +6649,7 @@ Extension point: Edit card name
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">1026,480;1159,480</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">1026,480;1190,480</XPD:ATTR>
 <XPD:REF name="Model">CrjBqQOlPECBb8PndcFT5AAA</XPD:REF>
 <XPD:REF name="Head">Tq7H7V53dUOLwl2yvaPClAAA</XPD:REF>
 <XPD:REF name="Tail">wR/tb8DWlE2ZmTqnKN8q9wAA</XPD:REF>
@@ -6675,7 +6675,7 @@ Extension point: Edit card name
 <XPD:REF name="HostEdge">KxesUB7iZ0Wi3qSlwWdowAAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="sexPEEAK4kWGrYqmCn0czAAA">
-<XPD:ATTR name="Left" type="integer">1159</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">1190</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">480</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">29</XPD:ATTR>
@@ -6695,7 +6695,7 @@ Extension point: Edit card name
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">1159,502;1026,502</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">1190,502;1026,502</XPD:ATTR>
 <XPD:REF name="Model">BYyKOkFa3Eis3bF7zOiz5gAA</XPD:REF>
 <XPD:REF name="Head">wR/tb8DWlE2ZmTqnKN8q9wAA</XPD:REF>
 <XPD:REF name="Tail">Tq7H7V53dUOLwl2yvaPClAAA</XPD:REF>
@@ -7266,13 +7266,13 @@ Extension point: Edit card name
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">1008</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">56</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">70</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">132</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">637</XPD:ATTR>
 <XPD:REF name="Model">FGM9AYSMvUC6brHdiuwTFQAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="1qncq9pq3Uq8yDvTR0AWyQAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="t6hsY+YcQUu0sr2/lQrKLAAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">Database</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">DatabaseConnectActivity</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="FZBtJwo92kSRXW6i9/osvgAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -7390,14 +7390,14 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">720</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">167</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">273</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">310</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[9]" type="UMLSeqStimulusView" guid="x0gYYb2cYUi2JKB58cKAYgAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">733,169;1036,169</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">733,169;1067,169</XPD:ATTR>
 <XPD:REF name="Model">tsoZGswgY0Osfe3sY1cljQAA</XPD:REF>
 <XPD:REF name="Head">aYd75rWF/k2xEaqliK/lPAAA</XPD:REF>
 <XPD:REF name="Tail">G64+7z2vO0+2lpsyoUQnIwAA</XPD:REF>
@@ -7423,17 +7423,17 @@ Extension point: Edit card name
 <XPD:REF name="HostEdge">x0gYYb2cYUi2JKB58cKAYgAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="GqoWOIOYNE+e7PSLbI6hRQAA">
-<XPD:ATTR name="Left" type="integer">1036</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">1067</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">169</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">421</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">460</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[10]" type="UMLSeqStimulusView" guid="3/+hiGkzYEWwhlbo/90JOQAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">1036,236;733,236</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">1067,236;733,236</XPD:ATTR>
 <XPD:REF name="Model">cqm0ccA3D0qroNTEOZjoCgAA</XPD:REF>
 <XPD:REF name="Head">G64+7z2vO0+2lpsyoUQnIwAA</XPD:REF>
 <XPD:REF name="Tail">aYd75rWF/k2xEaqliK/lPAAA</XPD:REF>
@@ -7721,14 +7721,14 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">727</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">396</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">29</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">73</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[18]" type="UMLSeqStimulusView" guid="erhS5UORUUi9BtBmLb8VXQAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">740,405;1043,405</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">740,405;1074,405</XPD:ATTR>
 <XPD:REF name="Model">Z7an8R8Qu0yFphFY7xwLLgAA</XPD:REF>
 <XPD:REF name="Head">aYd75rWF/k2xEaqliK/lPAAA</XPD:REF>
 <XPD:REF name="Tail">G64+7z2vO0+2lpsyoUQnIwAA</XPD:REF>
@@ -7754,7 +7754,7 @@ Extension point: Edit card name
 <XPD:REF name="HostEdge">erhS5UORUUi9BtBmLb8VXQAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="F/cSFAah/U2Lj7InERaqbgAA">
-<XPD:ATTR name="Left" type="integer">1043</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">1074</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">405</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">44</XPD:ATTR>
@@ -7764,7 +7764,7 @@ Extension point: Edit card name
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">1043,442;727,442</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">1074,442;740,442</XPD:ATTR>
 <XPD:REF name="Model">woE9/A+IIEePy23gsLmeYgAA</XPD:REF>
 <XPD:REF name="Head">G64+7z2vO0+2lpsyoUQnIwAA</XPD:REF>
 <XPD:REF name="Tail">aYd75rWF/k2xEaqliK/lPAAA</XPD:REF>
@@ -8195,7 +8195,7 @@ Extension point: Edit card name
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">16</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">16</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">857</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">917</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">381</XPD:ATTR>
 <XPD:REF name="Model">0tddj9hfCUKg/1I9kFSz+wAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="LabelView" guid="6lrYeN1STU62kQTyvH0hfgAA">
@@ -8236,7 +8236,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">200</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">68</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">137</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">245</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">261</XPD:ATTR>
 <XPD:REF name="Model">bv6J7vCz9kCqNCL0x3PbfQAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="coD4UwNV2U6WJ9a6B8naAQAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="EFIwXcqNlECQg1/oKUPe3QAA">
@@ -8307,13 +8307,13 @@ Extension point: Edit card name
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">780</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">80</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">70</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">132</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">249</XPD:ATTR>
 <XPD:REF name="Model">FGM9AYSMvUC6brHdiuwTFQAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="xi763I1Azk6M83cs7XELFwAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="ND2t7IKwFEyRltH1KmHpuQAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">Database</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">DatabaseConnectActivity</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="tz44kkCk4UWfgySWK1zwngAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -8359,7 +8359,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">261</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">196</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">57</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">101</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[7]" type="UMLSeqStimulusView" guid="8bGH/d3IQUCHwDvB4Fhm3QAA">
@@ -8395,7 +8395,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">492</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">198</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">67</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">107</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[8]" type="UMLSeqStimulusView" guid="CKEsYSqV8U6dQo09cPsIWwAA">
@@ -8438,7 +8438,7 @@ Extension point: Edit card name
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">653,200;808,200</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">653,200;839,200</XPD:ATTR>
 <XPD:REF name="Model">ykBAKCOGjEGMzqXnXWYsXQAA</XPD:REF>
 <XPD:REF name="Head">mTiLklDyu0u4DuirNkmiYwAA</XPD:REF>
 <XPD:REF name="Tail">KtzyzK8hvE+25eV0eHLDAQAA</XPD:REF>
@@ -8464,17 +8464,17 @@ Extension point: Edit card name
 <XPD:REF name="HostEdge">XaXnnlFtGEOVAWQIebR6OAAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="ruBkTjfnW0ySYMKrJutS4QAA">
-<XPD:ATTR name="Left" type="integer">808</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">839</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">200</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">37</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">105</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[10]" type="UMLSeqStimulusView" guid="v0NMOua++EGsfBr2xPyXMAAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">808,233;653,233</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">839,233;653,233</XPD:ATTR>
 <XPD:REF name="Model">aqCJ0wCloEep1PHTmZi+yAAA</XPD:REF>
 <XPD:REF name="Head">KtzyzK8hvE+25eV0eHLDAQAA</XPD:REF>
 <XPD:REF name="Tail">mTiLklDyu0u4DuirNkmiYwAA</XPD:REF>
@@ -8745,7 +8745,7 @@ Extension point: Edit card name
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">60</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">32</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">936</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">981</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">460</XPD:ATTR>
 <XPD:REF name="Model">kNk1df0M00y/aC8K9JdJNAAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="LabelView" guid="sJsN7LujzU+bUbzMNPm4xQAA">
@@ -8828,13 +8828,13 @@ Extension point: Edit card name
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">876</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">92</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">70</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">132</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">350</XPD:ATTR>
 <XPD:REF name="Model">FGM9AYSMvUC6brHdiuwTFQAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="hFFUOGiBsEWA6YfADi+QcgAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="5uogWzNct0+EZ9EO7u4LXgAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">Database</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">DatabaseConnectActivity</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="k664yYRdOkasRBz5M7V3iAAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -8952,7 +8952,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">320</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">184</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">192</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">229</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[8]" type="UMLSeqStimulusView" guid="LvM5rAa4kE27E0gcoK1SuwAA">
@@ -8988,7 +8988,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">524</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">184</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">177</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">233</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[9]" type="UMLSeqStimulusView" guid="/J5wY9Nci0mPHBms9QwEgAAA">
@@ -9031,7 +9031,7 @@ Extension point: Edit card name
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">713,186;904,186</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">713,186;935,186</XPD:ATTR>
 <XPD:REF name="Model">nmyfVB2QR06fd3i7ZkbusAAA</XPD:REF>
 <XPD:REF name="Head">IiBZ74KQgEiNCucmzimzUwAA</XPD:REF>
 <XPD:REF name="Tail">r+XOQVemM06u6jsvrGHmFwAA</XPD:REF>
@@ -9057,17 +9057,17 @@ Extension point: Edit card name
 <XPD:REF name="HostEdge">er0db2aR/0G5py2UQV/VPQAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="ngtdbQ2jVU27oxwrJxexlgAA">
-<XPD:ATTR name="Left" type="integer">904</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">935</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">186</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">79</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">227</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[11]" type="UMLSeqStimulusView" guid="7cMir2CuWk+ZvbzF9X5wIgAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">904,221;713,221</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">935,221;713,221</XPD:ATTR>
 <XPD:REF name="Model">DhuE8nRzZEySe/p2RZ6waQAA</XPD:REF>
 <XPD:REF name="Head">r+XOQVemM06u6jsvrGHmFwAA</XPD:REF>
 <XPD:REF name="Tail">IiBZ74KQgEiNCucmzimzUwAA</XPD:REF>
@@ -9419,7 +9419,7 @@ Extension point: Edit card name
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">160</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">64</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">740</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">805</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">460</XPD:ATTR>
 <XPD:REF name="Model">OUxZTq6Jq0yJif8fR15GVQAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="LabelView" guid="nj9dINAhFU+Jh/hNx5toTQAA">
@@ -9507,13 +9507,13 @@ Extension point: Edit card name
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">796</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">100</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">70</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">350</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">132</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">397</XPD:ATTR>
 <XPD:REF name="Model">FGM9AYSMvUC6brHdiuwTFQAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="WFdKOHrUckSjPt12TS6rLwAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="sH6O2afyEUu9svbL6xu1HgAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">Database</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">DatabaseConnectActivity</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="fn6DaAR9VkmzLKNdsKcWTAAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -9662,7 +9662,7 @@ Extension point: Edit card name
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">697,210;824,210</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">697,210;855,210</XPD:ATTR>
 <XPD:REF name="Model">xs2Jvmi5fEy05cAcHZu0FwAA</XPD:REF>
 <XPD:REF name="Head">fPeU3ojpT0WMHAMC/mb4bwAA</XPD:REF>
 <XPD:REF name="Tail">HbN9MNokrESzrzu0L2/oxQAA</XPD:REF>
@@ -9688,17 +9688,17 @@ Extension point: Edit card name
 <XPD:REF name="HostEdge">sUtq4Jl8+0C2pRbDKhm5HAAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="/LyaU9oo7UGKIKPnP2xKCQAA">
-<XPD:ATTR name="Left" type="integer">824</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">855</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">210</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">39</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">263</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[10]" type="UMLSeqStimulusView" guid="sORALddsnEGhcXrpOSHmbwAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">824,244;697,244</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">855,244;697,244</XPD:ATTR>
 <XPD:REF name="Model">rirWUHdC70y88apCZogAJgAA</XPD:REF>
 <XPD:REF name="Head">HbN9MNokrESzrzu0L2/oxQAA</XPD:REF>
 <XPD:REF name="Tail">fPeU3ojpT0WMHAMC/mb4bwAA</XPD:REF>
@@ -9984,7 +9984,7 @@ Extension point: Edit card name
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">28</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">52</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">924</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">981</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">401</XPD:ATTR>
 <XPD:REF name="Model">j9ehQPbYBECsQ3S/Vcj4QgAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="LabelView" guid="IUUpj5Pcwk+a5scOiyvpRQAA">
@@ -10044,7 +10044,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">52</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">92</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">70</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">321</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">345</XPD:ATTR>
 <XPD:REF name="Model">izHGsk5Z5Ea3zAT6/7a1kAAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="sgQo7soJ0kOUvj5t13uWsgAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="AVFJMruc4U6qmhAhZRaChQAA">
@@ -10068,7 +10068,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">432</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">96</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">70</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">317</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">349</XPD:ATTR>
 <XPD:REF name="Model">I7GBcHNO6UGP3iaUBjkKtAAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="aKAb7qFXVkiV8Kc1oBAGQgAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="GJtWb5zBjE+A1+EVYnV3QgAA">
@@ -10091,13 +10091,13 @@ Extension point: Edit card name
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">836</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">92</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">70</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">301</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">132</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">349</XPD:ATTR>
 <XPD:REF name="Model">FGM9AYSMvUC6brHdiuwTFQAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="hLLC2A04+EufvMbXyTv/HwAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="dddEU35gNECxLun/KT9CWAAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">Database</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">DatabaseConnectActivity</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="IB9+bv/wyUO/MlE+aDD95gAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -10116,7 +10116,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">224</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">96</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">113</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">321</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">345</XPD:ATTR>
 <XPD:REF name="Model">bv6J7vCz9kCqNCL0x3PbfQAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="VPitu/e88kSZK22rqXScngAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="TVXBWdHYFkitnyuHFRAIbgAA">
@@ -10191,7 +10191,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">273</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">200</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">189</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">229</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[8]" type="UMLSeqStimulusView" guid="5pJoA/S8a02twxq6owGFLgAA">
@@ -10227,7 +10227,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">460</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">200</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">189</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">229</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[9]" type="UMLSeqStimulusView" guid="Rt55XWbhxUO9ji79hkJK+QAA">
@@ -10270,7 +10270,7 @@ Extension point: Edit card name
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">677,204;864,204</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">677,204;895,204</XPD:ATTR>
 <XPD:REF name="Model">lCO0LQraNEO+zfi0d805YwAA</XPD:REF>
 <XPD:REF name="Head">J5OYWMKCDEmJoxecO2C8uwAA</XPD:REF>
 <XPD:REF name="Tail">NI+dw1v/VkmI70qdUUEgdQAA</XPD:REF>
@@ -10296,13 +10296,50 @@ Extension point: Edit card name
 <XPD:REF name="HostEdge">8hKR/+Dao0CHrE/XBs+V0AAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="DoxyIs8N50aqkyMNILFMfQAA">
-<XPD:ATTR name="Left" type="integer">864</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">895</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">204</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">189</XPD:ATTR>
+</XPD:OBJ>
+</XPD:OBJ>
+<XPD:OBJ name="OwnedViews[11]" type="UMLSeqStimulusView" guid="KuHcArrAwU+fYrOkHemK9gAA">
+<XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
+<XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
+<XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">895,238;677,238</XPD:ATTR>
+<XPD:REF name="Model">Zcm9n27+uEmRH0Ha6n9RvQAA</XPD:REF>
+<XPD:REF name="Head">NI+dw1v/VkmI70qdUUEgdQAA</XPD:REF>
+<XPD:REF name="Tail">J5OYWMKCDEmJoxecO2C8uwAA</XPD:REF>
+<XPD:OBJ name="NameLabel" type="EdgeLabelView" guid="uef/51bmB0uC5JzlI2AvHAAA">
+<XPD:ATTR name="Alpha" type="real">-0.896055994327739</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">12.8062484748657</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">5: Return result</XPD:ATTR>
+<XPD:REF name="Model">Zcm9n27+uEmRH0Ha6n9RvQAA</XPD:REF>
+<XPD:REF name="HostEdge">KuHcArrAwU+fYrOkHemK9gAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="StereotypeLabel" type="EdgeLabelView" guid="/wZJk2hrxUyr+vua2qKc1QAA">
+<XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
+<XPD:ATTR name="Alpha" type="real">15707963267949</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">25</XPD:ATTR>
+<XPD:REF name="Model">Zcm9n27+uEmRH0Ha6n9RvQAA</XPD:REF>
+<XPD:REF name="HostEdge">KuHcArrAwU+fYrOkHemK9gAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="PropertyLabel" type="EdgeLabelView" guid="K+fPo4vVd0SU8opdw9coJwAA">
+<XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
+<XPD:ATTR name="Alpha" type="real">-15707963267949</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">10</XPD:ATTR>
+<XPD:REF name="Model">Zcm9n27+uEmRH0Ha6n9RvQAA</XPD:REF>
+<XPD:REF name="HostEdge">KuHcArrAwU+fYrOkHemK9gAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Activation" type="UMLActivationView" guid="zTtRtzdrLUGamPIRYEu/WwAA">
+<XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">664</XPD:ATTR>
+<XPD:ATTR name="Top" type="integer">238</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">29</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:OBJ name="OwnedViews[11]" type="UMLSeqStimulusView" guid="nkxDWD04v0itITlrtCIAIwAA">
+<XPD:OBJ name="OwnedViews[12]" type="UMLSeqStimulusView" guid="nkxDWD04v0itITlrtCIAIwAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
@@ -10335,43 +10372,6 @@ Extension point: Edit card name
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">460</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">240</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">29</XPD:ATTR>
-</XPD:OBJ>
-</XPD:OBJ>
-<XPD:OBJ name="OwnedViews[12]" type="UMLSeqStimulusView" guid="KuHcArrAwU+fYrOkHemK9gAA">
-<XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
-<XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">871,243;677,243</XPD:ATTR>
-<XPD:REF name="Model">Zcm9n27+uEmRH0Ha6n9RvQAA</XPD:REF>
-<XPD:REF name="Head">NI+dw1v/VkmI70qdUUEgdQAA</XPD:REF>
-<XPD:REF name="Tail">J5OYWMKCDEmJoxecO2C8uwAA</XPD:REF>
-<XPD:OBJ name="NameLabel" type="EdgeLabelView" guid="uef/51bmB0uC5JzlI2AvHAAA">
-<XPD:ATTR name="Alpha" type="real">-0.896055994327739</XPD:ATTR>
-<XPD:ATTR name="Distance" type="real">12.8062484748657</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">5: Return result</XPD:ATTR>
-<XPD:REF name="Model">Zcm9n27+uEmRH0Ha6n9RvQAA</XPD:REF>
-<XPD:REF name="HostEdge">KuHcArrAwU+fYrOkHemK9gAA</XPD:REF>
-</XPD:OBJ>
-<XPD:OBJ name="StereotypeLabel" type="EdgeLabelView" guid="/wZJk2hrxUyr+vua2qKc1QAA">
-<XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
-<XPD:ATTR name="Alpha" type="real">15707963267949</XPD:ATTR>
-<XPD:ATTR name="Distance" type="real">25</XPD:ATTR>
-<XPD:REF name="Model">Zcm9n27+uEmRH0Ha6n9RvQAA</XPD:REF>
-<XPD:REF name="HostEdge">KuHcArrAwU+fYrOkHemK9gAA</XPD:REF>
-</XPD:OBJ>
-<XPD:OBJ name="PropertyLabel" type="EdgeLabelView" guid="K+fPo4vVd0SU8opdw9coJwAA">
-<XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
-<XPD:ATTR name="Alpha" type="real">-15707963267949</XPD:ATTR>
-<XPD:ATTR name="Distance" type="real">10</XPD:ATTR>
-<XPD:REF name="Model">Zcm9n27+uEmRH0Ha6n9RvQAA</XPD:REF>
-<XPD:REF name="HostEdge">KuHcArrAwU+fYrOkHemK9gAA</XPD:REF>
-</XPD:OBJ>
-<XPD:OBJ name="Activation" type="UMLActivationView" guid="zTtRtzdrLUGamPIRYEu/WwAA">
-<XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
-<XPD:ATTR name="Left" type="integer">664</XPD:ATTR>
-<XPD:ATTR name="Top" type="integer">243</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">29</XPD:ATTR>
 </XPD:OBJ>
@@ -10578,21 +10578,7 @@ Extension point: Edit card name
 <XPD:REF name="Views[2]">Z84coXF0V0SZhOZReZ4O7gAA</XPD:REF>
 <XPD:REF name="Views[3]">rCAXxZsuf0KFLJR/yI39oQAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="ParticipatingStimuli[4]" type="UMLStimulus" guid="fGbilepwSUuqGkR97RtHtAAA">
-<XPD:ATTR name="Name" type="string">6: Return result</XPD:ATTR>
-<XPD:REF name="Sender">+OoVZMe93Ui+V2MJRNhB4gAA</XPD:REF>
-<XPD:REF name="Receiver">I7GBcHNO6UGP3iaUBjkKtAAA</XPD:REF>
-<XPD:OBJ name="Action" type="UMLReturnAction" guid="xffBWcbVRkKAotlt23O93QAA">
-<XPD:REF name="Stimulus">fGbilepwSUuqGkR97RtHtAAA</XPD:REF>
-</XPD:OBJ>
-<XPD:REF name="InteractionInstanceSet">aRhqDCOBJEW/aunI1RBh8gAA</XPD:REF>
-<XPD:ATTR name="#Views" type="integer">4</XPD:ATTR>
-<XPD:REF name="Views[0]">nkxDWD04v0itITlrtCIAIwAA</XPD:REF>
-<XPD:REF name="Views[1]">0Y0kWstcA0ylDEELnD+QTwAA</XPD:REF>
-<XPD:REF name="Views[2]">sY7MbO4g4E+/ritI1Ve20QAA</XPD:REF>
-<XPD:REF name="Views[3]">DTc39rX9TEGGWOihwNFQ2QAA</XPD:REF>
-</XPD:OBJ>
-<XPD:OBJ name="ParticipatingStimuli[5]" type="UMLStimulus" guid="Zcm9n27+uEmRH0Ha6n9RvQAA">
+<XPD:OBJ name="ParticipatingStimuli[4]" type="UMLStimulus" guid="Zcm9n27+uEmRH0Ha6n9RvQAA">
 <XPD:ATTR name="Name" type="string">5: Return result</XPD:ATTR>
 <XPD:REF name="Sender">FGM9AYSMvUC6brHdiuwTFQAA</XPD:REF>
 <XPD:REF name="Receiver">+OoVZMe93Ui+V2MJRNhB4gAA</XPD:REF>
@@ -10605,6 +10591,20 @@ Extension point: Edit card name
 <XPD:REF name="Views[1]">uef/51bmB0uC5JzlI2AvHAAA</XPD:REF>
 <XPD:REF name="Views[2]">/wZJk2hrxUyr+vua2qKc1QAA</XPD:REF>
 <XPD:REF name="Views[3]">K+fPo4vVd0SU8opdw9coJwAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="ParticipatingStimuli[5]" type="UMLStimulus" guid="fGbilepwSUuqGkR97RtHtAAA">
+<XPD:ATTR name="Name" type="string">6: Return result</XPD:ATTR>
+<XPD:REF name="Sender">+OoVZMe93Ui+V2MJRNhB4gAA</XPD:REF>
+<XPD:REF name="Receiver">I7GBcHNO6UGP3iaUBjkKtAAA</XPD:REF>
+<XPD:OBJ name="Action" type="UMLReturnAction" guid="xffBWcbVRkKAotlt23O93QAA">
+<XPD:REF name="Stimulus">fGbilepwSUuqGkR97RtHtAAA</XPD:REF>
+</XPD:OBJ>
+<XPD:REF name="InteractionInstanceSet">aRhqDCOBJEW/aunI1RBh8gAA</XPD:REF>
+<XPD:ATTR name="#Views" type="integer">4</XPD:ATTR>
+<XPD:REF name="Views[0]">nkxDWD04v0itITlrtCIAIwAA</XPD:REF>
+<XPD:REF name="Views[1]">0Y0kWstcA0ylDEELnD+QTwAA</XPD:REF>
+<XPD:REF name="Views[2]">sY7MbO4g4E+/ritI1Ve20QAA</XPD:REF>
+<XPD:REF name="Views[3]">DTc39rX9TEGGWOihwNFQ2QAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="ParticipatingStimuli[6]" type="UMLStimulus" guid="YHxdNsCES0el4U5dX7TmvwAA">
 <XPD:ATTR name="Name" type="string">7.1:  Return income report data</XPD:ATTR>
@@ -10679,7 +10679,7 @@ Extension point: Edit card name
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">112</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">36</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">836</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">897</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">424</XPD:ATTR>
 <XPD:REF name="Model">f6+0bRjTgkWOiOBXfhwD4wAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="LabelView" guid="bKqEMrjrE0am7gf4OR9i4wAA">
@@ -10743,13 +10743,13 @@ Extension point: Edit card name
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">852</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">100</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">70</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">309</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">132</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">321</XPD:ATTR>
 <XPD:REF name="Model">FGM9AYSMvUC6brHdiuwTFQAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="UYU88mLd90iwbjXGq6sxhAAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="JD+MaYkkokqQXlT64KuCdwAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">Database</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">DatabaseConnectActivity</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="wdzdIo5I3k20B3kBPNsb3QAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -10792,7 +10792,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">520</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">100</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">70</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">309</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">317</XPD:ATTR>
 <XPD:REF name="Model">I7GBcHNO6UGP3iaUBjkKtAAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="7OkK78iKmUOajjMa2Ek/iwAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="SYttNVHDdUKtnBwe12wTVAAA">
@@ -10879,7 +10879,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">548</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">200</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">189</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">197</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[8]" type="UMLSeqStimulusView" guid="x8qhut+UM0OJzoYNaDsXqwAA">
@@ -10922,7 +10922,7 @@ Extension point: Edit card name
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">722,200;880,200</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">722,200;911,200</XPD:ATTR>
 <XPD:REF name="Model">LXqhfxpn7UuPXkZ0u4FHsAAA</XPD:REF>
 <XPD:REF name="Head">PoNd/CQ6JE25MaW/Q4VyhgAA</XPD:REF>
 <XPD:REF name="Tail">vtNv+NvI7Umrekruw1AerQAA</XPD:REF>
@@ -10948,17 +10948,17 @@ Extension point: Edit card name
 <XPD:REF name="HostEdge">TKQ+enqe6kKGi0qfPEencQAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="3Tl9arRzfEqKFneFKtIinQAA">
-<XPD:ATTR name="Left" type="integer">880</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">911</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">200</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">29</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">193</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[10]" type="UMLSeqStimulusView" guid="XWDjItGbUUWLeqfxhHZTUwAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">880,220;722,220</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">911,220;722,220</XPD:ATTR>
 <XPD:REF name="Model">46ZDvRdJmEiLc3mL9LbUhAAA</XPD:REF>
 <XPD:REF name="Head">vtNv+NvI7Umrekruw1AerQAA</XPD:REF>
 <XPD:REF name="Tail">PoNd/CQ6JE25MaW/Q4VyhgAA</XPD:REF>
@@ -11373,9 +11373,9 @@ Extension point: Edit card name
 <XPD:OBJ name="OwnedViews[0]" type="UMLFrameView" guid="FCCjCJC0Mka8Na9uttBGRwAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Left" type="integer">144</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">168</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">96</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">1004</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">1017</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">500</XPD:ATTR>
 <XPD:REF name="Model">yodGo8tBSkeWXeGOHdGGpQAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="LabelView" guid="U5NTGSmul0KQ+t3L4cZ4SQAA">
@@ -11506,13 +11506,13 @@ Extension point: Edit card name
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">1028</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">172</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">70</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">132</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">350</XPD:ATTR>
 <XPD:REF name="Model">FGM9AYSMvUC6brHdiuwTFQAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="wMK0evuxBU2CH0bRkl0nPwAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="ZWFCbMYbiUOk+GY9MFZUywAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">Database</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">DatabaseConnectActivity</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="R38QlImE/ki7k3ohs+xQdQAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -11582,7 +11582,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">435</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">260</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">185</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">229</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[8]" type="UMLSeqStimulusView" guid="IiuTl6W87E+CNQNa8Id6JQAA">
@@ -11618,7 +11618,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">667</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">261</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">180</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">228</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[9]" type="UMLSeqStimulusView" guid="BTtsPhPRS0mSiTdmRrEEeAAA">
@@ -11661,7 +11661,7 @@ Extension point: Edit card name
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">893,266;1056,266</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">893,266;1087,266</XPD:ATTR>
 <XPD:REF name="Model">ZSldKc/cmkW+9TDgeQYSDwAA</XPD:REF>
 <XPD:REF name="Head">XQNszkXJG0Shirt5pwzcgQAA</XPD:REF>
 <XPD:REF name="Tail">xxcTXZa5J0ix3ON3vn2TXwAA</XPD:REF>
@@ -11687,17 +11687,17 @@ Extension point: Edit card name
 <XPD:REF name="HostEdge">D1WnAA4kIU+AIcZlgzbHKAAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="Yhtpnf7Oy0qPAehKoAQukAAA">
-<XPD:ATTR name="Left" type="integer">1056</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">1087</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">266</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">39</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">227</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[11]" type="UMLSeqStimulusView" guid="Y9j8mH0iCk+40bUGAhnewwAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">1056,290;893,290</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">1087,290;893,290</XPD:ATTR>
 <XPD:REF name="Model">JNiUG8wd+UebXOuYpcDPWgAA</XPD:REF>
 <XPD:REF name="Head">xxcTXZa5J0ix3ON3vn2TXwAA</XPD:REF>
 <XPD:REF name="Tail">XQNszkXJG0Shirt5pwzcgQAA</XPD:REF>
@@ -12053,7 +12053,7 @@ Extension point: Edit card name
 <XPD:REF name="DiagramOwner">/p8eyjKgMEGo+C09GfA4awAA</XPD:REF>
 <XPD:OBJ name="DiagramView" type="UMLSequenceDiagramView" guid="OF5K4mNYgku7BcMrC6dmTQAA">
 <XPD:REF name="Diagram">2eGAHBLna0GMzL/8I8/LbQAA</XPD:REF>
-<XPD:ATTR name="#OwnedViews" type="integer">21</XPD:ATTR>
+<XPD:ATTR name="#OwnedViews" type="integer">22</XPD:ATTR>
 <XPD:OBJ name="OwnedViews[0]" type="UMLFrameView" guid="g+Y8fCsjQ0itJzACsLShFAAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
@@ -12119,7 +12119,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">161</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">119</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">70</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">282</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">314</XPD:ATTR>
 <XPD:REF name="Model">8RdPA1O8ZUObzzHddZfMvgAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="mn1W9e10XEuqE5qW7q1cOAAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="IiZz2uvDgEyTvUf63wAjcQAA">
@@ -12143,7 +12143,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">336</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">124</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">70</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">273</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">305</XPD:ATTR>
 <XPD:REF name="Model">bv6J7vCz9kCqNCL0x3PbfQAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="gHZY6RmVxEqyOJM+zZ2YSgAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="PugLBLAEEUuCirjGmfmQaAAA">
@@ -12167,7 +12167,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">724</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">128</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">91</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">277</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">332</XPD:ATTR>
 <XPD:REF name="Model">4X0uGS7nQE6A/+Xs9URhtgAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="OZVxpVp8SUKWm9VohfdVdgAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="lKE3Ar0LA0OsmUSwgA5oKQAA">
@@ -12191,7 +12191,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">544</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">128</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">70</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">261</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">301</XPD:ATTR>
 <XPD:REF name="Model">I7GBcHNO6UGP3iaUBjkKtAAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="cjBDLauuC0S1xI1lI9nKSQAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="BmFojzuFP0i1pX+daDTHBQAA">
@@ -12215,7 +12215,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">896</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">132</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">91</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">281</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">361</XPD:ATTR>
 <XPD:REF name="Model">J31XYyo9Hkq7FBP9pK3QwAAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="wLDsl+KWSUGPwsXwfpQFTwAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="3y4z5i/S9Uyzyj+qrpvUjQAA">
@@ -12266,7 +12266,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">364</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">211</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">157</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">202</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[8]" type="UMLSeqStimulusView" guid="jsaLjHBMw0ajJa31stS5jAAA">
@@ -12302,7 +12302,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">572</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">212</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">157</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">197</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[9]" type="UMLSeqStimulusView" guid="w0hM+/CBrEe8EUOM1g1IvgAA">
@@ -12404,7 +12404,7 @@ Extension point: Edit card name
 <XPD:ATTR name="Left" type="integer">934</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">212</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">49</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">228</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[14]" type="UMLSeqStimulusView" guid="L7so84wwq0WMYvvTulyS1AAA">
@@ -12585,9 +12585,45 @@ Extension point: Edit card name
 <XPD:ATTR name="Text" type="string">[Empty]
 </XPD:ATTR>
 </XPD:OBJ>
+<XPD:OBJ name="OwnedViews[21]" type="UMLSeqStimulusView" guid="Q+nSFLd95k+aXkNJDLHIkgAA">
+<XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
+<XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
+<XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">769,361;941,361</XPD:ATTR>
+<XPD:REF name="Model">6BzaILxqy02RP17zl+4WsQAA</XPD:REF>
+<XPD:REF name="Head">48OG8Gd5Q0G+UDYGGbdggAAA</XPD:REF>
+<XPD:REF name="Tail">vFjs2vPT8USiHlTH61eITQAA</XPD:REF>
+<XPD:OBJ name="NameLabel" type="EdgeLabelView" guid="NJDfoGaRWEK96OgXrJVekgAA">
+<XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
+<XPD:ATTR name="Alpha" type="real">1.5707963267949</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">10</XPD:ATTR>
+<XPD:REF name="Model">6BzaILxqy02RP17zl+4WsQAA</XPD:REF>
+<XPD:REF name="HostEdge">Q+nSFLd95k+aXkNJDLHIkgAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="StereotypeLabel" type="EdgeLabelView" guid="IN3m5bRZbk2SSUgk9p63vAAA">
+<XPD:ATTR name="Alpha" type="real">1.5707963267949</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">25</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">&lt;&lt;destroy&gt;&gt;</XPD:ATTR>
+<XPD:REF name="Model">6BzaILxqy02RP17zl+4WsQAA</XPD:REF>
+<XPD:REF name="HostEdge">Q+nSFLd95k+aXkNJDLHIkgAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="PropertyLabel" type="EdgeLabelView" guid="+D4VdDjPQUa0dyDUviVNdAAA">
+<XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
+<XPD:ATTR name="Alpha" type="real">-1.5707963267949</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">10</XPD:ATTR>
+<XPD:REF name="Model">6BzaILxqy02RP17zl+4WsQAA</XPD:REF>
+<XPD:REF name="HostEdge">Q+nSFLd95k+aXkNJDLHIkgAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Activation" type="UMLActivationView" guid="Gi+sV3WS902g3k6QxpOnIgAA">
+<XPD:ATTR name="Left" type="integer">941</XPD:ATTR>
+<XPD:ATTR name="Top" type="integer">361</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">29</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:ATTR name="#ParticipatingStimuli" type="integer">8</XPD:ATTR>
+</XPD:OBJ>
+</XPD:OBJ>
+<XPD:ATTR name="#ParticipatingStimuli" type="integer">9</XPD:ATTR>
 <XPD:OBJ name="ParticipatingStimuli[0]" type="UMLStimulus" guid="nePXjyHbmk6uaENNj/NMHgAA">
 <XPD:REF name="Sender">8RdPA1O8ZUObzzHddZfMvgAA</XPD:REF>
 <XPD:REF name="Receiver">bv6J7vCz9kCqNCL0x3PbfQAA</XPD:REF>
@@ -12695,6 +12731,19 @@ Extension point: Edit card name
 <XPD:REF name="Views[1]">F9zwJirf/U6fZQmJ1epjUwAA</XPD:REF>
 <XPD:REF name="Views[2]">uRssua++/0ioVEkPEsi0JwAA</XPD:REF>
 <XPD:REF name="Views[3]">tasTlzqwI06M2unonwIo9wAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="ParticipatingStimuli[8]" type="UMLStimulus" guid="6BzaILxqy02RP17zl+4WsQAA">
+<XPD:REF name="Sender">4X0uGS7nQE6A/+Xs9URhtgAA</XPD:REF>
+<XPD:REF name="Receiver">J31XYyo9Hkq7FBP9pK3QwAAA</XPD:REF>
+<XPD:OBJ name="Action" type="UMLDestroyAction" guid="23s4csAG9kSN7Q5Enve6xAAA">
+<XPD:REF name="Stimulus">6BzaILxqy02RP17zl+4WsQAA</XPD:REF>
+</XPD:OBJ>
+<XPD:REF name="InteractionInstanceSet">/p8eyjKgMEGo+C09GfA4awAA</XPD:REF>
+<XPD:ATTR name="#Views" type="integer">4</XPD:ATTR>
+<XPD:REF name="Views[0]">Q+nSFLd95k+aXkNJDLHIkgAA</XPD:REF>
+<XPD:REF name="Views[1]">NJDfoGaRWEK96OgXrJVekgAA</XPD:REF>
+<XPD:REF name="Views[2]">IN3m5bRZbk2SSUgk9p63vAAA</XPD:REF>
+<XPD:REF name="Views[3]">+D4VdDjPQUa0dyDUviVNdAAA</XPD:REF>
 </XPD:OBJ>
 <XPD:ATTR name="#Fragments" type="integer">1</XPD:ATTR>
 <XPD:OBJ name="Fragments[0]" type="UMLCombinedFragment" guid="7xWwUxnbo0aJZED5+IyvggAA">
@@ -12893,7 +12942,7 @@ Extension point: Edit card name
 <XPD:REF name="ReceivingStimuli[1]">MvJTr+03qkeNvLk9wHLz1gAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="ParticipatingInstances[4]" type="UMLObject" guid="FGM9AYSMvUC6brHdiuwTFQAA">
-<XPD:ATTR name="Name" type="string">Database</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">DatabaseConnectActivity</XPD:ATTR>
 <XPD:REF name="CollaborationInstanceSet">eHNfogcgIkqPJSwxtbIlwQAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">16</XPD:ATTR>
 <XPD:REF name="Views[0]">0WyM83gcV0SK3KJLuY65YgAA</XPD:REF>
@@ -13125,9 +13174,10 @@ Extension point: Edit card name
 <XPD:ATTR name="#Views" type="integer">2</XPD:ATTR>
 <XPD:REF name="Views[0]">7/QcQoCptU+289Ue7oJnJAAA</XPD:REF>
 <XPD:REF name="Views[1]">vFjs2vPT8USiHlTH61eITQAA</XPD:REF>
-<XPD:ATTR name="#SendingStimuli" type="integer">2</XPD:ATTR>
+<XPD:ATTR name="#SendingStimuli" type="integer">3</XPD:ATTR>
 <XPD:REF name="SendingStimuli[0]">IRNXR0GcmkGsnp8EWghrdgAA</XPD:REF>
 <XPD:REF name="SendingStimuli[1]">lM2rH2WT1UqfRP0NVKS8aAAA</XPD:REF>
+<XPD:REF name="SendingStimuli[2]">6BzaILxqy02RP17zl+4WsQAA</XPD:REF>
 <XPD:ATTR name="#ReceivingStimuli" type="integer">2</XPD:ATTR>
 <XPD:REF name="ReceivingStimuli[0]">pXsdfAvgJE+YwI2IqCnO+QAA</XPD:REF>
 <XPD:REF name="ReceivingStimuli[1]">Mxzhjl423Uyb2ynfgivgtAAA</XPD:REF>
@@ -13140,8 +13190,9 @@ Extension point: Edit card name
 <XPD:REF name="Views[1]">48OG8Gd5Q0G+UDYGGbdggAAA</XPD:REF>
 <XPD:ATTR name="#SendingStimuli" type="integer">1</XPD:ATTR>
 <XPD:REF name="SendingStimuli[0]">Mxzhjl423Uyb2ynfgivgtAAA</XPD:REF>
-<XPD:ATTR name="#ReceivingStimuli" type="integer">1</XPD:ATTR>
+<XPD:ATTR name="#ReceivingStimuli" type="integer">2</XPD:ATTR>
 <XPD:REF name="ReceivingStimuli[0]">IRNXR0GcmkGsnp8EWghrdgAA</XPD:REF>
+<XPD:REF name="ReceivingStimuli[1]">6BzaILxqy02RP17zl+4WsQAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="ParticipatingInstances[26]" type="UMLObject" guid="+OoVZMe93Ui+V2MJRNhB4gAA">
 <XPD:REF name="Classifier">SOWp1JC+uE6o6kMXxo5oGgAA</XPD:REF>

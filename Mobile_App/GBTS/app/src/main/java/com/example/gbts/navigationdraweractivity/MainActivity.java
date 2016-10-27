@@ -105,8 +105,8 @@ public class MainActivity extends AppCompatActivity
                 mytag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
                 String cardId = bin2hex(mytag.getId());
-                SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-                String phone = preferences.getString(PREF_USERNAME, "");
+                SharedPreferences preferences = getSharedPreferences("Info", MODE_PRIVATE);
+                String phone = preferences.getString("Phonenumber", "");
                 final String[] params = {cardId, phone};
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                         this);

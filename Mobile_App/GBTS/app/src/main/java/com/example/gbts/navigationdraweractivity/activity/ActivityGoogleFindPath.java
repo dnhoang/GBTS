@@ -9,6 +9,9 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.LogWriter;
@@ -98,6 +101,8 @@ public class ActivityGoogleFindPath extends AppCompatActivity
         }
         try {
             new DirectionFinder(this, origin, destination).execute();
+
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -132,6 +137,7 @@ public class ActivityGoogleFindPath extends AppCompatActivity
         // set current location
         mMap.setMyLocationEnabled(true);
     }
+
 
     @Override
     public void onDirectionFinderStart() {
@@ -193,10 +199,12 @@ public class ActivityGoogleFindPath extends AppCompatActivity
             settings.setDefaultTextEncodingName("UTF-8");
             String before = "<html> <head> <style> .list-type1{ margin-left: 20px; } .list-type1 ul{ list-style: none; font-size: 15px; padding: 0; } .list-type1 ul li{ padding-top: 10px; } .list-type1 a { position: relative; display: block; padding: 0px 10px; background: #f3f3f3 ; color: #000; text-decoration: none; } .list-type1 a img{ border-radius: 50%; margin-left: -30px; border: 2px solid #03a234 ; padding: 10px; max-width: 48px; background: #03a234 ; vertical-align: middle; } </style> <head> <body> <div class=\"list-type1\"> <ul>";
             String after = "</ul></div></body></html>";
-            webView.loadData(before + route.html_instructions + after, "text/html; charset=UTF-8", null);
-//            Log.d("truongtq ", "intruc " + intruc);
-
-            Log.d("truongtq ", "sendRequest " + route.html_instructions);
+            String result = route.html_instructions;
+            if (result != null) {
+                webView.loadData(before + result + after, "text/html; charset=UTF-8", null);
+            } else {
+                webView.loadData(before + "Không tìm thấy tuyến xe phù hợp..!" + after, "text/html; charset=UTF-8", null);
+            }
         }
     }
 
