@@ -5,57 +5,38 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@drawable/bgmedium"
     tools:context="com.example.emulatorwritecard.MainActivity">
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="80dp"
-        android:src="@drawable/nfc_logo"
-        android:id="@+id/imageView"
-        android:layout_below="@+id/tvHeaderRouteName"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="13dp" />
-
     <TextView
-        android:text=" Vui lòng chạm thẻ vào đây"
+        android:text="Phát hành thẻ"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvPrice"
-        android:id="@+id/tvHeaderRouteName"
-        android:textSize="36sp"
-        android:gravity="center"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="190dp" />
-
-    <TextView
-        android:text=""
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="64dp"
-        android:id="@+id/tvRouteNumber"
+        android:id="@+id/textView4"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:fontFamily="sans-serif"
+        android:textColor="@android:color/background_light"
+        android:textAlignment="center"
+        android:textAllCaps="true"
         android:textSize="24sp" />
 
     <TextView
-        android:text=""
-        android:layout_width="wrap_content"
+        android:text="Chạm và giữ thẻ"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvRouteNumber"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/tvRouteName"
-        android:textSize="24sp"
-        android:textAlignment="center" />
-    <TextView
-        android:text=""
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvRouteName"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/tvPrice"
-        android:textSize="18sp" />
+
+        android:id="@+id/tvHeaderRouteName"
+        android:textSize="34sp"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="220dp"
+        android:fontFamily="sans-serif-condensed"
+        android:textColor="@android:color/background_light" />
+
+
+
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -63,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         app:srcCompat="@drawable/ic_action_name"
-        app:backgroundTint="#006400"
+        app:backgroundTint="#008396"
         android:layout_marginRight="19dp"
         android:layout_marginBottom="16dp"
         android:layout_alignParentBottom="true"
