@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         SharedPreferences sharedPreferences = getSharedPreferences(settings, MODE_PRIVATE);
-        hostAddress = sharedPreferences.getString("host", "https://grinbuzz.com");
+        hostAddress = sharedPreferences.getString("host", "https://grinbuzz.net");
         getSupportActionBar().hide();
         succesLayout = (RelativeLayout) findViewById(R.id.container);
         succesLayout.setVisibility(View.INVISIBLE);

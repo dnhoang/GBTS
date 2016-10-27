@@ -100,7 +100,7 @@ public class SettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         final SharedPreferences sharedPreferences = getSharedPreferences(settings, MODE_PRIVATE);
-        hostAddress=sharedPreferences.getString("host","https://grinbuz.com");
+        hostAddress=sharedPreferences.getString("host","https://grinbuz.net");
         EditText edtHost=(EditText)findViewById(R.id.edtHost);
         edtHost.setText(hostAddress);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -124,7 +124,7 @@ public class SettingActivity extends AppCompatActivity {
 
                         new GetStaffInfo().execute(phone);
 
-                        edtHost.setText(sharedPreferences.getString("host","https://grinbuz.com"));
+                        edtHost.setText(sharedPreferences.getString("host","https://grinbuz.net"));
                     } else{
                         hostAddress=host;
                         SharedPreferences.Editor editor=sharedPreferences.edit();
