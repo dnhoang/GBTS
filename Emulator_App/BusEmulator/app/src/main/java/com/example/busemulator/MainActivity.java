@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     String ticketTypeId;
     String routeCode;
     String boughtDate;
-    boolean countdownisRunning=false;
+    boolean countdownisRunning = false;
     //    String cardDataVersion;
 //    String cardBalance;
     final String secretKey = "ssshhhhhhhhhhh!!!!";
@@ -74,20 +74,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //TIMER
-        timer = new CountDownTimer(10*1000, 1000) {
+        timer = new CountDownTimer(10 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 //fabOffline.show();
-                countdownisRunning=true;
-                Log.d("TIMER","Running");
+                countdownisRunning = true;
+                Log.d("TIMER", "Running");
             }
 
             @Override
             public void onFinish() {
                 FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
                 fabOffline.hide();
-                countdownisRunning=false;
-                Log.d("TIMER","Finished");
+                countdownisRunning = false;
+                Log.d("TIMER", "Finished");
             }
         };
         //
@@ -125,13 +125,13 @@ public class MainActivity extends AppCompatActivity {
         fabOffline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (countdownisRunning==true){
+                if (countdownisRunning == true) {
 
-                    countdownisRunning=false;
+                    countdownisRunning = false;
                     showFabOffline();
                 }
                 if (!Utility.isNetworkConnected(getApplicationContext())) {
-
+                    showFabOffline();
 
                     SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
 
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                     boughtDate = Utility.getBoughtDateString();
 
                     dbAdapter.insertOfflineCashTicket(ticketTypeId, routeCode, boughtDate);
-                    fabOffline.hide();
+//                    fabOffline.hide();
                     fab.hide();
                     successTicket = (RelativeLayout) findViewById(R.id.container);
                     successTicket.setVisibility(View.VISIBLE);
@@ -159,8 +159,8 @@ public class MainActivity extends AppCompatActivity {
         fabOffline.show();
 
         timer.cancel();
-        Log.d("TIMER","Canceled");
-        countdownisRunning=true;
+        Log.d("TIMER", "Canceled");
+        countdownisRunning = true;
         timer.start();
     }
 
@@ -171,8 +171,7 @@ public class MainActivity extends AppCompatActivity {
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             if (bin2hex(tag.getId()).equals("DD7F7F81")) {
                 showFabOffline();
-            }
-            else if (Utility.isNetworkConnected(MainActivity.this)) {
+            } else if (Utility.isNetworkConnected(MainActivity.this)) {
 
                 mytag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
@@ -289,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
                                 changeLayout(false);
                             }
 
-                        } catch (UnsupportedEncodingException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -313,32 +312,13 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 if (Utility.isNetworkConnected(getApplicationContext())) {
                     if (!dbAdapter.isOfflineDataEmpty()) {
-                        List<OfflineTicket> list = dbAdapter.getAllOfflineTicket();
-                        for (OfflineTicket ticket : list
-                                ) {
-                            //Send request
-                            if (!dbAdapter.isOfflineDataEmpty()) {
-                                String[] params = {ticket.getCardid(), ticket.getTickettypeid(), ticket.getRoutecode(), ticket.getBoughtdate(), ticket.getId() + ""};
-                                new PushOfflineData().execute(params);
-                            }
-
-                        }
+                        new PushOfflineData().execute();
                     }
                     if (!dbAdapter.isOfflineCashDataEmpty()) {
-                        List<OfflineTicket> list = dbAdapter.getAllOfflineCashTicket();
-                        for (OfflineTicket ticket : list
-                                ) {
-                            //Send request
-                            if (!dbAdapter.isOfflineCashDataEmpty()) {
-
-                                String[] params = {ticket.getTickettypeid(), ticket.getRoutecode(), ticket.getBoughtdate(), ticket.getId() + ""};
-                                new PushOfflineCashData().execute(params);
-                            }
-
-                        }
+                        new PushOfflineCashData().execute();
                     }
-                }
 
+                }
             }
 
         }, 0, 2 * 1000);
@@ -628,107 +608,111 @@ public class MainActivity extends AppCompatActivity {
 
     //NFC
     //Push offline data
-    private class PushOfflineData extends AsyncTask<String, String, JSONObject> {
+    private class PushOfflineData extends AsyncTask<Void, Void, Void> {
 
         String cardId, ticketTypeId, routeCode, boughtDate, id;
 
-        @Override
-        protected JSONObject doInBackground(String... params) {
-            int count=dbAdapter.countOfflineData();
-            Log.d("TICKET", "Số vé offline còn lại"+count+"");
-            Utility jParser = new Utility();
-            cardId = params[0];
-
-            ticketTypeId = params[1];
-            routeCode = params[2];
-            boughtDate = params[3];
-            id = params[4];
-            SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
-            hostAddress = sharedPreferences.getString("host", "https://grinbuzz.com");
-            String strURL = hostAddress + "/Api/PushOfflineData?key=gbts_2016_capstone&cardId=" + cardId +
-                    "&ticketTypeId=" + ticketTypeId +
-                    "&routeCode=" + routeCode +
-                    "&boughtDate=" + boughtDate;
-            // Getting JSON from URL
-            JSONObject json = jParser.getJSONFromUrl(strURL);
-            Log.d("TICKET", strURL);
-            return json;
-        }
 
         @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            super.onPostExecute(jsonObject);
-            // Hide dialog
+        protected Void doInBackground(Void... params) {
 
-            boolean success;
-            //check success
-            if (jsonObject != null) {
-                Log.d("TICKET", jsonObject.toString());
-                try {
-                    success = jsonObject.getBoolean("success");
-                    if (success) {
-                        Toast.makeText(MainActivity.this,"Pushed offline data successfully",Toast.LENGTH_LONG);
-                        Log.d("TICKET", "Push data success");
-                        dbAdapter.deleteOfflineTicket(Long.parseLong(id));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
+            if (!dbAdapter.isOfflineDataEmpty()) {
+                List<OfflineTicket> list = dbAdapter.getAllOfflineTicket();
+                for (OfflineTicket ticket : list
+                        ) {
+                    //Send request
+                    if (!dbAdapter.isOfflineDataEmpty()) {
+
+                        cardId = ticket.getCardid();
+
+                        ticketTypeId = ticket.getTickettypeid();
+                        routeCode = ticket.getRoutecode();
+                        boughtDate = ticket.getBoughtdate();
+                        id = ticket.getId() + "";
+                        SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+                        hostAddress = sharedPreferences.getString("host", "https://grinbuzz.com");
+                        String strURL = hostAddress + "/Api/PushOfflineData?key=gbts_2016_capstone&cardId=" + cardId +
+                                "&ticketTypeId=" + ticketTypeId +
+                                "&routeCode=" + routeCode +
+                                "&boughtDate=" + boughtDate;
+                        // Getting JSON from URL
+                        Utility jParser = new Utility();
+                        JSONObject json = jParser.getJSONFromUrl(strURL);
+                        //check success
+                        if (json != null) {
+                            Log.d("TICKET", json.toString());
+                            try {
+                                boolean success = json.getBoolean("success");
+                                Log.d("TICKET", success + "");
+                                if (success == true) {
+                                    Log.d("TICKET", "Push data success 1 " + id);
+                                    dbAdapter.deleteOfflineTicket(Long.parseLong(id));
+                                    Log.d("TICKET", "Push data success 2" + id);
+
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } else break;
+
                 }
             }
+            return null;
         }
+
 
     }
 
     //End push offline data
 
     //Push offline cash data
-    private class PushOfflineCashData extends AsyncTask<String, String, JSONObject> {
+    private class PushOfflineCashData extends AsyncTask<Void, Void, Void> {
 
         String ticketTypeId, routeCode, boughtDate, id;
 
         @Override
-        protected JSONObject doInBackground(String... params) {
-            Utility jParser = new Utility();
+        protected Void doInBackground(Void... params) {
+            if (!dbAdapter.isOfflineCashDataEmpty()) {
+                List<OfflineTicket> list = dbAdapter.getAllOfflineCashTicket();
+                for (OfflineTicket ticket : list) {
+                    Utility jParser = new Utility();
 
-            ticketTypeId = params[0];
-            routeCode = params[1];
-            boughtDate = params[2];
-            id = params[3];
-            SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
-            hostAddress = sharedPreferences.getString("host", "https://grinbuzz.com");
-            String strURL = hostAddress + "/Api/PushCashTicketOffline?key=gbts_2016_capstone" +
-                    "&ticketTypeId=" + ticketTypeId +
-                    "&routeCode=" + routeCode +
-                    "&boughtDate=" + boughtDate;
-            // Getting JSON from URL
-            JSONObject json = jParser.getJSONFromUrl(strURL);
-            Log.d("TICKET", strURL);
-            return json;
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            super.onPostExecute(jsonObject);
-            // Hide dialog
-
-            boolean success;
-            //check success
-            if (jsonObject != null) {
-                try {
-                    success = jsonObject.getBoolean("success");
-                    if (success) {
-                        Toast.makeText(getApplicationContext(),"Pushed offline cash data successfully",Toast.LENGTH_SHORT);
-                        dbAdapter.deleteOfflineCashTicket(Long.parseLong(id));
+                    ticketTypeId = ticket.getTickettypeid();
+                    routeCode = ticket.getRoutecode();
+                    boughtDate = ticket.getBoughtdate();
+                    id = ticket.getId() + "";
+                    SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+                    hostAddress = sharedPreferences.getString("host", "https://grinbuzz.com");
+                    String strURL = hostAddress + "/Api/PushCashTicketOffline?key=gbts_2016_capstone" +
+                            "&ticketTypeId=" + ticketTypeId +
+                            "&routeCode=" + routeCode +
+                            "&boughtDate=" + boughtDate;
+                    // Getting JSON from URL
+                    JSONObject json = jParser.getJSONFromUrl(strURL);
+                    Log.d("TICKET", strURL);
+                    //check success
+                    if (json != null) {
+                        try {
+                            boolean success = json.getBoolean("success");
+                            if (success) {
+                                Toast.makeText(getApplicationContext(), "Pushed offline cash data successfully", Toast.LENGTH_SHORT);
+                                dbAdapter.deleteOfflineCashTicket(Long.parseLong(id));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
+            return null;
+
         }
+
 
     }
 
