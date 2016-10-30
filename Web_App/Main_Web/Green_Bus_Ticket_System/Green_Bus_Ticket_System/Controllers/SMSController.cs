@@ -6,6 +6,7 @@ using log4net;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -23,11 +24,19 @@ namespace Green_Bus_Ticket_System.Controllers
         ICardService _cardService;
         IUserService _userService;
         IScratchCardService _scratchCardService;
-        public SMSController(ICardService cardService, IUserService userService, IScratchCardService scratchCardService)
+        IOfferSubscriptionService _offerSubscriptionService;
+        IUserSubscriptionService _userSubscriptionService;
+
+        public SMSController(ICardService cardService, IUserService userService,
+            IScratchCardService scratchCardService,
+            IOfferSubscriptionService offerSubscriptionService,
+        IUserSubscriptionService userSubscriptionService)
         {
             _cardService = cardService;
             _userService = userService;
             _scratchCardService = scratchCardService;
+            _offerSubscriptionService = offerSubscriptionService;
+            _userSubscriptionService = userSubscriptionService;
         }
 
         public JsonResult ActivateAccount(string From, string Body)
@@ -39,12 +48,13 @@ namespace Green_Bus_Ticket_System.Controllers
             {
                 string[] data = Body.Split(' ');
                 string command = data[0];
-                string cardId = data[1];
-
                 
+
+
 
                 if (command.Equals("GB", StringComparison.CurrentCultureIgnoreCase))
                 {
+                    string cardId = data[1];
                     Card card = _cardService.GetCardByUID(cardId);
                     if (card != null)
                     {
@@ -76,7 +86,7 @@ namespace Green_Bus_Ticket_System.Controllers
                                 responseMessage = "Kich hoat the thanh cong. Tai khoan: " + phone + ". Mat khau: " + password;
                             }
                         }
-                        
+
                     }
                     else
                     {
@@ -85,6 +95,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 }
                 else if (command.Equals("NT", StringComparison.CurrentCultureIgnoreCase))
                 {
+                    string cardId = data[1];
                     Card card = _cardService.GetCardByUID(cardId);
                     if (card != null)
                     {
@@ -118,6 +129,126 @@ namespace Green_Bus_Ticket_System.Controllers
                         responseMessage = "The khong ton tai, vui long kiem tra lai!";
                     }
                 }
+                else if (command.Equals("MG", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    string code = data[1];
+
+                    OfferSubscription offer = _offerSubscriptionService.GetOfferSubscriptionByCode(code);
+                    User user = _userService.GetUserByPhone(phone);
+
+                    if (user != null)
+                    {
+                        if (offer != null)
+                        {
+                            bool isEnough = true;
+                            List<Card> cards = user.Cards.Where(c => c.Status == (int)StatusReference.CardStatus.ACTIVATED).ToList();
+                            if (cards.Count > 0)
+                            {
+                                Card targetCard = null;
+                                foreach (var item in cards)
+                                {
+                                    if (item.Balance >= offer.Price)
+                                    {
+                                        targetCard = item;
+                                        break;
+                                    }
+                                }
+
+                                if (targetCard != null)
+                                {
+                                    targetCard.Balance = targetCard.Balance - offer.Price;
+                                    _cardService.Update(targetCard);
+                                }
+                                else
+                                {
+                                    responseMessage = "Khong du so du de mua goi uu dai!";
+                                    isEnough = false;
+                                }
+                            }
+                            else
+                            {
+                                responseMessage = "Ban chua kich hoat the!";
+                                isEnough = false;
+                            }
+
+                            if (isEnough)
+                            {
+                                UserSubscription currentSub = _userSubscriptionService.GetUserSubscriptionByPhone(phone);
+                                if (currentSub == null)
+                                {
+
+                                    //Dang ki moi
+                                    var newSub = new UserSubscription();
+                                    string expStr = DateTime.Now.ToString("dd/MM/yyyy") + " 11:59:59 PM";
+                                    DateTime expireDate = DateTime.ParseExact(expStr, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
+
+                                    newSub.IsActive = true;
+                                    newSub.SubscriptionId = offer.Id;
+                                    newSub.TicketRemaining = offer.TicketNumber;
+                                    newSub.UserId = user.UserId;
+                                    newSub.ExpiredDate = expireDate;
+                                    _userSubscriptionService.Create(newSub);
+
+                                    responseMessage = "Dang ky goi uu dai thanh cong!";
+                                }
+                                else
+                                {
+                                    string expStr = DateTime.Now.ToString("dd/MM/yyyy") + " 11:59:59 PM";
+                                    DateTime expireDate = DateTime.ParseExact(expStr, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
+
+                                    currentSub.IsActive = true;
+                                    currentSub.SubscriptionId = offer.Id;
+                                    currentSub.TicketRemaining = offer.TicketNumber;
+                                    currentSub.ExpiredDate = expireDate;
+
+                                    _userSubscriptionService.Update(currentSub);
+
+                                    responseMessage = "Kich hoat lai goi uu dai thanh cong!";
+                                }
+                            }
+                            
+                        }
+                        else
+                        {
+                            responseMessage = "Goi uu dai khong ton tai, vui long kiem tra lai!";
+                        }
+                    }
+                    else
+                    {
+                        responseMessage = "Ban chua co tai khoan, vui long kich hoat the de tao tai khoan!";
+                    }
+
+
+                }
+                else if (command.Equals("HUY", StringComparison.CurrentCultureIgnoreCase))
+                {
+
+                    User user = _userService.GetUserByPhone(phone);
+
+                    if (user != null)
+                    {
+                        
+                        if (user.UserSubscriptions.Count > 0 && user.UserSubscriptions.FirstOrDefault() != null)
+                        {
+                            var sub = user.UserSubscriptions.FirstOrDefault();
+                            sub.IsActive = false;
+                            _userSubscriptionService.Update(sub);
+                            responseMessage = "Huy goi uu dai thanh cong!";
+                        }
+                        else
+                        {
+                            responseMessage = "Ban chua tham gia goi uu dai nao ca!";
+                        }
+                        
+
+                    }
+                    else
+                    {
+                        responseMessage = "Ban chua co tai khoan, vui long kich hoat the de tao tai khoan!";
+                    }
+
+
+                }
                 else
                 {
                     responseMessage = "Sai cu phap, vui long kiem tra lai!";
@@ -126,7 +257,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 SMSMessage.SendSMS(From, responseMessage);
 
             }
-            return Json( new { message = responseMessage } ); ;
+            return Json(new { message = responseMessage }); ;
         }
     }
 }

@@ -43,10 +43,14 @@ namespace Green_Bus_Ticket_System.Controllers
         ICreditPlanService _creditPlanService;
         IPaymentTransactionService _paymentTransactionService;
         IScratchCardService _scratchCardService;
+        IOfferSubscriptionService _offerSubscriptionService;
+        IUserSubscriptionService _userSubscriptionService;
+
         public ApiController(ICardService cardService, ITicketTypeService ticketTypeService,
             ITicketService ticketService, IBusRouteService busRouteService, IUserService userService,
             ICreditPlanService creditPlanService, IPaymentTransactionService paymentTransactionService,
-            IScratchCardService scratchCardService)
+            IScratchCardService scratchCardService, IOfferSubscriptionService offerSubscriptionService,
+        IUserSubscriptionService userSubscriptionService)
         {
             _cardService = cardService;
             _ticketTypeService = ticketTypeService;
@@ -56,7 +60,8 @@ namespace Green_Bus_Ticket_System.Controllers
             _creditPlanService = creditPlanService;
             _paymentTransactionService = paymentTransactionService;
             _scratchCardService = scratchCardService;
-
+            _offerSubscriptionService = offerSubscriptionService;
+            _userSubscriptionService = userSubscriptionService;
         }
 
 
@@ -329,6 +334,41 @@ namespace Green_Bus_Ticket_System.Controllers
 
                 success = true;
                 message = "Thêm thẻ vào hệ thống thành công";
+            }
+
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult ChangeCardName(string key, string cardId, string name)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+
+            if (!_cardService.IsCardExist(cardId))
+            {
+                success = false;
+                message = "Thẻ không tồn tại trên hệ thống";
+            }
+            else
+            {
+                Card card = _cardService.GetCardByUID(cardId);
+                if (name == null || name.Length == 0)
+                    name = "Thẻ " + cardId;
+
+                card.CardName = name;
+                _cardService.Update(card);
+
+                success = true;
+                message = "Cập nhật tên thẻ thành công";
             }
 
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
@@ -769,17 +809,25 @@ namespace Green_Bus_Ticket_System.Controllers
                     //Server has newest data, get server data
                     if (serverVersion >= clientVersion)
                     {
-                        if (card.Balance < ticketType.Price)
+                        int newPrice = ticketType.Price;
+                        var sub = card.User.UserSubscriptions.FirstOrDefault();
+                        if (sub != null && sub.IsActive && sub.TicketRemaining > 0 && sub.ExpiredDate >= DateTime.Now)
+                        {
+                            newPrice = (int)(ticketType.Price * (100 - sub.OfferSubscription.DiscountPercent) / 100);
+                        }
+                            
+
+                        if (card.Balance < newPrice)
                         {
                             message = "Không đủ số dư để mua vé.";
                             needUpdate = true;
                             balance = card.Balance;
-                            amount = ticketType.Price;
+                            amount = newPrice;
                             version = card.DataVersion;
                         }
                         else
                         {
-                            card.Balance = card.Balance - ticketType.Price;
+                            card.Balance = card.Balance - newPrice;
                             _cardService.Update(card);
 
                             Ticket ticket = new Ticket();
@@ -787,16 +835,23 @@ namespace Green_Bus_Ticket_System.Controllers
                             ticket.BusRouteId = busRoute.Id;
                             ticket.TicketTypeId = ticketType.Id;
                             ticket.BoughtDated = DateTime.Now;
-                            ticket.Total = ticketType.Price;
+                            ticket.Total = newPrice;
                             ticket.IsNoCard = false;
 
                             _ticketService.Create(ticket);
 
                             success = true;
                             message = "Mua vé thành công.";
+
+                            if (sub != null && sub.IsActive && sub.TicketRemaining > 0 && sub.ExpiredDate >= DateTime.Now)
+                            {
+                                sub.TicketRemaining = sub.TicketRemaining - 1;
+                                _userSubscriptionService.Update(sub);
+                            }
+
                             needUpdate = true;
                             balance = card.Balance;
-                            amount = ticketType.Price;
+                            amount = newPrice;
                             version = card.DataVersion;
 
                             //Check balance is running out & if user have installed mobile app
@@ -816,13 +871,21 @@ namespace Green_Bus_Ticket_System.Controllers
                     //Client has newest data, using client data
                     else
                     {
-                        if (currentBalance < ticketType.Price)
+                        int newPrice = ticketType.Price;
+                        var sub = card.User.UserSubscriptions.FirstOrDefault();
+                        
+                        if (sub != null && sub.IsActive && sub.TicketRemaining > 0 && sub.ExpiredDate >= DateTime.Now)
+                        {
+                            newPrice = (int)(ticketType.Price * (100 - sub.OfferSubscription.DiscountPercent) / 100);
+                        }
+
+                        if (currentBalance < newPrice)
                         {
                             message = "Không đủ số dư để mua vé.";
                         }
                         else
                         {
-                            card.Balance = card.Balance - ticketType.Price;
+                            card.Balance = card.Balance - newPrice;
                             _cardService.Update(card);
 
                             Ticket ticket = new Ticket();
@@ -830,16 +893,23 @@ namespace Green_Bus_Ticket_System.Controllers
                             ticket.BusRouteId = busRoute.Id;
                             ticket.TicketTypeId = ticketType.Id;
                             ticket.BoughtDated = DateTime.Now;
-                            ticket.Total = ticketType.Price;
+                            ticket.Total = newPrice;
                             ticket.IsNoCard = false;
 
                             _ticketService.Create(ticket);
 
                             success = true;
                             message = "Mua vé thành công.";
+
+                            if (sub != null && sub.IsActive && sub.TicketRemaining > 0 && sub.ExpiredDate >= DateTime.Now)
+                            {
+                                sub.TicketRemaining = sub.TicketRemaining - 1;
+                                _userSubscriptionService.Update(sub);
+                            }
+
                             needUpdate = false;
                             balance = card.Balance;
-                            amount = ticketType.Price;
+                            amount = newPrice;
                             version = dataVersion;
                             //Check balance is running out & if user have installed mobile app
                             if (card.Balance <= minBalance && card.User != null && card.User.NotificationCode != null)
@@ -1333,6 +1403,7 @@ namespace Green_Bus_Ticket_System.Controllers
 
             DateTime currentDate = DateTime.Now;
             DateTime lastSevenDate = currentDate.AddDays(-7);
+            DateTime lastMonthDate = currentDate.AddDays(-30);
 
             List<User> allMobileUsers = _userService.GetAll().Where(u => u.NotificationCode != null).ToList();
             foreach(var user in allMobileUsers)
@@ -1342,13 +1413,17 @@ namespace Green_Bus_Ticket_System.Controllers
                 {
                     foreach(var card in cards)
                     {
-                        List<Ticket> tickes = card.Tickets.OrderByDescending(t => t.BoughtDated).Take(30).ToList();
+                        List<Ticket> tickes = card.Tickets.Where(c => c.BoughtDated >= lastMonthDate).ToList();
                         int total = 0;
+                        HashSet<string> dates = new HashSet<string>();
                         foreach(var ticket in tickes)
                         {
                             total += ticket.Total;
+                            if (!dates.Contains(ticket.BoughtDated.ToString("dd/MM/yyyy")))
+                                dates.Add(ticket.BoughtDated.ToString("dd/MM/yyyy"));
                         }
-                        int avg = total / tickes.Count;
+
+                        int avg = total / dates.Count;
 
                         var oneData = "Card: " + card.UniqueIdentifier
                                                 + " | Balance: " + card.Balance

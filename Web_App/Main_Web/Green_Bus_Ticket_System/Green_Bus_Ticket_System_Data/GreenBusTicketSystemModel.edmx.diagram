@@ -23,6 +23,10 @@
         <AssociationConnector Association="GreenBusModel.FK_PaymentTransaction_CreditPlan" />
         <EntityTypeShape EntityType="GreenBusModel.Promotion" Width="1.5" PointX="3.375" PointY="0.75" />
         <EntityTypeShape EntityType="GreenBusModel.ScratchCard" Width="1.5" PointX="5.375" PointY="0.75" />
+        <EntityTypeShape EntityType="GreenBusModel.OfferSubscription" Width="1.5" PointX="6" PointY="8.75" />
+        <EntityTypeShape EntityType="GreenBusModel.UserSubscription" Width="1.5" PointX="8.25" PointY="4.75" />
+        <AssociationConnector Association="GreenBusModel.FK_UserSubscription_OfferSubscription" />
+        <AssociationConnector Association="GreenBusModel.FK_UserSubscription_User" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
