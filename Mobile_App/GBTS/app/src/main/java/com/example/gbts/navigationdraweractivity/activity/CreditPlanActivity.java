@@ -58,7 +58,15 @@ public class CreditPlanActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         new AsyncFetch().execute();
     }
-
+    public void clickToTopUp(View v){
+        Intent intent=new Intent(this,TopUpActivity.class);
+        Intent intentGetCardID = getIntent();
+        Bundle bundle = intentGetCardID.getExtras();
+        //get cardid
+        String cardId = bundle.getString("cardIDForPayPal");
+        intent.putExtra("cardId",cardId);
+        startActivity(intent);
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

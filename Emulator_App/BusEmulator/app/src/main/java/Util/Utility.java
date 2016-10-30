@@ -1,6 +1,7 @@
 package Util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
@@ -232,8 +233,9 @@ public class Utility {
 
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+
         }
         // try parse the string to a JSON object
         try {
@@ -246,6 +248,14 @@ public class Utility {
         return jObj;
 
     }
-
-
+    //
+    public static String getTripDestinationPoint(String str){
+        String data[]=str.split("-");
+        return data[data.length-1].trim();
+    }
+    public static String getTripDeparturePoint(String str){
+        String data[]=str.split("-");
+        Log.d("DATA!!!!",data[data.length-1].toString());
+        return data[0].trim();
+    }
 }

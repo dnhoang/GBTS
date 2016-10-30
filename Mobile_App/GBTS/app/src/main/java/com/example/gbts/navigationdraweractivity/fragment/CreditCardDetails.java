@@ -45,16 +45,12 @@ public class CreditCardDetails extends DialogFragment
         implements View.OnClickListener {
     private static final String TAG = "CreditCardDetails";
     View view;
-    ListView listView;
     private static final String TAG_CARD_ID = "CardId";
     private static final String TAG_CARD_NAME = "CardName";
     private static final String TAG_REGISTRATION_DATE = "RegistrationDate";
     private static final String TAG_BALANCE = "Balance";
     private static final String TAG_CARD_STATUS = "Status";
 
-    ArrayList<HashMap<String, String>> listCard = new ArrayList<>();
-
-    JSONArray jsonArray = null;
 
     HashMap<String, String> card = new HashMap<>();
 
@@ -96,16 +92,12 @@ public class CreditCardDetails extends DialogFragment
         btnPurchase.setOnClickListener(this);
         return view;
     }
-//    public void clickCreditPlan(View view){
-//
-//    }
 
     @Override
     public void onClick(View v) {
 
         Bundle bundle = getArguments();
         String cardID = bundle.getString(TAG_CARD_ID);
-        Log.d("meowmeow: ", cardID);
 
         if (R.id.btnPurchase == v.getId()) {
             Intent intent = new Intent(getActivity(), CreditPlanActivity.class);
@@ -116,6 +108,5 @@ public class CreditCardDetails extends DialogFragment
         } else {
             // do the same for signInButton
         }
-        Log.d(TAG, R.id.btnPurchase + "");
     }
 }

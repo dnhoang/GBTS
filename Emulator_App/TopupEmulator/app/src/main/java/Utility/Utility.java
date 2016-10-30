@@ -109,37 +109,41 @@ public class Utility {
     public String readNDEFMessage(Tag tag) {
         Ndef ndef = Ndef.get(tag);
 
+        try {
+            NdefMessage ndefMessage = ndef.getCachedNdefMessage();
+            if (ndefMessage != null) {
+                NdefRecord[] records = ndefMessage.getRecords();
+                if (records != null) {
+                    for (NdefRecord ndefRecord : records) {
+                        if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_TEXT)) {
+                            try {
+                                byte[] payload = ndefRecord.getPayload();
 
-        NdefMessage ndefMessage = ndef.getCachedNdefMessage();
-        if (ndefMessage != null) {
-            NdefRecord[] records = ndefMessage.getRecords();
-            if (records != null) {
-                for (NdefRecord ndefRecord : records) {
-                    if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_TEXT)) {
-                        try {
-                            byte[] payload = ndefRecord.getPayload();
+                                // Get the Text Encoding
+                                String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
 
-                            // Get the Text Encoding
-                            String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
+                                // Get the Language Code
+                                int languageCodeLength = payload[0] & 0063;
 
-                            // Get the Language Code
-                            int languageCodeLength = payload[0] & 0063;
+                                // String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
+                                // e.g. "en"
 
-                            // String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
-                            // e.g. "en"
+                                // Get the Text
+                                String result = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
+                                if (result != null) {
+                                    return result;
+                                }
+                            } catch (UnsupportedEncodingException e) {
 
-                            // Get the Text
-                            String result = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
-                            if (result != null) {
-                                return result;
                             }
-                        } catch (UnsupportedEncodingException e) {
-
                         }
                     }
                 }
             }
+        } catch (Exception e){
+            e.printStackTrace();
         }
+
         return null;
     }
 

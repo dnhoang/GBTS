@@ -6,7 +6,7 @@ package com.example.gbts.navigationdraweractivity.constance;
 
 public class Constance {
 
-    public static String SERVER_API = "https://grinbuz.com/";
+    public static String SERVER_API = "https://grinbuz.net/";
 //    public static String SERVER_API = "http://172.20.10.3:11856/";
     public static String KEY_API = "gbts_2016_capstone";
     public static String LOCAL_API = "localhost://";
@@ -21,10 +21,10 @@ public class Constance {
             SERVER_API + "Api/GetAllCreditPlan?key=gbts_2016_capstone";
     public static String API_GET_ADDCARDBALANCE =
             SERVER_API + "Api/AddCardBalance?key=gbts_2016_capstone";
-    public static String API_GET_BUSROUTE =
+    public static String API_GET_ALL_BUS_ROUTES =
             SERVER_API + "Api/GetAllBusRoutes?key=gbts_2016_capstone";
     public static String API_GET_REPORT =
             SERVER_API + "Api/GetReport?key=gbts_2016_capstone";
-    public static String API_GET_BUSSTOP =
+    public static String API_GET_BUS_STOP =
             SERVER_API + "Api/GetBusStop?key=gbts_2016_capstone";
 }

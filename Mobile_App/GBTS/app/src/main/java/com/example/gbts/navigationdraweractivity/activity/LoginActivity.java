@@ -16,9 +16,12 @@ import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
+import com.example.gbts.navigationdraweractivity.asyntask.FireBaseIDTask;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.enity.Message;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -183,6 +186,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     editor.putString("Password", pwd);
                     editor.putString("Fullname", fullname);
                     editor.commit();
+
+                    //NOTIFICATION
+                    FirebaseMessaging.getInstance().subscribeToTopic("GBTS");
+                    String token = FirebaseInstanceId.getInstance().getToken();
+                    try {
+                        Log.d("so dien thoai dc luu", "phone id " + phone);
+                        new FireBaseIDTask().execute(phone, token);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

@@ -77,8 +77,17 @@
         android:layout_height="wrap_content"
         android:id="@+id/btSave" />
 
-    <TextView
+    <Button
+        android:text="Lưu địa chỉ máy chủ"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tvOfflineTicketSold" />
+        android:id="@+id/btSaveHost"
+        android:onClick="clickToSaveHost" />
+
+    <Button
+        android:text="Kết thúc chuyến"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="clickToLogout"
+        android:id="@+id/btLogout" />
 </LinearLayout>

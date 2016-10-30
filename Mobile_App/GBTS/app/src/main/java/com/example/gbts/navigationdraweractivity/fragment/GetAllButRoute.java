@@ -90,7 +90,7 @@ public class GetAllButRoute extends DialogFragment {
         @Override
         protected JSONObject doInBackground(String... params) {
             JSONParser jsonParser = new JSONParser();
-            url = Constance.API_GET_BUSROUTE;
+            url = Constance.API_GET_ALL_BUS_ROUTES;
             JSONObject json = jsonParser.getJSONFromUrl(url);
             return json;
         }

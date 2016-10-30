@@ -1,15 +1,9 @@
 package com.example.gbts.navigationdraweractivity.module.google.mapsAPI;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.gbts.navigationdraweractivity.activity.ActivityGoogleFindPath;
-import com.example.gbts.navigationdraweractivity.fragment.FragmentDirection;
-import com.example.gbts.navigationdraweractivity.fragment.GetAllButRoute;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -29,38 +23,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by truon on 10/13/2016.
+ * Created by truon on 10/27/2016.
  */
 
-public class DirectionFinder {
-    private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?language=vi&";
-    private static final String GOOGLE_API_KEY = "AIzaSyC_Nn1lgcszdfpjEH0ySBjdYdIQD8QChaQ";
-    private static final String MODE = "transit";
-    private static final String TRANSIT_MODE = "bus";
-    //    private static final String TRANSIT_ROUTING_PREFERENCE = "less_walking";
-    private static final String TRANSIT_ROUTING_PREFERENCE = "less_walking";
-    private static final String DEPARTURE_TIME = "1482237000";
-    private DirectionFinderListener listener;
+public class DirectionBusRoute {
+
+    private DirectionBusRouteListener listener;
     private String origin;
     private String destination;
 
     private Context context;
 
-    public DirectionFinder(DirectionFinderListener listener, String origin, String destination) {
+    public DirectionBusRoute(DirectionBusRouteListener listener, String origin, String destination) {
         this.listener = listener;
         this.origin = origin;
         this.destination = destination;
     }
 
     public void execute() throws UnsupportedEncodingException {
-        listener.onDirectionFinderStart();
-        new DownloadRawData().execute(createUrl());
+        listener.onDirectionBusRouteStart();
+        new DirectionBusRoute.DownloadRawData().execute(createUrl());
     }
 
     private String createUrl() throws UnsupportedEncodingException {
         String urlOrigin = URLEncoder.encode(origin, "UTF-8");
         String urlDestination = URLEncoder.encode(destination, "UTF-8");
-        return DIRECTION_URL_API + "origin=" + urlOrigin + "&destination=" + urlDestination + "&mode=" + MODE + "&transit_mode=" + TRANSIT_MODE + "&transit_routing_preference=" + TRANSIT_ROUTING_PREFERENCE + "&alternatives=true" + "&traffic_model=optimistic" + "&key=" + GOOGLE_API_KEY;
+        return  "origin=" + urlOrigin + "&destination=" + urlDestination ;
     }
 
     private class DownloadRawData extends AsyncTask<String, Void, String> {
@@ -115,9 +103,9 @@ public class DirectionFinder {
         if (data == null)
             return;
 
-        List<Route> routes = new ArrayList<>();
+        List<BusStop> busStops = new ArrayList<>();
         JSONObject jsonData = new JSONObject(data);
-        Route route = new Route();
+        BusStop busStop = new BusStop();
 
 
         JSONArray jsonRoutes = jsonData.getJSONArray("routes");
@@ -134,19 +122,7 @@ public class DirectionFinder {
         JSONArray jsonLegs = jsonRoute.getJSONArray("legs");
 //            Log.d("meoww", "jsonsLegsObject " + jsonLegs.toString());
         /** Traversing all legs */
-        int min = 1000;
-        int index = 0;
-        if(jsonLegs.length() > 1){
-            for(int x = 0; x < jsonLegs.length(); x++){
-                JSONArray tmpSteps = jsonLegs.getJSONObject(x).getJSONArray("steps");
-                if(tmpSteps.length() < min){
-                    min = tmpSteps.length();
-                    index = x;
-                }
-            }
-
-        }
-        JSONObject js = jsonLegs.getJSONObject(index);
+        JSONObject js = jsonLegs.getJSONObject(0);
         JSONArray jsonSteps = js.getJSONArray("steps");
 
         List<String> busList = new ArrayList<>();
@@ -170,67 +146,11 @@ public class DirectionFinder {
         JSONObject jsonStartLocation = jsonLeg.getJSONObject("start_location");
 
 
-        route.distance = new Distance(jsonDistance.getString("text"), jsonDistance.getInt("value"));
-        route.duration = new Duration(jsonDuration.getString("text"), jsonDuration.getInt("value"));
-        route.endAddress = jsonLeg.getString("end_address");
-        route.startAddress = jsonLeg.getString("start_address");
-        route.startLocation = new LatLng(jsonStartLocation.getDouble("lat"), jsonStartLocation.getDouble("lng"));
-        route.endLocation = new LatLng(jsonEndLocation.getDouble("lat"), jsonEndLocation.getDouble("lng"));
-        route.points = decodePolyLine(overview_polylineJson.getString("points"));
-
-        String html = "";
-        String before = "<li><a href=\"#\"><img src=\"http://i.imgur.com/iSVvT7G.png\" /> ";
-        String after = "</a></li>";
-        for (String item : busList) {
-            html += before + item + after;
-        }
-        route.html_instructions = "<strong>Bạn cần đi qua " + busList.size() + " tuyến xe bus:</strong>  <br/><br/>" + html;
-        routes.add(route);
+        busStops.add(busStop);
 //        }
         Log.d("meoww", "jsonsLresultst " + busList.toString());
-        listener.onDirectionFinderSuccess(routes);
+        listener.onDirectionBusRouteSuccess(busStops);
     }
 
-
-    private List<LatLng> decodePolyLine(final String poly) {
-        int len = poly.length();
-        int index = 0;
-        List<LatLng> decoded = new ArrayList<>();
-        int lat = 0;
-        int lng = 0;
-
-        while (index < len) {
-            int b;
-            //pheo dich bit << sang trai (shift_left),  >> sang phai (shift_right)
-            int shift = 0;
-            int result = 0;
-            do {
-                //Phương thức charAt() trong Java trả về ký tự tại chỉ mục đã xác định của String. Chỉ mục bắt đầu từ zero.
-                //String name="vietjack";
-                //char ch=name.charAt(4);//tra ve ky tu tai chi muc thu 4   is "j"
-                b = poly.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lat += dlat;
-
-            shift = 0;
-            result = 0;
-            do {
-                b = poly.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lng += dlng;
-
-            decoded.add(new LatLng(
-                    lat / 100000d, lng / 100000d
-            ));
-        }
-
-        return decoded;
-    }
 
 }

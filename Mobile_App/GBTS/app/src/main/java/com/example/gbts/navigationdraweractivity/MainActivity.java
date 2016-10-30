@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity
     Animation FabOpen, FabClose, FabClockwise, FabantiClockwise;
     boolean isOpen = false;
     //Duc
-    String hostAddress = "https://grinbuz.com";
+    String hostAddress = "https://grinbuz.net";
 
     //NFC Duc
     NfcAdapter adapter;
@@ -218,13 +218,14 @@ public class MainActivity extends AppCompatActivity
 
 
         //NOTIFICATION
-        FirebaseMessaging.getInstance().subscribeToTopic("GBTS");
-        String token = FirebaseInstanceId.getInstance().getToken();
-        try {
-            new FireBaseIDTask().execute(phoneInfo, token);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        FirebaseMessaging.getInstance().subscribeToTopic("GBTS");
+//        String token = FirebaseInstanceId.getInstance().getToken();
+//        try {
+//            Log.d("so dien thoai dc luu", "phone id " + phoneInfo);
+//            new FireBaseIDTask().execute(phoneInfo, token);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         //START FRAGMENT MAIN && INTEGRATION FB, PROMOTION
         if (savedInstanceState == null) {
@@ -370,21 +371,29 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_logout) {
 
             SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            String prePhone = sharedPreferences.getString(PREF_USERNAME, "");
-            Log.d("test1 ", "prePhone " + prePhone);
-            String prePass = sharedPreferences.getString(PREF_PASSWORD, "");
-            Log.d("test1 ", "prePass " + prePass);
-            String checkedBox = sharedPreferences.getString(PREF_REMEMBER, "");
-            Log.d("test1 ", "checkedBox " + checkedBox);
-
-
-            Bundle bundle = new Bundle();
-            bundle.putString("rememberPhone", prePhone);
-            bundle.putString("rememberPass", prePass);
-            bundle.putString("rememberChecked", checkedBox);
-
+//            String prePhone = sharedPreferences.getString(PREF_USERNAME, "");
+//            Log.d("test1 ", "prePhone " + prePhone);
+//            String prePass = sharedPreferences.getString(PREF_PASSWORD, "");
+//            Log.d("test1 ", "prePass " + prePass);
+//            String checkedBox = sharedPreferences.getString(PREF_REMEMBER, "");
+//            Log.d("test1 ", "checkedBox " + checkedBox);
+//            if (checkedBox.equals("checked")) {
+//                Bundle bundle = new Bundle();
+//                bundle.putString("rememberPhone", prePhone);
+//                bundle.putString("rememberPass", prePass);
+//                bundle.putString("rememberChecked", checkedBox);
+//
+//                Intent intent = new Intent(this, LoginActivity.class);
+//                intent.putExtras(bundle);
+//                startActivity(intent);
+//                Log.d("MainActivityclear1", "Clear get share preference");
+//            } else {
+//                Log.d("MainActivityclear2", "Clear get share preference");
+//                sharedPreferences.edit().clear();
+//            }
+            Log.d("MainActivityclear1", "Clear get share preference");
+            sharedPreferences.edit().clear();
             Intent intent = new Intent(this, LoginActivity.class);
-            intent.putExtras(bundle);
             startActivity(intent);
         } else {
             // Create a new fragment and specify the fragment to show based on nav item clicked
