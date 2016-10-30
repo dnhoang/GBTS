@@ -41,6 +41,12 @@ namespace Green_Bus_Ticket_System_Utils
             ACTIVATED = 1,
         };
 
+        public enum ScratchCardStatus : int
+        {
+            USED = 0,
+            AVAILABLE = 1,
+        };
+
         public enum PromotionStatus : int
         {
             SENDING = 0,

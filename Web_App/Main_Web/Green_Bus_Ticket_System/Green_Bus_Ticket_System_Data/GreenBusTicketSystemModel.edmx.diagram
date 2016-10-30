@@ -22,6 +22,7 @@
         <EntityTypeShape EntityType="GreenBusModel.CreditPlan" Width="1.5" PointX="0.75" PointY="0.875" />
         <AssociationConnector Association="GreenBusModel.FK_PaymentTransaction_CreditPlan" />
         <EntityTypeShape EntityType="GreenBusModel.Promotion" Width="1.5" PointX="3.375" PointY="0.75" />
+        <EntityTypeShape EntityType="GreenBusModel.ScratchCard" Width="1.5" PointX="5.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

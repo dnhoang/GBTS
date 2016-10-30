@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "Tạo mã nạp tiền";
+    List<Green_Bus_Ticket_System_Data.ScratchCard> cards = (List<Green_Bus_Ticket_System_Data.ScratchCard>)ViewBag.Cards;
+}
+<div class="row padding-t-20">
+    @foreach (var item in cards)
+    {
+        <div class="col-md-4">
+            <div class="widget socialbox" style="background:#47639E; height:150px;">
+                <p class="text">@item.Code</p>
+                <p class="text-info">NT [Mã_Thẻ] @item.Code gửi 14794312404</p>
+                <div class="logo"><i class="fa fa-credit-card"></i></div>
+                <ul class="info">
+                    <li>Mệnh giá: @item.Price.ToString("#,##0") đ</li>
+                </ul>
+            </div>
+        </div>
+
+    }
+</div>
+

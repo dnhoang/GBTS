@@ -147,6 +147,7 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
             {
                 Card card = _cardService.GetCardByUID(oldCard);
                 card.UniqueIdentifier = newCard;
+                card.CardName = "Thẻ " + newCard;
                 _cardService.Update(card);
                 success = true;
 

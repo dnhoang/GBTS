@@ -59,4 +59,10 @@ namespace Green_Bus_Ticket_System_Data.Repositories
     {
         public BusRouteRepository(GreenBusEntities context) : base(context) { }
     }
+
+    public interface IScratchCardRepository : IGenericRepository<ScratchCard> { }
+    public class ScratchCardRepository : GenericRepository<ScratchCard>, IScratchCardRepository
+    {
+        public ScratchCardRepository(GreenBusEntities context) : base(context) { }
+    }
 }

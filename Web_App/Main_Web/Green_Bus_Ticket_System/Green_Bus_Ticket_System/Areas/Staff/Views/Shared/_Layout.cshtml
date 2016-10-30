@@ -58,6 +58,7 @@
             <li><a href="/Staff/Home"><span class="icon color5"><i class="fa fa-home"></i></span>BẢNG ĐIỀU KHIỂN</a></li>
             <li><a href="/Staff/Card"><span class="icon color1"><i class="fa fa-credit-card"></i></span>QUẢN LÝ THẺ</a></li>
             <li><a href="/Staff/Passenger"><span class="icon color3"><i class="fa fa-users"></i></span>QUẢN LÝ HÀNH KHÁCH</a></li>
+            <li><a id="btn-pub" href="#"><span class="icon color6"><i class="fa fa-paper-plane"></i></span>PHÁT HÀNH THẺ CÀO</a></li>
             
         </ul>
         <ul class="sidebar-panel nav">
@@ -87,7 +88,37 @@
 
             @RenderBody()
 
+            <!-- Modal -->
+            <div class="modal fade" id="ntCardModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Tạo thẻ cào</h4>
+                        </div>
 
+                        <div class="modal-body">
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <label for="nt-quantity" class="form-label">Số lượng</label>
+                                    <input type="number" class="form-control" id="nt-quantity" value="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nt-price" class="form-label">Mệnh giá</label>
+                                    <input type="number" class="form-control" id="nt-price" value="20000">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" data-dismiss="modal">HỦY</button>
+                            <button type="button" class="btn btn-default" id="nt-save"><i class="fa fa-paper-plane"></i> PHÁT HÀNH</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- End Moda Code -->
         </div>
         <!-- END CONTAINER -->
         <!-- //////////////////////////////////////////////////////////////////////////// -->
@@ -117,7 +148,23 @@
     Plugin.js - Some Specific JS codes for Plugin Settings
     ================================================ -->
     <script type="text/javascript" src="~/Content/front/js/plugins.js"></script>
+    <script>
+        $("#btn-pub").click(function () {
+            $("#ntCardModal").modal("show");
+        });
+        $("#nt-save").click(function () {
+            var quantity = $("#nt-quantity").val();
+            var price = $("#nt-price").val();
+            if (quantity.length == 0) {
+                quantity = 1;
+            }
+            if (price.length == 0) {
+                price = 20000;
+            }
 
+            window.location = "/Staff/ScratchCard/Publish?num="+quantity+"&price=" + price;
+        });
+    </script>
     <!--Other Js Here-->
     @if (IsSectionDefined("CustomJs"))
     {

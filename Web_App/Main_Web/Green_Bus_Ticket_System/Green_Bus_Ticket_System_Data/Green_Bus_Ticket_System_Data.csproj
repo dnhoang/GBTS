@@ -94,6 +94,9 @@
     <Compile Include="Role.cs">
       <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ScratchCard.cs">
+      <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Services\BusRouteService.cs" />
     <Compile Include="Services\CardService.cs" />
     <Compile Include="Services\CreditPlanService.cs" />
@@ -102,6 +105,7 @@
     <Compile Include="Services\PaymentTransactionService.cs" />
     <Compile Include="Services\PromotionService.cs" />
     <Compile Include="Services\RoleService.cs" />
+    <Compile Include="Services\ScratchCardService.cs" />
     <Compile Include="Services\TicketService.cs" />
     <Compile Include="Services\TicketTypeService.cs" />
     <Compile Include="Services\UserService.cs" />

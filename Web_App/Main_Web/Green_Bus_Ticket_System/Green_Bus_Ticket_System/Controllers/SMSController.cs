@@ -22,10 +22,12 @@ namespace Green_Bus_Ticket_System.Controllers
         private static readonly ILog log = LogManager.GetLogger("WebLog");
         ICardService _cardService;
         IUserService _userService;
-        public SMSController(ICardService cardService, IUserService userService)
+        IScratchCardService _scratchCardService;
+        public SMSController(ICardService cardService, IUserService userService, IScratchCardService scratchCardService)
         {
             _cardService = cardService;
             _userService = userService;
+            _scratchCardService = scratchCardService;
         }
 
         public JsonResult ActivateAccount(string From, string Body)
@@ -53,7 +55,7 @@ namespace Green_Bus_Ticket_System.Controllers
                         else
                         {
                             User user = null;
-                            string password = CommonUtils.GeneratePassword(8);
+                            string password = "G" + CommonUtils.GeneratePassword(5);
                             //Matching account
                             if (_userService.IsUserExist(phone))
                             {
@@ -93,10 +95,14 @@ namespace Green_Bus_Ticket_System.Controllers
                         else
                         {
                             string code = data[2];
-                            if (code.Equals(SilverCardCode))
+                            ScratchCard scCard = _scratchCardService.GetScratchCardByCode(code);
+                            if (scCard != null && scCard.Status == (int)StatusReference.ScratchCardStatus.AVAILABLE)
                             {
-                                card.Balance = card.Balance + SilverCardCodeBalance;
+                                card.Balance = card.Balance + scCard.Price;
                                 _cardService.Update(card);
+
+                                scCard.Status = (int)StatusReference.ScratchCardStatus.USED;
+                                _scratchCardService.Update(scCard);
 
                                 responseMessage = "Nap tien vao the thanh cong!";
                             }

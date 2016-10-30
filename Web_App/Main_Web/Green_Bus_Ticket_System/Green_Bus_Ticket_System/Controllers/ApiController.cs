@@ -16,6 +16,9 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.AspNet.SignalR;
 using Newtonsoft.Json.Linq;
+using System.Net;
+using System.IO;
+using System.Text;
 
 namespace Green_Bus_Ticket_System.Controllers
 {
@@ -29,6 +32,8 @@ namespace Green_Bus_Ticket_System.Controllers
         string storageConn = ConfigurationManager.AppSettings["StorageConnection"];
         int SilverCardCodeBalance = Int32.Parse(ConfigurationManager.AppSettings["SilverCardCodeBalance"]);
         string SilverCardCode = ConfigurationManager.AppSettings["SilverCardCode"];
+        static string key = ConfigurationManager.AppSettings["FireBaseKey"];
+        static string senderId = ConfigurationManager.AppSettings["FireBaseSender"];
 
         ICardService _cardService;
         ITicketTypeService _ticketTypeService;
@@ -37,9 +42,11 @@ namespace Green_Bus_Ticket_System.Controllers
         IUserService _userService;
         ICreditPlanService _creditPlanService;
         IPaymentTransactionService _paymentTransactionService;
+        IScratchCardService _scratchCardService;
         public ApiController(ICardService cardService, ITicketTypeService ticketTypeService,
             ITicketService ticketService, IBusRouteService busRouteService, IUserService userService,
-            ICreditPlanService creditPlanService, IPaymentTransactionService paymentTransactionService)
+            ICreditPlanService creditPlanService, IPaymentTransactionService paymentTransactionService,
+            IScratchCardService scratchCardService)
         {
             _cardService = cardService;
             _ticketTypeService = ticketTypeService;
@@ -48,6 +55,7 @@ namespace Green_Bus_Ticket_System.Controllers
             _userService = userService;
             _creditPlanService = creditPlanService;
             _paymentTransactionService = paymentTransactionService;
+            _scratchCardService = scratchCardService;
 
         }
 
@@ -131,7 +139,7 @@ namespace Green_Bus_Ticket_System.Controllers
             return Json(new { success = success, message = message, data = result }, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult PushOfflineData(string key, string cardId, int ticketTypeId, string routeCode, string boughtDate)
+        public async Task<JsonResult> PushOfflineData(string key, string cardId, int ticketTypeId, string routeCode, string boughtDate)
         {
             string message = "";
             bool success = false;
@@ -183,7 +191,8 @@ namespace Green_Bus_Ticket_System.Controllers
                         {
                             msg = "Thẻ " + card.UniqueIdentifier + " đã hết tiền, vui lòng nạp thêm.";
                         }
-                        SendNotification(card.User.NotificationCode, msg);
+                        Task task = SendToFireBase(card.User.NotificationCode, "Green Bus", msg);
+                        Task.WhenAll(task);
                     }
 
                 }
@@ -371,10 +380,14 @@ namespace Green_Bus_Ticket_System.Controllers
             
             if (card != null)
             {
-                if (code.Equals(SilverCardCode))
+                ScratchCard scCard = _scratchCardService.GetScratchCardByCode(code);
+                if (scCard != null && scCard.Status == (int)StatusReference.ScratchCardStatus.AVAILABLE)
                 {
                     card.Balance = card.Balance + SilverCardCodeBalance;
                     _cardService.Update(card);
+
+                    scCard.Status = (int)StatusReference.ScratchCardStatus.USED;
+                    _scratchCardService.Update(scCard);
 
                     success = true;
                     message = "Nạp tiền vào thẻ thành công!";
@@ -586,6 +599,7 @@ namespace Green_Bus_Ticket_System.Controllers
             return Json(new { success = success, message = message, data = result }, JsonRequestBehavior.AllowGet);
         }
 
+
         //GET: GetAllCreditPlan
         public JsonResult GetAllCreditPlan(string key)
         {
@@ -713,7 +727,7 @@ namespace Green_Bus_Ticket_System.Controllers
 
         }
         // GET:Ticket
-        public JsonResult SellTicket(string key, string cardId, int ticketTypeId, string routeCode, long currentBalance, long dataVersion)
+        public async Task<JsonResult> SellTicket(string key, string cardId, int ticketTypeId, string routeCode, long currentBalance, long dataVersion)
         {
             string message = "";
             bool success = false;
@@ -793,7 +807,8 @@ namespace Green_Bus_Ticket_System.Controllers
                                 {
                                     msg = "Thẻ " + card.UniqueIdentifier + " đã hết tiền, vui lòng nạp thêm.";
                                 }
-                                SendNotification(card.User.NotificationCode, msg);
+                                Task task = SendToFireBase(card.User.NotificationCode, "Green Bus", msg);
+                                Task.WhenAll(task);
                             }
                         }
 
@@ -834,7 +849,8 @@ namespace Green_Bus_Ticket_System.Controllers
                                 {
                                     msg = "Thẻ " + card.UniqueIdentifier + " đã hết tiền, vui lòng nạp thêm.";
                                 }
-                                SendNotification(card.User.NotificationCode, msg);
+                                Task task = SendToFireBase(card.User.NotificationCode, "Green Bus", msg);
+                                Task.WhenAll(task);
                             }
                         }
                     }
@@ -1137,7 +1153,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 else
                 {
                     User user = null;
-                    string password = CommonUtils.GeneratePassword(8);
+                    string password = "G" + CommonUtils.GeneratePassword(5);
                     //Matching account
                     if (_userService.IsUserExist(phone))
                     {
@@ -1302,6 +1318,62 @@ namespace Green_Bus_Ticket_System.Controllers
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult MiningBalance(string key)
+        {
+            string message = "";
+            bool success = false;
+            List<string> data = new List<string>();
+            
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            DateTime currentDate = DateTime.Now;
+            DateTime lastSevenDate = currentDate.AddDays(-7);
+
+            List<User> allMobileUsers = _userService.GetAll().Where(u => u.NotificationCode != null).ToList();
+            foreach(var user in allMobileUsers)
+            {
+                List<Card> cards = user.Cards.Where(c => c.Tickets.Count >= 30 && c.Tickets.Last().BoughtDated >= lastSevenDate).ToList();
+                if(cards.Count > 0)
+                {
+                    foreach(var card in cards)
+                    {
+                        List<Ticket> tickes = card.Tickets.OrderByDescending(t => t.BoughtDated).Take(30).ToList();
+                        int total = 0;
+                        foreach(var ticket in tickes)
+                        {
+                            total += ticket.Total;
+                        }
+                        int avg = total / tickes.Count;
+
+                        var oneData = "Card: " + card.UniqueIdentifier
+                                                + " | Balance: " + card.Balance
+                                                + " | Daily Spend: " + avg
+                                                + " | Notified: ";
+
+                        if (card.Balance < avg)
+                        {
+                            var msg = "Số dư thẻ " + card.CardName + " có thể sẽ không đủ chi tiêu trong ngày hôm nay. Bạn nên nạp thêm tiền vào thẻ!";
+                            Task task = SendToFireBase(card.User.NotificationCode, "Green Bus", msg);
+                            Task.WhenAll(task);
+                            oneData += " YES";
+                        }
+                        else
+                        {
+                            oneData += " NO";
+                        }
+                        data.Add(oneData);
+                    }
+                }
+            }
+            success = true;
+            return Json(new { success = success, message = message, data = data }, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult TanPushSms(string key, string phone, string content)
         {
             string message = "";
@@ -1322,15 +1394,61 @@ namespace Green_Bus_Ticket_System.Controllers
 
         private void SendNotification(string code, string msg)
         {
-            CloudStorageAccount account = CloudStorageAccount.Parse(storageConn);
+            //CloudStorageAccount account = CloudStorageAccount.Parse(storageConn);
 
-            CloudQueueClient client = account.CreateCloudQueueClient();
-            CloudQueue queue = client.GetQueueReference("gbtscardbalance");
-            queue.CreateIfNotExists();
+            //CloudQueueClient client = account.CreateCloudQueueClient();
+            //CloudQueue queue = client.GetQueueReference("gbtscardbalance");
+            //queue.CreateIfNotExists();
 
-            CloudQueueMessage message = new CloudQueueMessage(code + "*" + msg);
+            //CloudQueueMessage message = new CloudQueueMessage(code + "*" + msg);
 
-            queue.AddMessage(message);
+            //queue.AddMessage(message);
+            //await SendToFireBase(code, "Green Bus", msg);
+        }
+
+        private Task SendToFireBase(string token, string title, string message)
+        {
+            return Task.Run(() =>
+            {
+                WebRequest tRequest;
+                tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
+                tRequest.Method = "POST";
+                tRequest.UseDefaultCredentials = true;
+
+                tRequest.PreAuthenticate = true;
+
+                tRequest.Credentials = CredentialCache.DefaultNetworkCredentials;
+
+                tRequest.ContentType = "application/json";
+                tRequest.Headers.Add(string.Format("Authorization: key={0}", key));
+                tRequest.Headers.Add(string.Format("Sender: id={0}", senderId));
+
+
+                string RegArr = token;
+
+                string postData = "{ \"registration_ids\": [ \"" + RegArr + "\" ],\"data\": {\"message\": \"" + message + "\",\"body\": \"" + message + "\",\"title\": \"" + title + "\",\"collapse_key\":\"" + message + "\"}}";
+
+                Byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+                tRequest.ContentLength = byteArray.Length;
+
+                Stream dataStream = tRequest.GetRequestStream();
+                dataStream.Write(byteArray, 0, byteArray.Length);
+                dataStream.Close();
+
+                WebResponse tResponse = tRequest.GetResponse();
+
+                dataStream = tResponse.GetResponseStream();
+
+                StreamReader tReader = new StreamReader(dataStream);
+
+                String sResponseFromServer = tReader.ReadToEnd();
+
+                log.Info(sResponseFromServer);
+                tReader.Close();
+                dataStream.Close();
+                tResponse.Close();
+            });
+
         }
 
     }
