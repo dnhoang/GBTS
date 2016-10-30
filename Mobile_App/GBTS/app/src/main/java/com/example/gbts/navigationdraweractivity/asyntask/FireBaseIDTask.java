@@ -4,6 +4,7 @@ package com.example.gbts.navigationdraweractivity.asyntask;
  * Created by HoangDN on 10/3/2016.
  */
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -16,10 +17,13 @@ public class FireBaseIDTask extends AsyncTask<String, Void, JSONObject> {
 
     //JSON Node Names
     private static final String TAG_SUCCESS = "success";
+    private static final String TAG_MASSAGE = "message";
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+//        SharedPreferences preferences =
+
     }
 
     @Override
@@ -37,11 +41,15 @@ public class FireBaseIDTask extends AsyncTask<String, Void, JSONObject> {
     protected void onPostExecute(JSONObject jsonObject) {
         super.onPostExecute(jsonObject);
         boolean success = false;
+        String message = null;
         //check success
         try {
             success = jsonObject.optBoolean(TAG_SUCCESS);
+            message = jsonObject.optString(TAG_MASSAGE);
             if (success) {
-                Log.i("FireBaseIDTask", "Đăng ký token thành công");
+                Log.i("FireBaseIDTask", message);
+            } else {
+                Log.i("FireBaseIDTask", message);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -134,7 +134,19 @@ public class DirectionFinder {
         JSONArray jsonLegs = jsonRoute.getJSONArray("legs");
 //            Log.d("meoww", "jsonsLegsObject " + jsonLegs.toString());
         /** Traversing all legs */
-        JSONObject js = jsonLegs.getJSONObject(0);
+        int min = 1000;
+        int index = 0;
+        if(jsonLegs.length() > 1){
+            for(int x = 0; x < jsonLegs.length(); x++){
+                JSONArray tmpSteps = jsonLegs.getJSONObject(x).getJSONArray("steps");
+                if(tmpSteps.length() < min){
+                    min = tmpSteps.length();
+                    index = x;
+                }
+            }
+
+        }
+        JSONObject js = jsonLegs.getJSONObject(index);
         JSONArray jsonSteps = js.getJSONArray("steps");
 
         List<String> busList = new ArrayList<>();
@@ -165,6 +177,7 @@ public class DirectionFinder {
         route.startLocation = new LatLng(jsonStartLocation.getDouble("lat"), jsonStartLocation.getDouble("lng"));
         route.endLocation = new LatLng(jsonEndLocation.getDouble("lat"), jsonEndLocation.getDouble("lng"));
         route.points = decodePolyLine(overview_polylineJson.getString("points"));
+
         String html = "";
         String before = "<li><a href=\"#\"><img src=\"http://i.imgur.com/iSVvT7G.png\" /> ";
         String after = "</a></li>";

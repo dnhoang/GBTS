@@ -113,7 +113,6 @@ public class CreditCard extends Fragment {
                     map.put(TAG_BALANCE, balance + "");
                     map.put(TAG_CARD_STATUS, strStatus);
                     listCard.add(map);
-                    Log.d("CreditCardtq listCard2", listCard.size() + "");
                 }
                 ListAdapter adapter = new SimpleAdapter(getActivity(), listCard,
                         R.layout.custom_listview_cardnfc,
@@ -125,7 +124,6 @@ public class CreditCard extends Fragment {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                         HashMap<String, String> card = listCard.get(position);
-                        Log.d("TRUONGTQ map ", card.get(TAG_CARD_STATUS) + "");
 
                         Bundle bundle = new Bundle();
                         bundle.putString(TAG_CARD_ID, card.get(TAG_CARD_ID));
@@ -142,8 +140,6 @@ public class CreditCard extends Fragment {
                             final FragmentManager manager = getFragmentManager();
                             creditCardDetails.show(manager, "Details Account");
                         }
-                        Toast.makeText(getActivity(), "You click at " + listCard.get(position).get(TAG_CARD_NAME), Toast.LENGTH_SHORT).show();
-
                     }
                 });
 
