@@ -1,6 +1,7 @@
 package com.example.busemulator;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -52,7 +53,7 @@ public class SettingActivity extends AppCompatActivity {
 
 
         EditText edtHost = (EditText) findViewById(R.id.edtHost);
-        edtHost.setText(sharedPreferences.getString("host", "https://grinbuz.com"));
+        edtHost.setText(sharedPreferences.getString("host", "https://grinbuz.net"));
         EditText edtRoute = (EditText) findViewById(R.id.edtRoute);
         edtRoute.setText(sharedPreferences.getString("code", ""));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -156,7 +157,14 @@ public class SettingActivity extends AppCompatActivity {
 
 
     }
-
+    public void clickToLogout(View view){
+        Intent intent=new Intent(this,LoginActivity.class);
+        SharedPreferences sharedPreferences=getSharedPreferences(setting,MODE_PRIVATE);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putBoolean("onTrip",false);
+        editor.commit();
+        startActivity(intent);
+    }
     //ASYNC TASK
     private class getAllTicketType extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;

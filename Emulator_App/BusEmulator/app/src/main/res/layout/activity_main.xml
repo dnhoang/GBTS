@@ -57,22 +57,31 @@
         android:textSize="24sp"
         android:textAlignment="center"
         android:textColor="#1e818d" />
+        <TextView
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvRouteName"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/tvDirection"
+            android:textSize="24sp"
+            android:textAlignment="center"
+            android:textColor="#DF013A" />
     <TextView
         android:text=""
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvRouteName"
+        android:layout_below="@+id/tvDirection"
         android:layout_centerHorizontal="true"
         android:id="@+id/tvPrice"
         android:textSize="18sp"
         android:textAlignment="center"
-        android:textColor="#1e818d" />
+        android:textColor="#DF013A" />
 
         <TextView
             android:text=""
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageView"
             android:layout_centerHorizontal="true"
             android:id="@+id/tvError"
             android:textSize="18sp"

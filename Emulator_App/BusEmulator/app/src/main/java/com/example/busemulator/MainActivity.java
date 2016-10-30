@@ -73,6 +73,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Lấy thông tin hướng đi
+        TextView tvDirection=(TextView)findViewById(R.id.tvDirection);
+        String direction=getIntent().getStringExtra("direction");
+        tvDirection.setText("Đi "+direction);
+        //
         //TIMER
         timer = new CountDownTimer(10 * 1000, 1000) {
             @Override
