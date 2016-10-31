@@ -12,26 +12,21 @@ namespace Green_Bus_Ticket_System_Data
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class OfferSubscription
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public User()
+        public OfferSubscription()
         {
-            this.Cards = new HashSet<Card>();
             this.UserSubscriptions = new HashSet<UserSubscription>();
         }
     
-        public int UserId { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Password { get; set; }
-        public string Fullname { get; set; }
-        public int Status { get; set; }
-        public int RoleId { get; set; }
-        public string NotificationCode { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Code { get; set; }
+        public int Price { get; set; }
+        public double DiscountPercent { get; set; }
+        public int TicketNumber { get; set; }
     
-        public virtual Role Role { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Card> Cards { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserSubscription> UserSubscriptions { get; set; }
     }
