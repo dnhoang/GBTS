@@ -151,9 +151,6 @@ public class SettingActivity extends AppCompatActivity {
             editor.commit();
             new GetBusRouteByCode().execute(ticketTypeName);
         }
-        //EditText edtRoute = (EditText) findViewById(R.id.edtRoute);
-        //System.out.println(code);
-        //BusRoute busRoute = getRouteByCode(code);
 
 
     }
@@ -261,7 +258,7 @@ public class SettingActivity extends AppCompatActivity {
             code = edtCode.getText().toString();
 
             pDialog = new ProgressDialog(SettingActivity.this);
-            pDialog.setMessage("Loading data ...");
+            pDialog.setMessage("Vui lòng đợi trong giây lát ...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
             pDialog.show();
@@ -315,12 +312,15 @@ public class SettingActivity extends AppCompatActivity {
                     editor.putString("price", ticketType.getPrice());
 
                 }
-                editor.commit();
                 TextView routeName = (TextView) findViewById(R.id.tvRouteName);
                 routeName.setText(busRoute.getName());
                 EditText edtRoute = (EditText) findViewById(R.id.edtRoute);
                 edtRoute.setText(busRoute.getCode());
+                editor.putBoolean("onTrip",false);
+                editor.commit();
+                Intent intent=new Intent(SettingActivity.this,LoginActivity.class);
 
+                startActivity(intent);
             } else {
                 Toast.makeText(getApplicationContext(), "Tuyến không tồn tại!", Toast.LENGTH_LONG).show();
             }

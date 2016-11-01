@@ -53,6 +53,7 @@ public class Utility {
         String dataVersion = df.format(new Date());
         return dataVersion;
     }
+
     //Get Version number
     public static String getDataVersion() {
         DateFormat df = new SimpleDateFormat("ddMMyyyyhhmmss");
@@ -96,14 +97,19 @@ public class Utility {
 
     public String[] getCardDataFromEncryptedString(String cardData) {
         String decryptedCardData = decrypt(cardData, keyAES);
-        String result[] = decryptedCardData.split("[|]");
-        String data[] = new String[2];
-        int i = 0;
-        for (String r : result) {
-            data[i] = r;
-            i++;
+        try {
+            String result[] = decryptedCardData.split("[|]");
+            String data[] = new String[2];
+            int i = 0;
+            for (String r : result) {
+                data[i] = r;
+                i++;
+            }
+            return data;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return data;
+        return null;
     }
 
     public static String decrypt(String strToDecrypt, String secret) {
@@ -113,7 +119,7 @@ public class Utility {
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             return new String(cipher.doFinal(Base64.decode(strToDecrypt, Base64.DEFAULT)));
         } catch (Exception e) {
-            System.out.println("Error while decrypting: " + e.toString());
+            e.printStackTrace();
         }
         return null;
     }
@@ -169,20 +175,13 @@ public class Utility {
                 }
             }
             return true;
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FormatException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        }  catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
 
     //End writeNFC
-    static InputStream is = null;
-    static JSONObject jObj = null;
-    static String json = "";
 
     // constructor
     public Utility() {
@@ -195,6 +194,7 @@ public class Utility {
     }
 
     public JSONObject getJSONFromUrl(String apiUrl) {
+        String json=null;
         // Making HTTP request
         try {
             URL url = new URL(apiUrl);
@@ -229,7 +229,7 @@ public class Utility {
                 } else {
 
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
 
@@ -238,6 +238,7 @@ public class Utility {
 
         }
         // try parse the string to a JSON object
+        JSONObject jObj=null;
         try {
             jObj = new JSONObject(json);
         } catch (JSONException e) {
@@ -248,14 +249,16 @@ public class Utility {
         return jObj;
 
     }
+
     //
-    public static String getTripDestinationPoint(String str){
-        String data[]=str.split("-");
-        return data[data.length-1].trim();
+    public static String getTripDestinationPoint(String str) {
+        String data[] = str.split("-");
+        return data[data.length - 1].trim();
     }
-    public static String getTripDeparturePoint(String str){
-        String data[]=str.split("-");
-        Log.d("DATA!!!!",data[data.length-1].toString());
+
+    public static String getTripDeparturePoint(String str) {
+        String data[] = str.split("-");
+        Log.d("DATA!!!!", data[data.length - 1].toString());
         return data[0].trim();
     }
 }

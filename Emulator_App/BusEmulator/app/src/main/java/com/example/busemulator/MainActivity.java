@@ -1,11 +1,18 @@
 package com.example.busemulator;
 
+import android.Manifest;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
@@ -16,14 +23,19 @@ import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Parcelable;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -74,9 +86,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //Lấy thông tin hướng đi
-        TextView tvDirection=(TextView)findViewById(R.id.tvDirection);
-        String direction=getIntent().getStringExtra("direction");
-        tvDirection.setText("Đi "+direction);
+
+        TextView tvDirection = (TextView) findViewById(R.id.tvDirection);
+        String direction = getIntent().getStringExtra("direction");
+        tvDirection.setText("Đi " + direction);
         //
         //TIMER
         timer = new CountDownTimer(10 * 1000, 1000) {
@@ -91,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
             public void onFinish() {
                 FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
                 fabOffline.hide();
+                FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                fab.hide();
                 countdownisRunning = false;
                 Log.d("TIMER", "Finished");
             }
@@ -113,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         //End update
         //END NFC
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
+        fab.hide();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,7 +177,8 @@ public class MainActivity extends AppCompatActivity {
     private void showFabOffline() {
         final FloatingActionButton fabOffline = (FloatingActionButton) findViewById(R.id.fabOffline);
         fabOffline.show();
-
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.show();
         timer.cancel();
         Log.d("TIMER", "Canceled");
         countdownisRunning = true;
@@ -171,7 +187,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
 
+        }
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             if (bin2hex(tag.getId()).equals("DD7F7F81")) {
@@ -315,6 +333,7 @@ public class MainActivity extends AppCompatActivity {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+
                 if (Utility.isNetworkConnected(getApplicationContext())) {
                     if (!dbAdapter.isOfflineDataEmpty()) {
                         new PushOfflineData().execute();
@@ -331,10 +350,11 @@ public class MainActivity extends AppCompatActivity {
 
     //Read NDEF message
     private class NdefReaderTask extends AsyncTask<Tag, Void, String> {
+        Tag tag;
 
         @Override
         protected String doInBackground(Tag... params) {
-            Tag tag = params[0];
+            tag = params[0];
 
             Ndef ndef = Ndef.get(tag);
             if (ndef == null) {
@@ -385,13 +405,26 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if (result != null) {
+
+                //Log.d("PHONE",result);
+//                String cardId = Utility.decrypt(result, secretKey);
+                //Log.d("PHONE",cardId);
+
+
                 Utility utility = new Utility();
                 String cardData[] = utility.getCardDataFromEncryptedString(result);
-                String cardBalance = cardData[0];
-                String cardDataVersion = cardData[1];
+                if (cardData[1] != null) {
+                    String cardBalance = cardData[0];
+                    String cardDataVersion = cardData[1];
 
-                String[] params = {cardId, routeCode, cardBalance, cardDataVersion};
-                new VerifyTicket().execute(params);
+                    String[] params = {cardId, routeCode, cardBalance, cardDataVersion};
+                    new VerifyTicket().execute(params);
+                } else {
+                    String decryptCardId = Utility.decrypt(result, secretKey);
+                    VerifyPhoneTicket(decryptCardId);
+                }
+
+
             } else {
                 failTicket = (RelativeLayout) findViewById(R.id.containerfail);
                 TextView tvFail = (TextView) findViewById(R.id.tvFail);
@@ -441,8 +474,9 @@ public class MainActivity extends AppCompatActivity {
                     "&dataVersion=" + cardDataVersion;
 
             // Getting JSON from URL
+            Log.d("PHONE!!!URL", strURL.toString());
             JSONObject json = jParser.getJSONFromUrl(strURL);
-
+            Log.d("PHONE!!!", json.toString());
             return json;
         }
 
@@ -454,6 +488,7 @@ public class MainActivity extends AppCompatActivity {
             pDialog.dismiss();
             boolean success = false;
             //check success
+            Log.d("PHONE", jsonObject.toString());
             if (jsonObject != null) {
                 try {
                     success = jsonObject.getBoolean("success");
@@ -471,8 +506,7 @@ public class MainActivity extends AppCompatActivity {
                         String message = null;
                         Boolean needUpdate;
                         Long balance;
-                        Integer amount=0
-                                ;
+                        Integer amount = 0;
                         Long version;
                         try {
                             message = jsonObject.getString("message");
@@ -490,7 +524,7 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         final TextView tvSuccessPrice = (TextView) findViewById(R.id.tvSuccessPrice);
-                        tvSuccessPrice.setText("Thẻ của bạn đã bị trừ " + amount+"" + " đồng");
+                        tvSuccessPrice.setText("Thẻ của bạn đã bị trừ " + amount + "" + " đồng");
                         changeLayout(true);
                     } else {
                         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -563,8 +597,8 @@ public class MainActivity extends AppCompatActivity {
                 if (result == true) {
                     sucess.setVisibility(View.INVISIBLE);
 
-                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-                    fab.show();
+//                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//                    fab.show();
 
 
                 } else {
@@ -573,8 +607,8 @@ public class MainActivity extends AppCompatActivity {
                     fail.setVisibility(View.INVISIBLE);
                     TextView tvFail = (TextView) findViewById(R.id.tvFail);
                     tvFail.setText("Mua vé không thành công");
-                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-                    fab.show();
+//                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//                    fab.show();
 
 
                 }
@@ -592,6 +626,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        //Quet the bang dien thoai
+//        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+//            VerifyPhoneTicket(getIntent());
+//        }
+        //End dien thoai
         TextView routeName = (TextView) findViewById(R.id.tvRouteName);
         SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
         routeName.setText(sharedPreferences.getString("name", "Chưa chọn tuyến"));
@@ -602,6 +641,22 @@ public class MainActivity extends AppCompatActivity {
         ReadAndWriteModeOn();
     }
 
+    //Quet the bang dien thoai
+    private void VerifyPhoneTicket(String cardIdNDEF) {
+
+        if (cardId != null) {
+            SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+            String cardId, routeCode, cardDataVersion, cardBalance;
+            cardId = cardIdNDEF;
+            routeCode = sharedPreferences.getString("code", "");
+            cardBalance = "0";
+            cardDataVersion = "-1";
+            String params[] = {cardId, routeCode, cardBalance, cardDataVersion};
+            new VerifyTicket().execute(params);
+        }
+    }
+
+    //End Quet the bang dien thoai
     private void ReadAndWriteModeOn() {
         writeMode = true;
         adapter.enableForegroundDispatch(this, pendingIntent, writeTagFilters, null);
@@ -613,7 +668,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //NFC
-    //Push offline data
+//Push offline data
     private class PushOfflineData extends AsyncTask<Void, Void, Void> {
 
         String cardId, ticketTypeId, routeCode, boughtDate, id;
@@ -672,7 +727,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //End push offline data
+//End push offline data
 
     //Push offline cash data
     private class PushOfflineCashData extends AsyncTask<Void, Void, Void> {
@@ -706,7 +761,7 @@ public class MainActivity extends AppCompatActivity {
                                 boolean success = json.getBoolean("success");
                                 if (success) {
                                     //Toast.makeText(getApplicationContext(), "Pushed offline cash data successfully", Toast.LENGTH_SHORT);
-                                    boolean check=dbAdapter.deleteOfflineCashTicket(Long.parseLong(id));
+                                    boolean check = dbAdapter.deleteOfflineCashTicket(Long.parseLong(id));
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -725,7 +780,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //End push offline cash data
+//End push offline cash data
 
     private class SellCashTicketOnline extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
