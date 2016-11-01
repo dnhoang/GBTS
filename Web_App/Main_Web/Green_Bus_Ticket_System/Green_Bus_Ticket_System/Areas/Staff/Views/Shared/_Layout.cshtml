@@ -2,7 +2,7 @@
     Green_Bus_Ticket_System_Data.User user = (Green_Bus_Ticket_System_Data.User) Session["user"];
 }
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -101,11 +101,29 @@
                             <div class="form-inline">
                                 <div class="form-group">
                                     <label for="nt-quantity" class="form-label">Số lượng</label>
-                                    <input type="number" class="form-control" id="nt-quantity" value="1">
+                                    <input style="height:auto" type="number" class="form-control" id="nt-quantity" value="100">
                                 </div>
-                                <div class="form-group">
-                                    <label for="nt-price" class="form-label">Mệnh giá</label>
-                                    <input type="number" class="form-control" id="nt-price" value="20000">
+                            </div>
+                            <br />
+                            <div class="form-group form-inline">
+                                <label for="nt-price" class="form-label">Mệnh giá</label>
+                                <div class="checkbox checkbox-success checkbox-circle">
+                                    <input style="height:auto" id="checkbox20" type="checkbox" checked>
+                                    <label for="checkbox20">
+                                        20.000đ
+                                    </label>
+                                </div>
+                                <div class="checkbox checkbox-success checkbox-circle">
+                                    <input style="height:auto" id="checkbox50" type="checkbox" checked>
+                                    <label for="checkbox50">
+                                        50.000đ
+                                    </label>
+                                </div>
+                                <div class="checkbox checkbox-success checkbox-circle">
+                                    <input style="height:auto" id="checkbox100" type="checkbox" checked>
+                                    <label for="checkbox100">
+                                        100.000đ
+                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -154,15 +172,30 @@
         });
         $("#nt-save").click(function () {
             var quantity = $("#nt-quantity").val();
-            var price = $("#nt-price").val();
+            var t20 = $("#checkbox20");
+            var t50 = $("#checkbox50");
+            var t100 = $("#checkbox100");
+
+            var type = "";
+
+            if (t20.is(':checked')) type += "20000|";
+            if (t50.is(':checked')) type += "50000|";
+            if (t100.is(':checked')) type += "100000|";
+
+            
+
             if (quantity.length == 0) {
                 quantity = 1;
             }
-            if (price.length == 0) {
-                price = 20000;
+            if (type.length == 0) {
+                type = "20000";
+            } else {
+                type = type.substr(0, type.length - 1)
             }
 
-            window.location = "/Staff/ScratchCard/Publish?num="+quantity+"&price=" + price;
+            
+
+            window.location = "/Staff/ScratchCard/Publish?num=" + quantity + "&type=" + type;
         });
     </script>
     <!--Other Js Here-->

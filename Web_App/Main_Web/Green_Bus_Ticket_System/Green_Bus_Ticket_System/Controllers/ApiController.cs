@@ -30,8 +30,7 @@ namespace Green_Bus_Ticket_System.Controllers
         int minBalance = Int32.Parse(ConfigurationManager.AppSettings["AlertBalance"]);
         int defaultBalance = Int32.Parse(ConfigurationManager.AppSettings["DefaultBalance"]);
         string storageConn = ConfigurationManager.AppSettings["StorageConnection"];
-        int SilverCardCodeBalance = Int32.Parse(ConfigurationManager.AppSettings["SilverCardCodeBalance"]);
-        string SilverCardCode = ConfigurationManager.AppSettings["SilverCardCode"];
+        
         static string key = ConfigurationManager.AppSettings["FireBaseKey"];
         static string senderId = ConfigurationManager.AppSettings["FireBaseSender"];
 
@@ -423,11 +422,25 @@ namespace Green_Bus_Ticket_System.Controllers
                 ScratchCard scCard = _scratchCardService.GetScratchCardByCode(code);
                 if (scCard != null && scCard.Status == (int)StatusReference.ScratchCardStatus.AVAILABLE)
                 {
-                    card.Balance = card.Balance + SilverCardCodeBalance;
+                    card.Balance = card.Balance + scCard.Price;
                     _cardService.Update(card);
 
                     scCard.Status = (int)StatusReference.ScratchCardStatus.USED;
                     _scratchCardService.Update(scCard);
+
+                    CreditPlan cp = _creditPlanService.GetAll().FirstOrDefault();
+                    if (cp != null)
+                    {
+                        PaymentTransaction payment = new PaymentTransaction();
+                        payment.CardId = card.Id;
+                        payment.CreditPlanId = cp.Id;
+                        payment.TransactionId = "TOPUP_" + code;
+                        payment.PaymentDate = DateTime.Now;
+                        payment.Total = scCard.Price;
+                        _paymentTransactionService.Create(payment);
+
+                    }
+
 
                     success = true;
                     message = "Nạp tiền vào thẻ thành công!";
@@ -811,7 +824,7 @@ namespace Green_Bus_Ticket_System.Controllers
                     {
                         int newPrice = ticketType.Price;
                         var sub = card.User.UserSubscriptions.FirstOrDefault();
-                        if (sub != null && sub.IsActive && sub.TicketRemaining > 0 && sub.ExpiredDate >= DateTime.Now)
+                        if (sub != null && sub.TicketRemaining > 0 && sub.ExpiredDate >= DateTime.Now)
                         {
                             newPrice = (int)(ticketType.Price * (100 - sub.OfferSubscription.DiscountPercent) / 100);
                         }
@@ -843,7 +856,7 @@ namespace Green_Bus_Ticket_System.Controllers
                             success = true;
                             message = "Mua vé thành công.";
 
-                            if (sub != null && sub.IsActive && sub.TicketRemaining > 0 && sub.ExpiredDate >= DateTime.Now)
+                            if (sub != null && sub.TicketRemaining > 0 && sub.ExpiredDate >= DateTime.Now)
                             {
                                 sub.TicketRemaining = sub.TicketRemaining - 1;
                                 _userSubscriptionService.Update(sub);
@@ -874,7 +887,7 @@ namespace Green_Bus_Ticket_System.Controllers
                         int newPrice = ticketType.Price;
                         var sub = card.User.UserSubscriptions.FirstOrDefault();
                         
-                        if (sub != null && sub.IsActive && sub.TicketRemaining > 0 && sub.ExpiredDate >= DateTime.Now)
+                        if (sub != null && sub.TicketRemaining > 0 && sub.ExpiredDate >= DateTime.Now)
                         {
                             newPrice = (int)(ticketType.Price * (100 - sub.OfferSubscription.DiscountPercent) / 100);
                         }
@@ -901,7 +914,7 @@ namespace Green_Bus_Ticket_System.Controllers
                             success = true;
                             message = "Mua vé thành công.";
 
-                            if (sub != null && sub.IsActive && sub.TicketRemaining > 0 && sub.ExpiredDate >= DateTime.Now)
+                            if (sub != null && sub.TicketRemaining > 0 && sub.ExpiredDate >= DateTime.Now)
                             {
                                 sub.TicketRemaining = sub.TicketRemaining - 1;
                                 _userSubscriptionService.Update(sub);
@@ -1445,6 +1458,79 @@ namespace Green_Bus_Ticket_System.Controllers
                     }
                 }
             }
+            success = true;
+            return Json(new { success = success, message = message, data = data }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult AutoRenewOffer(string key)
+        {
+            string message = "";
+            string responseMessage = "";
+            bool success = false;
+            List<string> data = new List<string>();
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            List<UserSubscription> allActiveSubs = _userSubscriptionService.GetAll()
+                .Where(u => u.IsActive).ToList();
+
+            foreach(var item in allActiveSubs)
+            {
+                List<Card> cards = item.User.Cards.Where(c => c.Status == (int)StatusReference.CardStatus.ACTIVATED).ToList();
+                if (cards.Count > 0)
+                {
+                    Card targetCard = null;
+                    foreach (var c in cards)
+                    {
+                        if (c.Balance >= item.OfferSubscription.Price)
+                        {
+                            targetCard = c;
+                            break;
+                        }
+                    }
+
+                    if (targetCard != null)
+                    {
+                        targetCard.Balance = targetCard.Balance - item.OfferSubscription.Price;
+                        _cardService.Update(targetCard);
+
+                        string expStr = DateTime.Now.AddDays(1).ToString("dd/MM/yyyy") + " 06:00:00 AM";
+                        DateTime expireDate = DateTime.ParseExact(expStr, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
+
+                        item.IsActive = true;
+                        item.TicketRemaining = item.OfferSubscription.TicketNumber;
+                        item.ExpiredDate = expireDate;
+                        _userSubscriptionService.Update(item);
+                        responseMessage = "Gia han goi uu dai " + item.OfferSubscription.Code + " thanh cong! De huy tu dong gia han, soan tin HUY gui 14794342404";
+
+                        data.Add(item.User.PhoneNumber + " | " + targetCard.UniqueIdentifier + " | "  + item.OfferSubscription.Code +  " | " + item.OfferSubscription.Price +" | RENEWED");
+
+                    }
+                    else
+                    {
+                        responseMessage = "Khong du so du de gia han goi uu dai!";
+                        item.IsActive = false;
+                        _userSubscriptionService.Update(item);
+                        data.Add(item.User.PhoneNumber + " | " + item.OfferSubscription.Code + " | " + item.OfferSubscription.Price + " | NOT ENOUGH");
+                    }
+                }
+                else
+                {
+                    responseMessage = "Khong du so du de gia han goi uu dai!";
+                    item.IsActive = false;
+                    _userSubscriptionService.Update(item);
+                    data.Add(item.User.PhoneNumber + " | " + item.OfferSubscription.Code + " | " + item.OfferSubscription.Price + " | NO CARD");
+                }
+                SMSMessage.SendSMS(CommonUtils.GlobalingingPhone(item.User.PhoneNumber), responseMessage);
+            }
+
+            
+
             success = true;
             return Json(new { success = success, message = message, data = data }, JsonRequestBehavior.AllowGet);
         }

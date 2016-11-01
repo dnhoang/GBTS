@@ -21,7 +21,7 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
         }
 
         // GET: Staff/ScratchCard
-        public ActionResult Publish(int num, int price)
+        public ActionResult Publish(int num, string type)
         {
             if (!AuthorizeRequest())
             {
@@ -29,16 +29,24 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
             }
 
             List<ScratchCard> cards = new List<ScratchCard>();
-            for(int i=0; i < num; i++)
+            string[] types = type.Split('|');
+            foreach(var t in types)
             {
-                ScratchCard card = new ScratchCard();
-                card.Price = price;
-                card.Status = (int)StatusReference.ScratchCardStatus.AVAILABLE;
-                card.Code = "M" + CommonUtils.GeneratePassword(6);
+                int price = Int32.Parse(t);
+                for (int i = 0; i < num; i++)
+                {
+                    ScratchCard card = new ScratchCard();
+                    card.Price = price;
+                    card.Status = (int)StatusReference.ScratchCardStatus.AVAILABLE;
+                    card.Code = "M" + CommonUtils.GeneratePassword(8);
 
-                _scratchCardService.Create(card);
-                cards.Add(card);
+                    _scratchCardService.Create(card);
+                    cards.Add(card);
+                }
+
             }
+
+
 
             ViewBag.Cards = cards;
             return View();

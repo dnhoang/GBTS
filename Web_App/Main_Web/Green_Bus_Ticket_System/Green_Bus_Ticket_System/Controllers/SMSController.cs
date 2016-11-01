@@ -179,7 +179,7 @@ namespace Green_Bus_Ticket_System.Controllers
 
                                     //Dang ki moi
                                     var newSub = new UserSubscription();
-                                    string expStr = DateTime.Now.ToString("dd/MM/yyyy") + " 11:59:59 PM";
+                                    string expStr = DateTime.Now.AddDays(1).ToString("dd/MM/yyyy") + " 06:00:00 AM";
                                     DateTime expireDate = DateTime.ParseExact(expStr, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
 
                                     newSub.IsActive = true;
@@ -189,11 +189,11 @@ namespace Green_Bus_Ticket_System.Controllers
                                     newSub.ExpiredDate = expireDate;
                                     _userSubscriptionService.Create(newSub);
 
-                                    responseMessage = "Dang ky goi uu dai thanh cong!";
+                                    responseMessage = "Dang ky goi uu dai thanh cong! De huy tu dong gia han, soan tin HUY gui 14794342404";
                                 }
                                 else
                                 {
-                                    string expStr = DateTime.Now.ToString("dd/MM/yyyy") + " 11:59:59 PM";
+                                    string expStr = DateTime.Now.AddDays(1).ToString("dd/MM/yyyy") + " 06:00:00 AM";
                                     DateTime expireDate = DateTime.ParseExact(expStr, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
 
                                     currentSub.IsActive = true;
@@ -233,7 +233,7 @@ namespace Green_Bus_Ticket_System.Controllers
                             var sub = user.UserSubscriptions.FirstOrDefault();
                             sub.IsActive = false;
                             _userSubscriptionService.Update(sub);
-                            responseMessage = "Huy goi uu dai thanh cong!";
+                            responseMessage = "Huy tu dong gia han goi uu dai thanh cong! ";
                         }
                         else
                         {
