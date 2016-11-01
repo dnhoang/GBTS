@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.enity.CreditPlan;
 
+import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,10 +55,11 @@ public class CreditPlanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // Get current position of item in recyclerview to bind data and assign values from list
+        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
         MyHolder myHolder = (MyHolder) holder;
         current = creditPlen.get(position);
         myHolder.txtCreditPlanName.setText(current.creditplanName);
-        myHolder.txtPrice.setText("Gói: " + current.creditplanPrice + "");
+        myHolder.txtPrice.setText("Gói: " + defaultFormat.format(current.creditplanPrice));
         myHolder.txtPrice.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
 
         // load image into imageview using glide

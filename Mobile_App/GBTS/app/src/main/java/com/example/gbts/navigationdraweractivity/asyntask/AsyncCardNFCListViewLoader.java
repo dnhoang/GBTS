@@ -1,14 +1,8 @@
 package com.example.gbts.navigationdraweractivity.asyntask;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.ListView;
 
-import com.example.gbts.navigationdraweractivity.R;
-import com.example.gbts.navigationdraweractivity.adapter.CardNFCDetailAdapter;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.enity.CardNFC;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
@@ -62,7 +56,7 @@ public class AsyncCardNFCListViewLoader extends AsyncTask<String, Void, List<Car
         strURL = Constance.API_GETALLCARD + "&phone=" + params[0];
 
         // Getting JSON from URL
-        JSONObject json = jParser.getJSONFromUrl(strURL);
+        JSONObject json = jParser.getJSONFromUrlPOST(strURL);
 
         try {
             //Get array json from json object

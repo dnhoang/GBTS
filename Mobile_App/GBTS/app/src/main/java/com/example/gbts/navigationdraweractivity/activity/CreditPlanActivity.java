@@ -1,6 +1,5 @@
 package com.example.gbts.navigationdraweractivity.activity;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,11 +18,8 @@ import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.adapter.CreditPlanAdapter;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.enity.CreditPlan;
-import com.example.gbts.navigationdraweractivity.fragment.CreditCardDetails;
 import com.example.gbts.navigationdraweractivity.listener.RecyclerTouchListener;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
-import com.paypal.android.sdk.payments.PayPalService;
-import com.paypal.android.sdk.payments.PaymentActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -98,7 +94,7 @@ public class CreditPlanActivity extends AppCompatActivity {
             JSONParser jParser = new JSONParser();
             url = Constance.API_GET_CREDIT_PLAN + "&phone=" + phone;
             // Getting JSON from URL
-            JSONObject json = jParser.getJSONFromUrl(url);
+            JSONObject json = jParser.getJSONFromUrlPOST(url);
             return json;
         }
 
@@ -129,6 +125,7 @@ public class CreditPlanActivity extends AppCompatActivity {
                     creditPlan.creditplanName = object.optString(TAG_CREDITPLAN_NAME);
                     creditPlan.creditplanDescription = object.optString(TAG_CREDITPLAN_DESCRIPTION);
                     creditPlan.creditplanPrice = object.optDouble(TAG_CREDITPLAN_PRICE);
+
                     //Add item
                     listCreditPlan.add(creditPlan);
                 }

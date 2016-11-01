@@ -9,11 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
@@ -25,7 +21,6 @@ import org.json.JSONObject;
 public class TopUpActivity extends AppCompatActivity {
     //final Animation animAlpha= AnimationUtils.loadAnimation(this,R.anim.anim_alpha);
     String hostAddress = "https://grinbuz.net";
-    String couponCode = "GBNAPTHE20K";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +34,11 @@ public class TopUpActivity extends AppCompatActivity {
         EditText edtCoupon = (EditText) findViewById(R.id.edtCoupon);
         String coupon = edtCoupon.getText().toString().trim();
         if (coupon != null) {
-            if (coupon.equals(couponCode)) {
-                Intent intent = getIntent();
-                String[] params = {intent.getStringExtra("cardId"), coupon};
+            Intent intent = getIntent();
+            String[] params = {intent.getStringExtra("cardId"), coupon};
+            if (params != null) {
                 new TopUpByCoupon().execute(params);
             }
-
         }
 
     }
@@ -74,8 +68,8 @@ public class TopUpActivity extends AppCompatActivity {
             String strURL = hostAddress + "/Api/Topup?key=gbts_2016_capstone&cardId=" + cardId + "&code=" + couponCode;
 
             // Getting JSON from URL
-            JSONObject json = jParser.getJSONFromUrl(strURL);
-            Log.d("DUC",strURL.toString());
+            JSONObject json = jParser.getJSONFromUrlPOST(strURL);
+            Log.d("DUC", strURL.toString());
             return json;
         }
 
@@ -95,14 +89,28 @@ public class TopUpActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             if (success) {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(TopUpActivity.this);
                 alertDialogBuilder
                         .setTitle("Nạp tiền thành công")
                         .setCancelable(false)
+                        .setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        Intent intent = new Intent(TopUpActivity.this, MainActivity.class);
+                                        intent.putExtra("topup", "topup");
+                                        startActivity(intent);
+                                    }
+                                });
 
-                        .setNegativeButton("Thoát",
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            } else {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(TopUpActivity.this);
+                alertDialogBuilder
+                        .setTitle(message)
+                        .setCancelable(false)
+                        .setNegativeButton("OK",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         dialog.cancel();
@@ -113,8 +121,6 @@ public class TopUpActivity extends AppCompatActivity {
                 // create alert dialog
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
-            } else {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
             }
 
 

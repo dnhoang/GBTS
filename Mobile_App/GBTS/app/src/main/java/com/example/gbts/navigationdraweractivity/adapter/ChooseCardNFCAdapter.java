@@ -2,6 +2,7 @@ package com.example.gbts.navigationdraweractivity.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,27 +14,24 @@ import android.widget.TextView;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.enity.CardNFC;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 /**
  * Created by truon on 10/5/2016.
  */
 
-public class CardNFCAdapter extends BaseAdapter {
+public class ChooseCardNFCAdapter extends ArrayAdapter<CardNFC> {
     Context context;
     List<CardNFC> cardNFCList;
 
 
-    public CardNFCAdapter(Context context, List<CardNFC> cardNFCList) {
+    public ChooseCardNFCAdapter(Context context, List<CardNFC> cardNFCList) {
+        super(context, 0, cardNFCList);
         this.context = context;
         this.cardNFCList = cardNFCList;
     }
 
-    /*private view holder class*/
-    private class ViewHolder {
-        ImageView imageView;
-        TextView txtCardName, txtStatus;
-    }
 
     @Override
     public int getCount() {
@@ -67,11 +65,23 @@ public class CardNFCAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.custom_listview_cardnfc, null);
         }
 
+        //Format number
+        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
+
         CardNFC cardNFC = getItem(position);
+
         TextView textCardName = (TextView) convertView.findViewById(R.id.txtCardName);
+        TextView textBalance = (TextView) convertView.findViewById(R.id.txtCDBalance);
         TextView textStatus = (TextView) convertView.findViewById(R.id.txtStatus);
 
+        Log.d("chooseCard ", "name " + cardNFC.getCardName());
+        Log.d("chooseCard ", "balance" + cardNFC.getBalance());
+        Log.d("chooseCard ", "status " + cardNFC.getStatus());
+
+        double balance = cardNFC.getBalance();
+
         textCardName.setText(cardNFC.getCardName());
+        textBalance.setText(defaultFormat.format(balance));
         int status = cardNFC.getStatus();
         if (status == 1) {
             textStatus.setText("Đã kích hoạt");
@@ -81,11 +91,4 @@ public class CardNFCAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public List<CardNFC> getCardNFCList() {
-        return cardNFCList;
-    }
-
-    public void setCardNFCList(List<CardNFC> cardNFCList) {
-        this.cardNFCList = cardNFCList;
-    }
 }

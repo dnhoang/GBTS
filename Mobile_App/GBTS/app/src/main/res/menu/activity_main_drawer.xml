@@ -15,9 +15,9 @@
             android:icon="@drawable/ic_action_user"
             android:title="Thông tin cá nhân" />
         <item
-            android:id="@+id/nav_gmaps"
-            android:icon="@drawable/ic_action_map"
-            android:title="Bản đô"
+            android:id="@+id/nav_choose_card"
+            android:icon="@drawable/ic_action_credit_card_plus"
+            android:title="Chọn thẻ sử dụng điện thoại thanh toán"
             />
         <item
             android:id="@+id/nav_logout"

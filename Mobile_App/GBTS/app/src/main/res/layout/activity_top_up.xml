@@ -16,6 +16,7 @@
         android:inputType="textCapCharacters"
         android:ems="10"
         android:id="@+id/edtCoupon"
+        android:hint="Nhập mã thẻ cào.."
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:contentDescription="Nhập mã thẻ cào" />

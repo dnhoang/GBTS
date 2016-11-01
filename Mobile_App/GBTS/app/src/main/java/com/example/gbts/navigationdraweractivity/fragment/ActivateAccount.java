@@ -1,12 +1,10 @@
 package com.example.gbts.navigationdraweractivity.fragment;
 
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.AsyncTask;
@@ -15,11 +13,9 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.R;
-import com.example.gbts.navigationdraweractivity.activity.ActivateCardActivity;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 
 import org.json.JSONException;
@@ -81,7 +77,7 @@ public class ActivateAccount extends DialogFragment {
             String strURL = hostAddress + "/Api/ActivateAccountByApp?key=gbts_2016_capstone&cardId=" + cardId + "&phone=" + phone;
 
             // Getting JSON from URL
-            JSONObject json = jParser.getJSONFromUrl(strURL);
+            JSONObject json = jParser.getJSONFromUrlPOST(strURL);
             return json;
         }
 

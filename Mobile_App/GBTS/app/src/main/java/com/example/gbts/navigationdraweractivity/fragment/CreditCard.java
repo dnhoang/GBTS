@@ -3,12 +3,10 @@ package com.example.gbts.navigationdraweractivity.fragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +17,6 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.R;
-import com.example.gbts.navigationdraweractivity.activity.PaypalActivity;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 
@@ -27,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -73,7 +71,7 @@ public class CreditCard extends Fragment {
             JSONParser jParser = new JSONParser();
             url = Constance.API_GETALLCARD + "&phone=" + phone;
             // Getting JSON from URL
-            JSONObject json = jParser.getJSONFromUrl(url);
+            JSONObject json = jParser.getJSONFromUrlPOST(url);
             return json;
         }
 
@@ -90,10 +88,13 @@ public class CreditCard extends Fragment {
                     JSONObject object = jsonArray.getJSONObject(i);
                     // Storing JSON item in a Variable
 
+                    NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
+
                     String cardID = object.optString(TAG_CARD_ID);
                     String name = object.optString(TAG_CARD_NAME);
                     String registrationDate = object.optString(TAG_REGISTRATION_DATE);
                     double balance = object.optDouble(TAG_BALANCE);
+                    String strBalance = defaultFormat.format(balance);
                     int status = object.optInt(TAG_CARD_STATUS);
 
                     String strStatus = "";
@@ -110,7 +111,7 @@ public class CreditCard extends Fragment {
                     map.put(TAG_CARD_ID, cardID);
                     map.put(TAG_CARD_NAME, name);
                     map.put(TAG_REGISTRATION_DATE, registrationDate);
-                    map.put(TAG_BALANCE, balance + "");
+                    map.put(TAG_BALANCE, strBalance);
                     map.put(TAG_CARD_STATUS, strStatus);
                     listCard.add(map);
                 }
@@ -124,6 +125,9 @@ public class CreditCard extends Fragment {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                         HashMap<String, String> card = listCard.get(position);
+
+//                        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE);
+//                        sharedPreferences.edit().putString("NFCPayment", card.get(TAG_CARD_ID)).commit();
 
                         Bundle bundle = new Bundle();
                         bundle.putString(TAG_CARD_ID, card.get(TAG_CARD_ID));

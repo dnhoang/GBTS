@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -66,45 +67,27 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param messageBody FCM message body received.
      */
     private void showNotification(String messageBody, String title) {
-
-        Intent intent;
-        SharedPreferences preferences = getSharedPreferences("Info", MODE_PRIVATE);
-        String phonePrefer = preferences.getString("Phonenumber", "empty");
-
-        if (phonePrefer != null) {
-            intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-            Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.ic_notifications)
-                    .setContentTitle(title)
-                    .setContentText(messageBody)
-                    .setAutoCancel(true)
-                    .setSound(sound)
-                    .setContentIntent(pendingIntent);
-            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            manager.notify(0, builder.build());
-        } else {
+        String phone = null;
+        Intent intent = null;
+        SharedPreferences sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
+        boolean isLogout = sharedPreferences.getBoolean("isLogout", true);
+        if (isLogout) {
             intent = new Intent(this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-            Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.ic_notifications)
-                    .setContentTitle(title)
-                    .setContentText(messageBody)
-                    .setAutoCancel(true)
-                    .setSound(sound)
-                    .setContentIntent(pendingIntent);
-            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            manager.notify(0, builder.build());
+        } else {
+            intent = new Intent(this, MainActivity.class);
         }
-
-
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_notifications)
+                .setContentTitle(title)
+                .setContentText(messageBody)
+                .setAutoCancel(true)
+                .setSound(sound)
+                .setContentIntent(pendingIntent);
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
     }
-
-//    private void showNotification(String body) {
-//        showNotification(body, "google");
-//    }
 }
+

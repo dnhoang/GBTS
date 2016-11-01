@@ -18,7 +18,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.R;
-import com.example.gbts.navigationdraweractivity.activity.ActivityGoogleFindPath;
 import com.example.gbts.navigationdraweractivity.adapter.ReportAdapter;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.enity.ReportEntity;
@@ -35,8 +34,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created by truon on 10/9/2016.
@@ -149,7 +146,7 @@ public class GetReport extends Fragment {
             url = Constance.API_GET_REPORT + "&phone=" + params[0] +
                     "&beginDate=" + params[1] +
                     "&endDate=" + params[2];
-            JSONObject json = jsonParser.getJSONFromUrl(url);
+            JSONObject json = jsonParser.getJSONFromUrlPOST(url);
             return json;
         }
 

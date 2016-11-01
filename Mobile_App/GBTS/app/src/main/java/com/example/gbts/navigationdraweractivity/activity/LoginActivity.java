@@ -1,7 +1,6 @@
 package com.example.gbts.navigationdraweractivity.activity;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -16,14 +15,9 @@ import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
-import com.example.gbts.navigationdraweractivity.asyntask.FireBaseIDTask;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
-import com.example.gbts.navigationdraweractivity.enity.Message;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -47,6 +41,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        SharedPreferences sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
+        boolean isLoggedout = sharedPreferences.getBoolean("isLogout", true);
+        if (isLoggedout == false) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
         getSupportActionBar().hide();
 
         //initalise controle
@@ -71,7 +72,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         edtPhone = (EditText) findViewById(R.id.edtPhone);
         edtPass = (EditText) findViewById(R.id.edtPassword);
         checkBox = (CheckBox) findViewById(R.id.saveLoginCheckBox);
-
+        SharedPreferences sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
+        boolean isLogout = sharedPreferences.getBoolean("isLogout", true);
+        if (isLogout == false) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
             String phone = intent.getExtras().getString("rememberPhone");
@@ -89,30 +95,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    public void doLogin() {
-
-        edtPhone = (EditText) findViewById(R.id.edtPhone);
-        edtPass = (EditText) findViewById(R.id.edtPassword);
-        checkBox = (CheckBox) findViewById(R.id.saveLoginCheckBox);
-
-        if (checkBox.isChecked()) {
-            SharedPreferences sharedPreferences = getSharedPreferences("Info", Context.MODE_PRIVATE);
-            String usernameAPI = sharedPreferences.getString("Phonenumber", "");
-            String passwordAPI = sharedPreferences.getString("Password", "");
-
-            if (edtPhone.getText().toString().equals(usernameAPI) && edtPass.getText().toString().equals(passwordAPI)) {
-                rememberMe(usernameAPI, passwordAPI); //save username and password
-            } else {
-                Toast.makeText(this, "Invalid username or password", Toast.LENGTH_LONG).show();
-            }
-        }
-
-    }
-
     public void rememberMe(String user, String password) {
         //save username and password in SharedPreferences
-        getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                .edit()
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        sharedPreferences.edit()
                 .putString(PREF_USERNAME, user)
                 .putString(PREF_PASSWORD, password)
                 .putString(PREF_REMEMBER, "checked")
@@ -134,6 +120,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private class JSONParse extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
         String phone, pwd;
+        SharedPreferences preferences = null;
 
         @Override
         protected void onPreExecute() {
@@ -144,13 +131,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             checkBox = (CheckBox) findViewById(R.id.saveLoginCheckBox);
             phone = edtPhone.getText().toString();
             pwd = edtPass.getText().toString();
-
-
-            pDialog = new ProgressDialog(LoginActivity.this);
-            pDialog.setMessage("Getting Data ...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(true);
-            pDialog.show();
+//
+//            pDialog = new ProgressDialog(LoginActivity.this);
+//            pDialog.setMessage("Getting Data ...");
+//            pDialog.setIndeterminate(false);
+//            pDialog.setCancelable(true);
+//            pDialog.show();
         }
 
         @Override
@@ -162,54 +148,53 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Log.d("meow", "url " + strURL);
 
             // Getting JSON from URL
-            JSONObject json = jParser.getJSONFromUrl(strURL);
+            JSONObject json = jParser.getJSONFromUrlPOST(strURL);
+            Log.d("meow", "json " + json.toString());
             return json;
         }
 
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
-            super.onPostExecute(jsonObject);
+            JSONObject data = null;
             // Hide dialog
-            pDialog.dismiss();
+//            pDialog.dismiss();
             //check success
+            Log.d("meow", "JSONObject " + jsonObject.toString());
+
             boolean success = jsonObject.optBoolean(TAG_SUCCESS);
-            Log.d(TAG, "jsonObject " + jsonObject.toString());
+            Log.d("meow", "success: " + success);
+
             if (success) {
-                JSONObject data = null;
                 try {
                     data = jsonObject.getJSONObject("data");
                     String fullname = data.getString("Fullname");
                     Log.d(TAG, "fullname " + fullname);
-                    SharedPreferences preferences = getSharedPreferences("Info", MODE_PRIVATE);
+
+                    //SharedPreferences
+                    preferences = getSharedPreferences("Info", MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString("Phonenumber", phone);
                     editor.putString("Password", pwd);
+                    editor.putBoolean("isLogout", false);
                     editor.putString("Fullname", fullname);
                     editor.commit();
 
-                    //NOTIFICATION
-                    FirebaseMessaging.getInstance().subscribeToTopic("GBTS");
-                    String token = FirebaseInstanceId.getInstance().getToken();
-                    try {
-                        Log.d("so dien thoai dc luu", "phone id " + phone);
-                        new FireBaseIDTask().execute(phone, token);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 if (checkBox.isChecked()) {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    //check box is checked
                     rememberMe(phone, pwd);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("saveAccount", "saveAccount");
+                    startActivity(intent);
                 } else {
+                    //not check
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
             } else {
-                Toast.makeText(getApplicationContext(), "Sai điện thoại hoặc mật khẩu!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), "Sai điện thoại hoặc mật khẩu!", Toast.LENGTH_LONG).show();
             }
         }
     }

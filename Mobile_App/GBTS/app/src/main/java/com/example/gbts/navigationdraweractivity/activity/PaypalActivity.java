@@ -1,11 +1,6 @@
 package com.example.gbts.navigationdraweractivity.activity;
 
 import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -16,20 +11,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
-import com.example.gbts.navigationdraweractivity.enity.CreditPlan;
-import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
-import com.example.gbts.navigationdraweractivity.fragment.CreditCardDetails;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
@@ -42,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -109,11 +98,13 @@ public class PaypalActivity extends AppCompatActivity {
         //Get getIntent from CreditPlanActivity
         Intent getIntent = getIntent();
         //Get bundle from Intent
+        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
         Bundle bundle = getIntent.getExtras();
         int id = bundle.getInt("creditPlanID");
         String name = bundle.getString("creditPlanName");
         String description = bundle.getString("creditPlanDescription");
         double price = bundle.getDouble("creditPlanPrice");
+        String strPrice = defaultFormat.format(price);
         //Get and Set Text Control
         txtName = (TextView) findViewById(R.id.txtCreditPlanName);
         txtName.setText(name);
@@ -122,7 +113,7 @@ public class PaypalActivity extends AppCompatActivity {
         txtCreditDescription.setText(description);
 
         txtCreditPlanPrice = (TextView) findViewById(R.id.txtCreditPlanPrice);
-        txtCreditPlanPrice.setText(price + "");
+        txtCreditPlanPrice.setText(strPrice);
 
 //        Log.d(TAG, "id: " + id);+rice);
     }
@@ -256,7 +247,7 @@ public class PaypalActivity extends AppCompatActivity {
                     "&cardId=" + params[0] +
                     "&creditPlanId=" + params[1] +
                     "&transactionId=" + params[2];
-            JSONObject json = jsonParser.getJSONFromUrl(url);
+            JSONObject json = jsonParser.getJSONFromUrlPOST(url);
             return json;
         }
 

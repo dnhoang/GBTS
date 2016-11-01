@@ -3,7 +3,6 @@ package com.example.gbts.navigationdraweractivity.fragment;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,7 +16,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.R;
-import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 
 import org.json.JSONException;
@@ -117,7 +115,7 @@ public class Profile extends Fragment {
             String strURL = hostAddress + "/Api/UpdateProfile?key=gbts_2016_capstone&phone=" + phone + "&fullname=" + fullname + "&password=" + password;
 
             // Getting JSON from URL
-            JSONObject json = jParser.getJSONFromUrl(strURL);
+            JSONObject json = jParser.getJSONFromUrlPOST(strURL);
             Log.d(TAG, json.toString());
             return json;
         }

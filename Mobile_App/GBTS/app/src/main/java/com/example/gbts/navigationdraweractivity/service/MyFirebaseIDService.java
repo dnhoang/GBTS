@@ -34,7 +34,7 @@ public class MyFirebaseIDService extends FirebaseInstanceIdService {
 //        String strURL = Constance.API_NOTIFICATION + "&phone=" + phoneInfo + "&token=" + token;
 //
 //        // Getting JSON from URL
-//        JSONObject json = jParser.getJSONFromUrl(strURL);
+//        JSONObject json = jParser.getJSONFromUrlPOST(strURL);
 
     }
 

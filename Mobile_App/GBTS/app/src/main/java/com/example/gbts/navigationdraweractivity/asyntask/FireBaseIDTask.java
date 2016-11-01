@@ -4,7 +4,6 @@ package com.example.gbts.navigationdraweractivity.asyntask;
  * Created by HoangDN on 10/3/2016.
  */
 
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -22,7 +21,6 @@ public class FireBaseIDTask extends AsyncTask<String, Void, JSONObject> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-//        SharedPreferences preferences =
 
     }
 
@@ -33,7 +31,7 @@ public class FireBaseIDTask extends AsyncTask<String, Void, JSONObject> {
         String strURL = Constance.API_NOTIFICATION + "&phone=" + params[0] + "&token=" + params[1];
 
         // Getting JSON from URL
-        JSONObject json = jParser.getJSONFromUrl(strURL);
+        JSONObject json = jParser.getJSONFromUrlPOST(strURL);
         return json;
     }
 

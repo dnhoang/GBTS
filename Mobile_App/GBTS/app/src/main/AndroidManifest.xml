@@ -79,7 +79,7 @@
         <activity android:name=".activity.TopUpActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.gbts.navigationdraweractivity.activity.CreditPlanActivity" />
+                android:value="com.example.gbts.navigationdraweractivity.MainActivity" />
 
         </activity>
     </application>

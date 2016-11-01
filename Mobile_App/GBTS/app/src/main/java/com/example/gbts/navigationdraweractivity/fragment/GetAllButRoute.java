@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.activity.BusStopActivity;
@@ -91,7 +90,7 @@ public class GetAllButRoute extends DialogFragment {
         protected JSONObject doInBackground(String... params) {
             JSONParser jsonParser = new JSONParser();
             url = Constance.API_GET_ALL_BUS_ROUTES;
-            JSONObject json = jsonParser.getJSONFromUrl(url);
+            JSONObject json = jsonParser.getJSONFromUrlPOST(url);
             return json;
         }
 

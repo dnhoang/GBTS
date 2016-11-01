@@ -8,7 +8,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
+import android.nfc.NfcEvent;
 import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,11 +34,11 @@ import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
 import com.example.gbts.navigationdraweractivity.asyntask.FireBaseIDTask;
+import com.example.gbts.navigationdraweractivity.fragment.FragmentChooseCard;
 import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
 import com.example.gbts.navigationdraweractivity.fragment.FragmentDirection;
 import com.example.gbts.navigationdraweractivity.fragment.GetAllButRoute;
 import com.example.gbts.navigationdraweractivity.fragment.GetReport;
-import com.example.gbts.navigationdraweractivity.fragment.GmapFragment;
 import com.example.gbts.navigationdraweractivity.fragment.MainContent;
 import com.example.gbts.navigationdraweractivity.fragment.Profile;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
@@ -46,10 +49,11 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, NfcAdapter.CreateNdefMessageCallback {
     private final String PREFS_NAME = "mypre";
     private final String PREF_USERNAME = "username";
     private final String PREF_PASSWORD = "password";
@@ -140,6 +144,28 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public NdefMessage createNdefMessage(NfcEvent event) {
+
+        SharedPreferences sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
+        String message = sharedPreferences.getString("NFCPayment", "");
+
+        Log.d("ndef1 ", "message" + message);
+        try {
+            NdefRecord[] records = new NdefRecord[]{Utility.createRecord(message)};
+            NdefMessage msg = new NdefMessage(records);
+            Log.d("ndef1 ", "msg" + msg.toString());
+//            NdefMessage msg = new NdefMessage(new NdefRecord[]{
+//                    NdefRecord.createMime("truongtq", message.getBytes())
+//            });
+
+            return msg;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private class ActivateNFCCard extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
         String cardId, phone;
@@ -166,7 +192,7 @@ public class MainActivity extends AppCompatActivity
             String strURL = hostAddress + "/Api/ActivateAccountByApp?key=gbts_2016_capstone&cardId=" + cardId + "&phone=" + phone;
 
             // Getting JSON from URL
-            JSONObject json = jParser.getJSONFromUrl(strURL);
+            JSONObject json = jParser.getJSONFromUrlPOST(strURL);
             return json;
         }
 
@@ -197,9 +223,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         //NFC Duc
+
         adapter = NfcAdapter.getDefaultAdapter(this);
+        adapter.setNdefPushMessageCallback(this, this);
         pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
         tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
@@ -218,14 +247,14 @@ public class MainActivity extends AppCompatActivity
 
 
         //NOTIFICATION
-//        FirebaseMessaging.getInstance().subscribeToTopic("GBTS");
-//        String token = FirebaseInstanceId.getInstance().getToken();
-//        try {
-//            Log.d("so dien thoai dc luu", "phone id " + phoneInfo);
-//            new FireBaseIDTask().execute(phoneInfo, token);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        FirebaseMessaging.getInstance().subscribeToTopic("GBTS");
+        String token = FirebaseInstanceId.getInstance().getToken();
+        try {
+            Log.d("so dien thoai dc luu", "phone id " + phoneInfo);
+            new FireBaseIDTask().execute(phoneInfo, token);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //START FRAGMENT MAIN && INTEGRATION FB, PROMOTION
         if (savedInstanceState == null) {
@@ -316,7 +345,11 @@ public class MainActivity extends AppCompatActivity
         if (intent.getExtras() != null) {
 
             String check = intent.getStringExtra("afterPay");
-            if (check != null) {
+            String checkChangeCardName = intent.getStringExtra("action");
+            String checkTopUp = intent.getStringExtra("topup");
+            String action = intent.getStringExtra("action");
+
+            if (check != null || checkChangeCardName != null || checkTopUp != null) {
                 Fragment fragment = null;
                 Class fragmentClass = null;
                 fragmentClass = CreditCard.class;
@@ -369,33 +402,39 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_logout) {
+            boolean isLogout = true;
+            SharedPreferences sharedPreferences = getSharedPreferences("Info", MainActivity.MODE_PRIVATE);
+            sharedPreferences.edit().putBoolean("isLogout", isLogout).commit();
+            Intent intent = getIntent();
+            if (intent.getStringExtra("saveAccount") != null) {
+                SharedPreferences shareSaveAccount = getSharedPreferences(PREFS_NAME, MainActivity.MODE_PRIVATE);
+                String save = intent.getStringExtra("saveAccount");
+                Log.d("test1 ", "save " + save);
+                if (save != null) {
 
-            SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-//            String prePhone = sharedPreferences.getString(PREF_USERNAME, "");
-//            Log.d("test1 ", "prePhone " + prePhone);
-//            String prePass = sharedPreferences.getString(PREF_PASSWORD, "");
-//            Log.d("test1 ", "prePass " + prePass);
-//            String checkedBox = sharedPreferences.getString(PREF_REMEMBER, "");
-//            Log.d("test1 ", "checkedBox " + checkedBox);
-//            if (checkedBox.equals("checked")) {
-//                Bundle bundle = new Bundle();
-//                bundle.putString("rememberPhone", prePhone);
-//                bundle.putString("rememberPass", prePass);
-//                bundle.putString("rememberChecked", checkedBox);
-//
-//                Intent intent = new Intent(this, LoginActivity.class);
-//                intent.putExtras(bundle);
-//                startActivity(intent);
-//                Log.d("MainActivityclear1", "Clear get share preference");
-//            } else {
-//                Log.d("MainActivityclear2", "Clear get share preference");
-//                sharedPreferences.edit().clear();
-//            }
-            Log.d("MainActivityclear1", "Clear get share preference");
-            sharedPreferences.edit().clear();
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-        } else {
+                    String prePhone = shareSaveAccount.getString(PREF_USERNAME, "");
+                    Log.d("test1 ", "prePhone " + prePhone);
+                    String prePass = shareSaveAccount.getString(PREF_PASSWORD, "");
+                    Log.d("test1 ", "prePass " + prePass);
+                    String checkedBox = shareSaveAccount.getString(PREF_REMEMBER, "");
+                    Log.d("test1 ", "checkedBox " + checkedBox);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("rememberPhone", prePhone);
+                    bundle.putString("rememberPass", prePass);
+                    bundle.putString("rememberChecked", checkedBox);
+
+                    Intent intent1 = new Intent(this, LoginActivity.class);
+                    intent1.putExtras(bundle);
+                    startActivity(intent1);
+                }
+            } else {
+                Log.d("saveaccount", "not save not check");
+                Log.d("MainActivityclear2", "Clear get share preference");
+                Intent intent1 = new Intent(this, LoginActivity.class);
+                startActivity(intent1);
+            }
+        } //End If Log Out
+        else {
             // Create a new fragment and specify the fragment to show based on nav item clicked
             Fragment fragment = new Fragment();
             Class fragmentClass = null;
@@ -413,9 +452,9 @@ public class MainActivity extends AppCompatActivity
                     toolbar.setTitle("Thông tin cá nhân ");
                     fragmentClass = Profile.class;
                     break;
-                case R.id.nav_gmaps:
-                    toolbar.setTitle("Bản đồ");
-                    fragmentClass = GmapFragment.class;
+                case R.id.nav_choose_card:
+                    toolbar.setTitle("Thanh toán bằng điện thoại");
+                    fragmentClass = FragmentChooseCard.class;
                     break;
                 default:
                     break;

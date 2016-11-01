@@ -4,7 +4,6 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.AsyncTask;
@@ -75,7 +74,7 @@ public class ActivateCardActivity extends AppCompatActivity {
             String strURL = hostAddress + "/Api/ActivateAccountByApp?key=gbts_2016_capstone&cardId=" + cardId + "&phone=" + phone;
 
             // Getting JSON from URL
-            JSONObject json = jParser.getJSONFromUrl(strURL);
+            JSONObject json = jParser.getJSONFromUrlPOST(strURL);
             return json;
         }
 

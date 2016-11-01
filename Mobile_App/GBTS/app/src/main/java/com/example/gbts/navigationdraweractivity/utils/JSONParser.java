@@ -27,19 +27,27 @@ public class JSONParser {
 
     }
 
-    public JSONObject getJSONFromUrl(String apiUrl) {
+    public JSONObject getJSONFromUrlPOST(String apiUrl) {
         // Making HTTP request
         try {
             URL url = new URL(apiUrl);
 
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
-            urlConnection.setRequestProperty("User-Agent", "");
             urlConnection.setRequestMethod("POST");
             urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
             urlConnection.setConnectTimeout(10000);
             urlConnection.setReadTimeout(10000);
             urlConnection.connect();
+            int status = urlConnection.getResponseCode();
+            Log.d("status ", status + "");
+//            switch (status) {
+//                case 200:
+//                case 201:
+//
+//            }
+
 
             if (urlConnection != null) {
                 try {
@@ -76,12 +84,14 @@ public class JSONParser {
         return jObj;
 
     }
+
     public JSONObject getJSONFromUrlGET(String apiUrl) {
         // Making HTTP request
         try {
             URL url = new URL(apiUrl);
 
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
             urlConnection.setConnectTimeout(10000);
             urlConnection.setReadTimeout(10000);
             urlConnection.connect();

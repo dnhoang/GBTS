@@ -73,10 +73,10 @@ public class CardNFCDetailAdapter extends BaseAdapter {
         }
         CardNFC cardNFC = getItem(position);
 
-        TextView txtCardID = (TextView) convertView.findViewById(R.id.txtCardID);
+        TextView txtCardID = (TextView) convertView.findViewById(R.id.txtCardIDDetails);
         TextView textCardName = (TextView) convertView.findViewById(R.id.txtCardName);
-        TextView txtRegistrationDate = (TextView) convertView.findViewById(R.id.txtRegistrationDate);
-        TextView txtBalance = (TextView) convertView.findViewById(R.id.txtBalance);
+        TextView txtRegistrationDate = (TextView) convertView.findViewById(R.id.txtRegistrationDateDetails);
+        TextView txtBalance = (TextView) convertView.findViewById(R.id.txtBalanceDetails);
         TextView textStatus = (TextView) convertView.findViewById(R.id.txtStatus);
         Button btnPurcharse = (Button) convertView.findViewById(R.id.btnPurchase);
 
