@@ -54,6 +54,8 @@ import java.math.BigInteger;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, NfcAdapter.CreateNdefMessageCallback {
+    static final String keyAES = "ssshhhhhhhhhhh!!!!";
+
     private final String PREFS_NAME = "mypre";
     private final String PREF_USERNAME = "username";
     private final String PREF_PASSWORD = "password";
@@ -127,7 +129,6 @@ public class MainActivity extends AppCompatActivity
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         dialog.cancel();
-
                                     }
                                 });
 
@@ -149,10 +150,15 @@ public class MainActivity extends AppCompatActivity
 
         SharedPreferences sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
         String message = sharedPreferences.getString("NFCPayment", "");
+        Utility utility = new Utility();
+        String encryptCardId = utility.encrypt(message, keyAES);
+            Log.d("ndef1 ", "encryptCardId" + encryptCardId.toString());
 
         Log.d("ndef1 ", "message" + message);
         try {
-            NdefRecord[] records = new NdefRecord[]{Utility.createRecord(message)};
+            String decryptCardID = Utility.decrypt(encryptCardId, keyAES);
+            Log.d("ndef1 ", "decryptCardID" + decryptCardID.toString());
+            NdefRecord[] records = new NdefRecord[]{Utility.createRecord(encryptCardId)};
             NdefMessage msg = new NdefMessage(records);
             Log.d("ndef1 ", "msg" + msg.toString());
 //            NdefMessage msg = new NdefMessage(new NdefRecord[]{
