@@ -471,7 +471,8 @@ public class MainActivity extends AppCompatActivity {
                         String message = null;
                         Boolean needUpdate;
                         Long balance;
-                        Integer amount;
+                        Integer amount=0
+                                ;
                         Long version;
                         try {
                             message = jsonObject.getString("message");
@@ -489,7 +490,7 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         final TextView tvSuccessPrice = (TextView) findViewById(R.id.tvSuccessPrice);
-                        tvSuccessPrice.setText("Thẻ của bạn đã bị trừ " + sharedPreferences.getString("price", "0") + " đồng");
+                        tvSuccessPrice.setText("Thẻ của bạn đã bị trừ " + amount+"" + " đồng");
                         changeLayout(true);
                     } else {
                         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
