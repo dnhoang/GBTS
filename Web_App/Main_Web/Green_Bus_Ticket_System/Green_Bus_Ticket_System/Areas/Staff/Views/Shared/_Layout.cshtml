@@ -2,7 +2,7 @@
     Green_Bus_Ticket_System_Data.User user = (Green_Bus_Ticket_System_Data.User) Session["user"];
 }
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -58,6 +58,7 @@
             <li><a href="/Staff/Home"><span class="icon color5"><i class="fa fa-home"></i></span>BẢNG ĐIỀU KHIỂN</a></li>
             <li><a href="/Staff/Card"><span class="icon color1"><i class="fa fa-credit-card"></i></span>QUẢN LÝ THẺ</a></li>
             <li><a href="/Staff/Passenger"><span class="icon color3"><i class="fa fa-users"></i></span>QUẢN LÝ HÀNH KHÁCH</a></li>
+            <li><a id="btn-pub" href="#"><span class="icon color6"><i class="fa fa-paper-plane"></i></span>PHÁT HÀNH THẺ CÀO</a></li>
             
         </ul>
         <ul class="sidebar-panel nav">
@@ -87,7 +88,55 @@
 
             @RenderBody()
 
+            <!-- Modal -->
+            <div class="modal fade" id="ntCardModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Tạo thẻ cào</h4>
+                        </div>
 
+                        <div class="modal-body">
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <label for="nt-quantity" class="form-label">Số lượng</label>
+                                    <input style="height:auto" type="number" class="form-control" id="nt-quantity" value="100">
+                                </div>
+                            </div>
+                            <br />
+                            <div class="form-group form-inline">
+                                <label for="nt-price" class="form-label">Mệnh giá</label>
+                                <div class="checkbox checkbox-success checkbox-circle">
+                                    <input style="height:auto" id="checkbox20" type="checkbox" checked>
+                                    <label for="checkbox20">
+                                        20.000đ
+                                    </label>
+                                </div>
+                                <div class="checkbox checkbox-success checkbox-circle">
+                                    <input style="height:auto" id="checkbox50" type="checkbox" checked>
+                                    <label for="checkbox50">
+                                        50.000đ
+                                    </label>
+                                </div>
+                                <div class="checkbox checkbox-success checkbox-circle">
+                                    <input style="height:auto" id="checkbox100" type="checkbox" checked>
+                                    <label for="checkbox100">
+                                        100.000đ
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" data-dismiss="modal">HỦY</button>
+                            <button type="button" class="btn btn-default" id="nt-save"><i class="fa fa-paper-plane"></i> PHÁT HÀNH</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- End Moda Code -->
         </div>
         <!-- END CONTAINER -->
         <!-- //////////////////////////////////////////////////////////////////////////// -->
@@ -117,7 +166,38 @@
     Plugin.js - Some Specific JS codes for Plugin Settings
     ================================================ -->
     <script type="text/javascript" src="~/Content/front/js/plugins.js"></script>
+    <script>
+        $("#btn-pub").click(function () {
+            $("#ntCardModal").modal("show");
+        });
+        $("#nt-save").click(function () {
+            var quantity = $("#nt-quantity").val();
+            var t20 = $("#checkbox20");
+            var t50 = $("#checkbox50");
+            var t100 = $("#checkbox100");
 
+            var type = "";
+
+            if (t20.is(':checked')) type += "20000|";
+            if (t50.is(':checked')) type += "50000|";
+            if (t100.is(':checked')) type += "100000|";
+
+            
+
+            if (quantity.length == 0) {
+                quantity = 1;
+            }
+            if (type.length == 0) {
+                type = "20000";
+            } else {
+                type = type.substr(0, type.length - 1)
+            }
+
+            
+
+            window.location = "/Staff/ScratchCard/Publish?num=" + quantity + "&type=" + type;
+        });
+    </script>
     <!--Other Js Here-->
     @if (IsSectionDefined("CustomJs"))
     {

@@ -35,5 +35,8 @@ namespace Green_Bus_Ticket_System_Data
         public virtual DbSet<Ticket> Tickets { get; set; }
         public virtual DbSet<CreditPlan> CreditPlans { get; set; }
         public virtual DbSet<Promotion> Promotions { get; set; }
+        public virtual DbSet<ScratchCard> ScratchCards { get; set; }
+        public virtual DbSet<OfferSubscription> OfferSubscriptions { get; set; }
+        public virtual DbSet<UserSubscription> UserSubscriptions { get; set; }
     }
 }

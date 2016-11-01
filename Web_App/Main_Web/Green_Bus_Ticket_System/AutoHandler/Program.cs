@@ -31,15 +31,64 @@ namespace AutoHandler
 
         static async Task MainAsync()
         {
-            var task1 = SendBalanceNotification();
+            var task1 = MiningBalance();
             var task2 = UpdateBusRoute();
+            var task3 = AutoRenew();
 
-            await Task.WhenAll(task1, task2);
+            await Task.WhenAll(task1, task2, task3);
 
             //await SendBalanceNotification();
 
         }
 
+        static async Task MiningBalance()
+        {
+            while (true)
+            {
+                string apiKey = ConfigurationManager.AppSettings["ApiKey"];
+                string webHost = ConfigurationManager.AppSettings["WebHost"];
+                string configTime = ConfigurationManager.AppSettings["MiningTime"];
+                string current = DateTime.Now.ToString("hh:mm:ss tt");
+
+                if (current.Equals(configTime))
+                {
+                    string endPoint = webHost + "Api/MiningBalance?key=" + apiKey;
+                    var client = new RestClient(endPoint);
+                    var json = client.MakeRequest();
+                    log.Info(json);
+
+                    Console.WriteLine(DateTime.Now.ToShortTimeString() + "Mining.....Done");
+                }
+                
+
+
+                await Task.Delay(1000);
+            }
+        }
+        static async Task AutoRenew()
+        {
+            while (true)
+            {
+                string apiKey = ConfigurationManager.AppSettings["ApiKey"];
+                string webHost = ConfigurationManager.AppSettings["WebHost"];
+                string configTime = ConfigurationManager.AppSettings["AutoRenewTime"];
+                string current = DateTime.Now.ToString("hh:mm:ss tt");
+
+                if (current.Equals(configTime))
+                {
+                    string endPoint = webHost + "Api/AutoRenewOffer?key=" + apiKey;
+                    var client = new RestClient(endPoint);
+                    var json = client.MakeRequest();
+                    log.Info(json);
+
+                    Console.WriteLine(DateTime.Now.ToShortTimeString() + "Auto Renew.....Done");
+                }
+
+
+
+                await Task.Delay(1000);
+            }
+        }
         static async Task SendBalanceNotification()
         {
             string storageConn = ConfigurationManager.AppSettings["StorageConnection"];

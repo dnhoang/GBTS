@@ -63,7 +63,7 @@ namespace Green_Bus_Ticket_System_Utils
 
         public static string GeneratePassword(int length)
         {
-            const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            const string valid = "123456789012345678901234567890123456789012345678901234567890";
             StringBuilder res = new StringBuilder();
             Random rnd = new Random();
             while (0 < length--)

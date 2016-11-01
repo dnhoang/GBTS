@@ -276,6 +276,7 @@
     <Compile Include="Areas\Staff\Controllers\CardController.cs" />
     <Compile Include="Areas\Staff\Controllers\HomeController.cs" />
     <Compile Include="Areas\Staff\Controllers\PassengerController.cs" />
+    <Compile Include="Areas\Staff\Controllers\ScratchCardController.cs" />
     <Compile Include="Areas\Staff\StaffAreaRegistration.cs" />
     <Compile Include="CardHub.cs" />
     <Compile Include="Controllers\AccessController.cs" />
@@ -451,6 +452,7 @@
     <Content Include="Areas\Manager\Views\Report\Index.cshtml" />
     <Content Include="Areas\Manager\Views\Report\GetReport.cshtml" />
     <Content Include="Areas\Manager\Views\Home\Profiles.cshtml" />
+    <Content Include="Areas\Staff\Views\ScratchCard\Publish.cshtml" />
     <None Include="Properties\PublishProfiles\GBTS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

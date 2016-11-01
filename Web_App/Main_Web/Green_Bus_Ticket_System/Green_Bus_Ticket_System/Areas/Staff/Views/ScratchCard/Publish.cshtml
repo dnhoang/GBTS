@@ -1,0 +1,45 @@
+﻿
+@{
+    Layout = null;
+    ViewBag.Title = "Tạo mã nạp tiền";
+    List<Green_Bus_Ticket_System_Data.ScratchCard> cards = (List<Green_Bus_Ticket_System_Data.ScratchCard>)ViewBag.Cards;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Green Bus Ticket System - Fast - Cheap - Convenient">
+    <meta name="keywords" content="bus, green, ticket, convenient" />
+    <title>@ViewBag.Title | Green Bus Ticket System</title>
+    <!-- ========== Css Files ========== -->
+    <link href="~/Content/front/css/root.css" rel="stylesheet">
+    <!--Other Css Here-->
+    <style>
+        body {
+            background: #ffffff;
+            padding:20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="row padding-t-20">
+        @foreach (var item in cards)
+        {
+            <div class="col-md-4">
+                <div class="widget socialbox" style="background:#47639E; height:150px;">
+                    <p class="text">@item.Code</p>
+                    <p class="text-info">NT [Mã_Thẻ] @item.Code gửi 14794312404</p>
+                    <div class="logo"><i class="fa fa-credit-card"></i></div>
+                    <ul class="info">
+                        <li>Mệnh giá: @item.Price.ToString("#,##0") đ</li>
+                    </ul>
+                </div>
+            </div>
+
+        }
+    </div>
+
+</body>
+</html>
