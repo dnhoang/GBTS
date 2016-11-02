@@ -321,6 +321,7 @@ public class SettingActivity extends AppCompatActivity {
                 Intent intent=new Intent(SettingActivity.this,LoginActivity.class);
 
                 startActivity(intent);
+                finish();
             } else {
                 Toast.makeText(getApplicationContext(), "Tuyến không tồn tại!", Toast.LENGTH_LONG).show();
             }

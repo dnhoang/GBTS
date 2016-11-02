@@ -25,6 +25,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Parcelable;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -40,6 +42,11 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,7 +65,7 @@ import Util.DBAdapter;
 import Util.Utility;
 import sample.dto.OfflineTicket;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     NfcAdapter adapter;
     PendingIntent pendingIntent;
     IntentFilter writeTagFilters[];
@@ -81,14 +88,116 @@ public class MainActivity extends AppCompatActivity {
     CountDownTimer timer;
     private DBAdapter dbAdapter = null;
 
+    //GPS
+    double latitude;
+    double longitude;
+    private Location location;
+    private GoogleApiClient gac;
+
+    protected synchronized void buildGoogleApiClient() {
+        if (gac == null) {
+            gac = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API).build();
+        }
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this, 1000).show();
+            } else {
+                Toast.makeText(this, "Thiết bị này không hỗ trợ.", Toast.LENGTH_LONG).show();
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        // Đã kết nối với google api, lấy vị trí
+        getLocation();
+    }
+
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
+        } else {
+
+            location = LocationServices.FusedLocationApi.getLastLocation(gac);
+            SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+            if (location != null) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+//                Log.d("LOCATION", latitude+""+" "+longitude);
+                if (sharedPreferences.getString("direction", "").equals("Bến Thành")) {
+                    double latitudeBenThanh = 10.774783;
+                    double longtitudeBenThanh = 106.698003;
+                    double distance = Utility.distance(latitude, latitudeBenThanh, longitude, longtitudeBenThanh, 0, 0);
+                    if (Math.abs(distance) < 100) {
+                        Intent intent = new Intent(this, LoginActivity.class);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean("onTrip", false).commit();
+                        startActivity(intent);
+                        finish();
+                    }
+                } else if (sharedPreferences.getString("direction", "").equals("Thạnh Lộc")) {
+                    double latitudeBenThanh = 10.878121;
+                    double longtitudeBenThanh = 106.677945;
+                    double distance = Utility.distance(latitude, latitudeBenThanh, longitude, longtitudeBenThanh, 0, 0);
+                    if (Math.abs(distance) < 100) {
+                        Intent intent = new Intent(this, LoginActivity.class);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean("onTrip", false).commit();
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+            } else {
+
+                Log.d("LOCATION", "NULL");
+            }
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        gac.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(this, "Lỗi kết nối: " + connectionResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    protected void onStart() {
+        gac.connect();
+        super.onStart();
+    }
+
+    protected void onStop() {
+        gac.disconnect();
+        super.onStop();
+    }
+
+    //End GPS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Lấy thông tin hướng đi
-
+        //Lấy thông tin hướng đi và GPS
+        if (checkPlayServices()) {
+            // Building the GoogleApi client
+            buildGoogleApiClient();
+        }
+        SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
         TextView tvDirection = (TextView) findViewById(R.id.tvDirection);
-        String direction = getIntent().getStringExtra("direction");
+        String direction = sharedPreferences.getString("direction", "");
         tvDirection.setText("Đi " + direction);
         //
         //TIMER
@@ -97,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
             public void onTick(long millisUntilFinished) {
                 //fabOffline.show();
                 countdownisRunning = true;
-                Log.d("TIMER", "Running");
             }
 
             @Override
@@ -107,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
                 FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                 fab.hide();
                 countdownisRunning = false;
-                Log.d("TIMER", "Finished");
             }
         };
         //
@@ -164,6 +271,8 @@ public class MainActivity extends AppCompatActivity {
                     fab.hide();
                     successTicket = (RelativeLayout) findViewById(R.id.container);
                     successTicket.setVisibility(View.VISIBLE);
+                    MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
+                    mediaPlayer.start();
                     changeLayout(true);
                 } else {
                     showFabOffline();
@@ -180,7 +289,6 @@ public class MainActivity extends AppCompatActivity {
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.show();
         timer.cancel();
-        Log.d("TIMER", "Canceled");
         countdownisRunning = true;
         timer.start();
     }
@@ -204,8 +312,6 @@ public class MainActivity extends AppCompatActivity {
                 ticketTypeId = sharedPreferences.getString("ticketTypeId", "");
                 routeCode = sharedPreferences.getString("code", "");
 
-                //String[] params = {cardId, ticketTypeId, routeCode};
-                //Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                 String[] techList = mytag.getTechList();
                 String searchedTech = Ndef.class.getName();
 
@@ -215,10 +321,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                 }
-
-
             } else {
-                //Toast.makeText(this, "Không thể kết nối với máy chủ!", Toast.LENGTH_SHORT).show();
                 mytag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                 cardId = bin2hex(mytag.getId());
                 final SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
@@ -230,13 +333,10 @@ public class MainActivity extends AppCompatActivity {
 
                 for (String tech : techList) {
                     if (searchedTech.equals(tech)) {
-                        //new NdefReaderTaskOffline().execute(mytag);
                         readNDEFMessage(mytag);
                         break;
                     }
                 }
-
-
             }
         }
 // Read Offline
@@ -264,11 +364,6 @@ public class MainActivity extends AppCompatActivity {
 
                             // Get the Language Code
                             int languageCodeLength = payload[0] & 0063;
-
-                            // String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
-                            // e.g. "en"
-
-                            // Get the Text
                             String result = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
                             if (result != null) {
                                 Utility utility = new Utility();
@@ -301,6 +396,8 @@ public class MainActivity extends AppCompatActivity {
 
                                     failTicket = (RelativeLayout) findViewById(R.id.containerfail);
                                     failTicket.setVisibility(View.VISIBLE);
+                                    MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
+                                    mediaPlayer.start();
                                     changeLayout(false);
                                 }
 
@@ -308,6 +405,8 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 failTicket = (RelativeLayout) findViewById(R.id.containerfail);
                                 failTicket.setVisibility(View.VISIBLE);
+                                MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
+                                mediaPlayer.start();
                                 changeLayout(false);
                             }
 
@@ -333,7 +432,7 @@ public class MainActivity extends AppCompatActivity {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-
+                getLocation();
                 if (Utility.isNetworkConnected(getApplicationContext())) {
                     if (!dbAdapter.isOfflineDataEmpty()) {
                         new PushOfflineData().execute();
@@ -345,7 +444,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-        }, 0, 2 * 1000);
+        }, 0, 10 * 1000);
     }
 
     //Read NDEF message
@@ -405,10 +504,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if (result != null) {
-
-                //Log.d("PHONE",result);
-//                String cardId = Utility.decrypt(result, secretKey);
-                //Log.d("PHONE",cardId);
 
 
                 Utility utility = new Utility();
@@ -472,11 +567,8 @@ public class MainActivity extends AppCompatActivity {
                     "&routeCode=" + routeCode +
                     "&currentBalance=" + cardBalance +
                     "&dataVersion=" + cardDataVersion;
-
             // Getting JSON from URL
-            Log.d("PHONE!!!URL", strURL.toString());
             JSONObject json = jParser.getJSONFromUrl(strURL);
-            Log.d("PHONE!!!", json.toString());
             return json;
         }
 
@@ -488,7 +580,6 @@ public class MainActivity extends AppCompatActivity {
             pDialog.dismiss();
             boolean success = false;
             //check success
-            Log.d("PHONE", jsonObject.toString());
             if (jsonObject != null) {
                 try {
                     success = jsonObject.getBoolean("success");
@@ -500,8 +591,6 @@ public class MainActivity extends AppCompatActivity {
                         successTicket.setVisibility(View.VISIBLE);
                         MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
                         mediaPlayer.start();
-
-
                         //End encrypt
                         String message = null;
                         Boolean needUpdate;
@@ -529,12 +618,11 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                         fab.hide();
-
                         failTicket = (RelativeLayout) findViewById(R.id.containerfail);
                         failTicket.setVisibility(View.VISIBLE);
+
                         MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
                         mediaPlayer.start();
-
 
                         try {
                             String message = jsonObject.getString("message");
@@ -542,7 +630,6 @@ public class MainActivity extends AppCompatActivity {
 
                             tvFail.setText(message);
 
-                            //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -567,16 +654,11 @@ public class MainActivity extends AppCompatActivity {
             String dataToWrite = balance + "|" + dataVersion;
 
             utility.writeCard(dataToWrite, tag);
-
-            //For debug
-            //this.cardBalance = dataToWrite;
         } else {
             Utility utility = new Utility();
             String dataToWrite = (cardBalance - amount) + "|" + cardVersion;
 
             utility.writeCard(dataToWrite, tag);
-            //For debug
-            //this.cardBalance = dataToWrite;
         }
     }
 
@@ -584,12 +666,9 @@ public class MainActivity extends AppCompatActivity {
 
         final RelativeLayout sucess = (RelativeLayout) findViewById(R.id.container);
         final RelativeLayout fail = (RelativeLayout) findViewById(R.id.containerfail);
-
         CountDownTimer timer = new CountDownTimer(2000, 2000) {
             @Override
             public void onTick(long millisUntilFinished) {
-
-
             }
 
             @Override
@@ -597,22 +676,13 @@ public class MainActivity extends AppCompatActivity {
                 if (result == true) {
                     sucess.setVisibility(View.INVISIBLE);
 
-//                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//                    fab.show();
-
-
                 } else {
                     //fail
-
                     fail.setVisibility(View.INVISIBLE);
                     TextView tvFail = (TextView) findViewById(R.id.tvFail);
                     tvFail.setText("Mua vé không thành công");
-//                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//                    fab.show();
-
 
                 }
-                //Toast.makeText(getApplicationContext(), "So tiền trên thẻ hiện tại " + cardBalance, Toast.LENGTH_SHORT).show();
             }
         };
         timer.start();
@@ -701,14 +771,10 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject json = jParser.getJSONFromUrl(strURL);
                         //check success
                         if (json != null) {
-                            Log.d("TICKET", json.toString());
                             try {
                                 boolean success = json.getBoolean("success");
-                                Log.d("TICKET", success + "");
                                 if (success == true) {
-                                    Log.d("TICKET", "Push data success 1 " + id);
                                     dbAdapter.deleteOfflineTicket(Long.parseLong(id));
-                                    Log.d("TICKET", "Push data success 2" + id);
 
                                 }
                             } catch (JSONException e) {
@@ -728,7 +794,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 //End push offline data
-
     //Push offline cash data
     private class PushOfflineCashData extends AsyncTask<Void, Void, Void> {
 
@@ -754,7 +819,6 @@ public class MainActivity extends AppCompatActivity {
                                 "&boughtDate=" + boughtDate;
                         // Getting JSON from URL
                         JSONObject json = jParser.getJSONFromUrl(strURL);
-                        Log.d("TICKET", json.toString());
                         //check success
                         if (json != null) {
                             try {
@@ -809,7 +873,6 @@ public class MainActivity extends AppCompatActivity {
                     "&routeCode=" + routeCode;
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrl(strURL);
-            Log.d("TICKET", strURL);
             return json;
         }
 
@@ -826,10 +889,15 @@ public class MainActivity extends AppCompatActivity {
                     if (success) {
                         successTicket = (RelativeLayout) findViewById(R.id.container);
                         successTicket.setVisibility(View.VISIBLE);
+                        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
+                        mediaPlayer.start();
                         changeLayout(true);
                     } else {
+
                         failTicket = (RelativeLayout) findViewById(R.id.containerfail);
                         failTicket.setVisibility(View.VISIBLE);
+                        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
+                        mediaPlayer.start();
                         changeLayout(false);
                     }
                 } catch (JSONException e) {
