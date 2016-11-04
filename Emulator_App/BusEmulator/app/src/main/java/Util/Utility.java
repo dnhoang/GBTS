@@ -111,7 +111,24 @@ public class Utility {
         }
         return null;
     }
-
+    public String[] getDataFromPhoneEncryptedString(String cardData) {
+        String decryptedCardData = decrypt(cardData, keyAES);
+        try {
+            String result[] = decryptedCardData.split("[@]");
+            Log.d("TOKEN",result[1]);
+            Log.d("TOKEN",result[0]);
+            String data[] = new String[2];
+            int i = 0;
+            for (String r : result) {
+                data[i] = r;
+                i++;
+            }
+            return data;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public static String decrypt(String strToDecrypt, String secret) {
         try {
             setKey(secret);

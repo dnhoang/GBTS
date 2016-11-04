@@ -135,10 +135,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
 //                Log.d("LOCATION", latitude+""+" "+longitude);
-                if (sharedPreferences.getString("direction", "").equals("Bến Thành")) {
-                    double latitudeBenThanh = 10.774783;
-                    double longtitudeBenThanh = 106.698003;
-                    double distance = Utility.distance(latitude, latitudeBenThanh, longitude, longtitudeBenThanh, 0, 0);
+                if (sharedPreferences.getString("direction", "").equals(sharedPreferences.getString("startName", ""))) {
+                    double startLong = Double.parseDouble(sharedPreferences.getString("startLong", ""));
+                    double startLat = Double.parseDouble(sharedPreferences.getString("startLat", ""));
+                    Log.d("LOCATION", sharedPreferences.getString("startLong", "") + " " + sharedPreferences.getString("startLat", ""));
+                    double distance = Utility.distance(latitude, startLat, longitude, startLong, 0, 0);
                     if (Math.abs(distance) < 100) {
                         Intent intent = new Intent(this, LoginActivity.class);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -146,10 +147,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         startActivity(intent);
                         finish();
                     }
-                } else if (sharedPreferences.getString("direction", "").equals("Thạnh Lộc")) {
-                    double latitudeBenThanh = 10.878121;
-                    double longtitudeBenThanh = 106.677945;
-                    double distance = Utility.distance(latitude, latitudeBenThanh, longitude, longtitudeBenThanh, 0, 0);
+                } else if (sharedPreferences.getString("direction", "").equals(sharedPreferences.getString("endName", ""))) {
+                    double endLong = Double.parseDouble(sharedPreferences.getString("endLong", ""));
+                    double endLat = Double.parseDouble(sharedPreferences.getString("endLat", ""));
+                    Log.d("LOCATION", sharedPreferences.getString("endLong", "") + " " + sharedPreferences.getString("endLat", ""));
+                    double distance = Utility.distance(latitude, endLat, longitude, endLong, 0, 0);
                     if (Math.abs(distance) < 100) {
                         Intent intent = new Intent(this, LoginActivity.class);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -160,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
             } else {
 
-                Log.d("LOCATION", "NULL");
+                Log.d("LOCATION", "KHONG CO LOCATION");
             }
         }
     }
@@ -515,8 +517,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     String[] params = {cardId, routeCode, cardBalance, cardDataVersion};
                     new VerifyTicket().execute(params);
                 } else {
-                    String decryptCardId = Utility.decrypt(result, secretKey);
-                    VerifyPhoneTicket(decryptCardId);
+                    String[] decryptPhoneData = utility.getDataFromPhoneEncryptedString(result);
+                    Log.d("TOKEN",decryptPhoneData.toString());
+                    VerifyPhoneTicket(decryptPhoneData);
                 }
 
 
@@ -647,6 +650,93 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
+    //Verify Ticket for Phone
+    private class VerifyPhoneTicketWithToken extends AsyncTask<String, String, JSONObject> {
+        private ProgressDialog pDialog;
+        String cardId, ticketTypeId, routeCode, cardDataVersion, cardBalance, token;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("Kiểm tra thẻ ...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            Utility jParser = new Utility();
+            cardId = params[0];
+            SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+            ticketTypeId = sharedPreferences.getString("ticketTypeId", "");
+            routeCode = params[1];
+            cardBalance = params[2];
+            cardDataVersion = params[3];
+            token = params[4];
+
+            hostAddress = sharedPreferences.getString("host", "https://grinbuzz.com");
+            String strURL = hostAddress + "/Api/SellTicketWithToken?key=gbts_2016_capstone&cardId=" + cardId +
+                    "&ticketTypeId=" + ticketTypeId +
+                    "&routeCode=" + routeCode +
+                    "&currentBalance=" + cardBalance +
+                    "&dataVersion=" + cardDataVersion +
+                    "&token=" + token;
+            // Getting JSON from URL
+            JSONObject json = jParser.getJSONFromUrl(strURL);
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            super.onPostExecute(jsonObject);
+            // Hide dialog
+            pDialog.dismiss();
+            boolean success = false;
+            //check success
+            if (jsonObject != null) {
+                Log.d("TOKEN",jsonObject.toString());
+                try {
+                    success = jsonObject.getBoolean("success");
+                    if (success) {
+                        String amount = jsonObject.getString("amount");
+
+                        successTicket = (RelativeLayout) findViewById(R.id.container);
+                        successTicket.setVisibility(View.VISIBLE);
+                        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
+                        mediaPlayer.start();
+                        final TextView tvSuccessPrice = (TextView) findViewById(R.id.tvSuccessPrice);
+                        tvSuccessPrice.setText("Thẻ của bạn đã bị trừ " + amount + "" + " đồng");
+                        changeLayout(true);
+                    } else {
+                        failTicket = (RelativeLayout) findViewById(R.id.containerfail);
+                        failTicket.setVisibility(View.VISIBLE);
+
+                        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.b7);
+                        mediaPlayer.start();
+                        try {
+                            String message = jsonObject.getString("message");
+                            final TextView tvFail = (TextView) findViewById(R.id.tvFail);
+
+                            tvFail.setText(message);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        changeLayout(false);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    //End phone
     private void updateCard(Boolean checkUpdate, Tag tag, Long balance, Integer amount,
                             Long dataVersion, Long cardBalance, Long cardVersion) throws IOException, FormatException {
         if (checkUpdate) {
@@ -674,6 +764,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             @Override
             public void onFinish() {
                 if (result == true) {
+                    Log.d("TOKEN","SUCCESS");
                     sucess.setVisibility(View.INVISIBLE);
 
                 } else {
@@ -712,17 +803,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     //Quet the bang dien thoai
-    private void VerifyPhoneTicket(String cardIdNDEF) {
+    private void VerifyPhoneTicket(String[] cardIdNDEF) {
 
         if (cardId != null) {
             SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
-            String cardId, routeCode, cardDataVersion, cardBalance;
-            cardId = cardIdNDEF;
+            String cardId, routeCode, cardDataVersion, cardBalance,token;
+            cardId = cardIdNDEF[0];
+            token=cardIdNDEF[1];
             routeCode = sharedPreferences.getString("code", "");
             cardBalance = "0";
             cardDataVersion = "-1";
-            String params[] = {cardId, routeCode, cardBalance, cardDataVersion};
-            new VerifyTicket().execute(params);
+            String params[] = {cardId, routeCode, cardBalance, cardDataVersion,token};
+            new VerifyPhoneTicketWithToken().execute(params);
         }
     }
 
@@ -793,7 +885,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
-//End push offline data
+    //End push offline data
     //Push offline cash data
     private class PushOfflineCashData extends AsyncTask<Void, Void, Void> {
 

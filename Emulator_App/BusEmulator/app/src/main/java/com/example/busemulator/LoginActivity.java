@@ -115,9 +115,8 @@ public class LoginActivity extends AppCompatActivity {
 
                             final Intent intent=new Intent(LoginActivity.this,MainActivity.class);
                             //Lấy thông tin tuyến
-                            String routeName=sharedPreferences.getString("name","");
-                            final String departure=Utility.getTripDeparturePoint(routeName);
-                            final String destination=Utility.getTripDestinationPoint(routeName);
+                            final String departure=sharedPreferences.getString("startName","");
+                            final String destination=sharedPreferences.getString("endName","");
                             //
                             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
                             alertDialogBuilder
