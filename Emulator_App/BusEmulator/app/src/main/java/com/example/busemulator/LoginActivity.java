@@ -35,6 +35,17 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+
+        //Kiem tra trang thai onTrip
+        if (sharedPreferences.getBoolean("onTrip",false)==true){
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            Intent intent=new Intent(this,MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        //
+
         getSupportActionBar().hide();
         adapter = NfcAdapter.getDefaultAdapter(this);
         pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
@@ -95,18 +106,17 @@ public class LoginActivity extends AppCompatActivity {
                     if (success) {
 
                         final SharedPreferences sharedPreferences=getSharedPreferences(setting,MODE_PRIVATE);
-                        SharedPreferences.Editor editor=sharedPreferences.edit();
+                        final SharedPreferences.Editor editor=sharedPreferences.edit();
                         onTrip=sharedPreferences.getBoolean("onTrip",false);
                         Log.d("DATA!!!!","OnTrip=="+onTrip);
                         if (onTrip==false){
                             onTrip=true;
                             editor.putBoolean("onTrip",onTrip);
-                            editor.commit();
+
                             final Intent intent=new Intent(LoginActivity.this,MainActivity.class);
                             //Lấy thông tin tuyến
-                            String routeName=sharedPreferences.getString("name","");
-                            final String departure=Utility.getTripDeparturePoint(routeName);
-                            final String destination=Utility.getTripDestinationPoint(routeName);
+                            final String departure=sharedPreferences.getString("startName","");
+                            final String destination=sharedPreferences.getString("endName","");
                             //
                             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
                             alertDialogBuilder
@@ -114,17 +124,19 @@ public class LoginActivity extends AppCompatActivity {
                                     .setCancelable(false)
                                     .setPositiveButton("Đi "+departure, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
-
-                                            intent.putExtra("direction", departure);
+                                            editor.putString("direction",departure);
+                                            editor.commit();
                                             startActivity(intent);
+                                            finish();
 
                                         }
                                     })
                                     .setNeutralButton("Đi "+destination, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
-
-                                            intent.putExtra("direction", destination);
+                                            editor.putString("direction",destination);
+                                            editor.commit();
                                             startActivity(intent);
+                                            finish();
 
                                         }
                                     });

@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -295,32 +296,43 @@ public class SettingActivity extends AppCompatActivity {
                     String id = data.getString("Id");
                     String code = data.getString("Code");
                     String name = data.getString("Name");
-                    busRoute = new BusRoute(id, code, name);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                if (busRoute != null) {
+                    JSONObject start=data.getJSONObject("Start");
+                    String startName=start.getString("Name");
+                    String startLong=start.getString("Lng");
+
+                    String startLat=start.getString("Lat");
+                    JSONObject end=data.getJSONObject("End");
+                    String endName=end.getString("Name");
+                    String endLong=end.getString("Lng");
+                    String endLat=end.getString("Lat");
+                    SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("id", id);
+                    editor.putString("code", code);
+                    editor.putString("name", name);
                     TicketType ticketType = getTicketTypeByName(ticketTypeName);
-                    editor.putString("id", busRoute.getId());
-                    editor.putString("code", busRoute.getCode());
-                    editor.putString("name", busRoute.getName());
                     editor.putString("ticketTypeId", ticketType.getId());
                     editor.putString("typeName", ticketType.getName());
                     editor.putString("description", ticketType.getDescription());
                     editor.putString("price", ticketType.getPrice());
-
+                    editor.putBoolean("onTrip",false);
+                    editor.putString("startName",startName);
+                    editor.putString("endName",endName);
+                    editor.putString("startLong",startLong);
+                    editor.putString("startLat",startLat);
+                    editor.putString("endLong",endLong);
+                    editor.putString("endLat",endLat);
+                    editor.commit();
+                    TextView routeName = (TextView) findViewById(R.id.tvRouteName);
+                    routeName.setText(name);
+                    EditText edtRoute = (EditText) findViewById(R.id.edtRoute);
+                    edtRoute.setText(code);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                TextView routeName = (TextView) findViewById(R.id.tvRouteName);
-                routeName.setText(busRoute.getName());
-                EditText edtRoute = (EditText) findViewById(R.id.edtRoute);
-                edtRoute.setText(busRoute.getCode());
-                editor.putBoolean("onTrip",false);
-                editor.commit();
                 Intent intent=new Intent(SettingActivity.this,LoginActivity.class);
-
                 startActivity(intent);
+                finish();
             } else {
                 Toast.makeText(getApplicationContext(), "Tuyến không tồn tại!", Toast.LENGTH_LONG).show();
             }
