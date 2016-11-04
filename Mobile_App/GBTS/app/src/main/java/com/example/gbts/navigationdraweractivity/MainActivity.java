@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
 import com.example.gbts.navigationdraweractivity.asyntask.FireBaseIDTask;
+import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.fragment.FragmentChooseCard;
 import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
 import com.example.gbts.navigationdraweractivity.fragment.FragmentDirection;
@@ -51,6 +52,8 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, NfcAdapter.CreateNdefMessageCallback {
@@ -150,15 +153,19 @@ public class MainActivity extends AppCompatActivity
 
         SharedPreferences sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
         String message = sharedPreferences.getString("NFCPayment", "");
+        String token = sharedPreferences.getString("token", "");
+        String carid_token = message + "@" + token;
         Utility utility = new Utility();
-        String encryptCardId = utility.encrypt(message, keyAES);
-            Log.d("ndef1 ", "encryptCardId" + encryptCardId.toString());
 
-        Log.d("ndef1 ", "message" + message);
+        Log.d("tokenne ", "carid_token: " + carid_token.toString());
+
+        String encryptcarid_token = utility.encrypt(carid_token, keyAES);
+        Log.d("tokenne ", "encryptcarid_token: " + encryptcarid_token.toString());
+
         try {
-            String decryptCardID = Utility.decrypt(encryptCardId, keyAES);
+            String decryptCardID = Utility.decrypt(encryptcarid_token, keyAES);
             Log.d("ndef1 ", "decryptCardID" + decryptCardID.toString());
-            NdefRecord[] records = new NdefRecord[]{Utility.createRecord(encryptCardId)};
+            NdefRecord[] records = new NdefRecord[]{Utility.createRecord(encryptcarid_token)};
             NdefMessage msg = new NdefMessage(records);
             Log.d("ndef1 ", "msg" + msg.toString());
 //            NdefMessage msg = new NdefMessage(new NdefRecord[]{
@@ -218,7 +225,7 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
             }
             if (success) {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
             }
@@ -226,12 +233,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     //End
+
+    //ON CREATE
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
         //NFC Duc
+
+        //ASYNC GET TOKEN SERVER API
+        new AsyncGetToken().execute();
 
         adapter = NfcAdapter.getDefaultAdapter(this);
         adapter.setNdefPushMessageCallback(this, this);
@@ -261,6 +273,7 @@ public class MainActivity extends AppCompatActivity
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
         //START FRAGMENT MAIN && INTEGRATION FB, PROMOTION
         if (savedInstanceState == null) {
@@ -367,6 +380,52 @@ public class MainActivity extends AppCompatActivity
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
             }
+
+            //LOGIN
+            String body = intent.getStringExtra("messageBody");
+            String titlte = intent.getStringExtra("messageTile");
+            if (body != null && titlte != null) {
+                Log.d("truongne1 ", body);
+                Log.d("truongne1 ", titlte);
+                Fragment fragment = null;
+                Class fragmentClass = null;
+                fragmentClass = MainContent.class;
+                Bundle bundle = new Bundle();
+                bundle.putString("notiBody", body);
+                bundle.putString("notiTitle", titlte);
+
+                try {
+                    fragment = (Fragment) fragmentClass.newInstance();
+                    fragment.setArguments(bundle);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+            }
+
+            //Not Login
+            String bodyNoLogin = intent.getStringExtra("lgNotiBody");
+            String titlteNoLogin = intent.getStringExtra("lgNotiTitle");
+            if (bodyNoLogin != null && titlteNoLogin != null) {
+                Log.d("truonglg2 ", bodyNoLogin);
+                Log.d("truongne2 ", titlteNoLogin);
+                Fragment fragment = null;
+                Class fragmentClass = null;
+                fragmentClass = MainContent.class;
+                Bundle bundle = new Bundle();
+                bundle.putString("notiBody", bodyNoLogin);
+                bundle.putString("notiTitle", titlteNoLogin);
+                try {
+                    fragment = (Fragment) fragmentClass.newInstance();
+                    fragment.setArguments(bundle);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+            }
+
         }
     }
 
@@ -432,6 +491,7 @@ public class MainActivity extends AppCompatActivity
                     Intent intent1 = new Intent(this, LoginActivity.class);
                     intent1.putExtras(bundle);
                     startActivity(intent1);
+                    finish();
                 }
             } else {
                 Log.d("saveaccount", "not save not check");
@@ -498,6 +558,19 @@ public class MainActivity extends AppCompatActivity
                 Class fragmentClass = null;
                 fragmentClass = MainContent.class;
                 try {
+                    Intent intent = getIntent();
+                    if (intent != null) {
+                        String body = intent.getStringExtra("messageBody");
+                        String title = intent.getStringExtra("messageTile");
+                        if (body != null) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("bodyMsg", body);
+                            bundle.putString("titleMsg", title);
+                            Log.d("bodymess", body);
+                            MainContent mainContent = new MainContent();
+                            mainContent.setArguments(bundle);
+                        }
+                    }
                     fragment = (Fragment) fragmentClass.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -510,4 +583,48 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+
+    private class AsyncGetToken extends AsyncTask<String, String, JSONObject> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            JSONParser jParser = new JSONParser();
+
+            String strURL = Constance.API_GET_TOKEN;
+
+            // Getting JSON from URL
+            JSONObject json = jParser.getJSONFromUrlPOST(strURL);
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+
+            super.onPostExecute(jsonObject);
+            // Hide dialog
+            boolean success = false;
+            String message = "";
+            //check success
+            try {
+                success = jsonObject.getBoolean("success");
+                if (success) {
+//                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                    String token = jsonObject.getString("token");
+                    Log.d("gettoken ", token);
+                    getSharedPreferences("Info", MODE_PRIVATE).edit()
+                            .putString("token", token).commit();
+                } else {
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

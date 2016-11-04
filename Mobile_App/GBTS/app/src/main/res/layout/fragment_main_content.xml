@@ -12,21 +12,31 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:textColor="#4CAF50"
         android:padding="3dp"
         android:text="Xin chào quý khách"
+        android:textColor="#4CAF50"
         android:textSize="30dp"
         android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/txtNotification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="3dp"
+        android:text=""
+        android:textColor="#F44336"
+        android:textSize="15dp"/>
 
-<ImageView
-    android:id="@+id/imgBusICON"
-    android:layout_width="300dp"
-    android:layout_height="300dp"
-    android:layout_gravity="center"
-    android:padding="10dp"
-    android:layout_marginTop="30dp"
-    android:src="@drawable/ic_bus_background1"/>
+
+    <ImageView
+        android:id="@+id/imgBusICON"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:padding="5dp"
+        android:src="@drawable/ic_bus_background1" />
 
 
 </LinearLayout>

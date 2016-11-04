@@ -17,6 +17,7 @@ import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
+import com.example.gbts.navigationdraweractivity.utils.Utility;
 
 import org.json.JSONObject;
 
@@ -58,7 +59,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onClick(View v) {
 //                startActivity(new Intent(getBaseContext(), MainActivity.class));
-                new JSONParse().execute();
+                if (Utility.isNetworkConnected(LoginActivity.this)) {
+                    new JSONParse().execute();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Không thể kết nối với máy chủ!", Toast.LENGTH_SHORT).show();
+                }
 //                doLogin();
             }
         });
@@ -86,6 +91,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Log.d("truongtest", "pass " + pass);
             String check = intent.getExtras().getString("rememberChecked");
             Log.d("truongtest", "check " + check);
+
+
             if (phone != null && pass != null && check != null) {
                 edtPhone.setText(phone);
                 edtPass.setText(pass);
@@ -131,12 +138,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             checkBox = (CheckBox) findViewById(R.id.saveLoginCheckBox);
             phone = edtPhone.getText().toString();
             pwd = edtPass.getText().toString();
-//
-//            pDialog = new ProgressDialog(LoginActivity.this);
-//            pDialog.setMessage("Getting Data ...");
-//            pDialog.setIndeterminate(false);
-//            pDialog.setCancelable(true);
-//            pDialog.show();
+
+            pDialog = new ProgressDialog(LoginActivity.this);
+            pDialog.setMessage("Vui lòng đợi giây lát ...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
         }
 
         @Override
@@ -157,7 +164,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         protected void onPostExecute(JSONObject jsonObject) {
             JSONObject data = null;
             // Hide dialog
-//            pDialog.dismiss();
+            pDialog.dismiss();
             //check success
             Log.d("meow", "JSONObject " + jsonObject.toString());
 
@@ -182,15 +189,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                Intent intentNoti = getIntent();
+                String lgNotiBody = intentNoti.getStringExtra("messageBody");
+                String lgNotiTitle = intentNoti.getStringExtra("messageTile");
                 if (checkBox.isChecked()) {
                     //check box is checked
                     rememberMe(phone, pwd);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("saveAccount", "saveAccount");
+                    if (lgNotiBody != null && lgNotiTitle != null) {
+                        intent.putExtra("lgNotiBody", lgNotiBody);
+                        intent.putExtra("lgNotiTitle", lgNotiTitle);
+                    }
                     startActivity(intent);
                 } else {
                     //not check
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    if (lgNotiBody != null && lgNotiTitle != null) {
+                        intent.putExtra("lgNotiBody", lgNotiBody);
+                        intent.putExtra("lgNotiTitle", lgNotiTitle);
+                    }
                     startActivity(intent);
                 }
             } else {

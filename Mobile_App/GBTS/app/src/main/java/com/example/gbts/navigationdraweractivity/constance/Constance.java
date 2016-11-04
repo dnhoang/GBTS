@@ -29,4 +29,6 @@ public class Constance {
             SERVER_API + "Api/GetBusStop?key=gbts_2016_capstone";
     public static String API_CHANGE_CARD_NAME =
             SERVER_API + "Api/ChangeCardName?key=gbts_2016_capstone";
+    public static String API_GET_TOKEN =
+            SERVER_API + "Api/RequestSellTicketToken?key=gbts_2016_capstone";
 }

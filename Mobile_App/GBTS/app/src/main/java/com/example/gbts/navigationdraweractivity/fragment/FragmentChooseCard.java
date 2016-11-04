@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.MainActivity;
@@ -29,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +54,23 @@ public class FragmentChooseCard extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         new JSONParseCardNFC().execute();
-        return inflater.inflate(R.layout.fragment_choose_card, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_choose_card, container, false);
+        String sCardName = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)
+                .getString("cCardName", "");
+        String sBalance = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)
+                .getString("cBalance", "");
+        String sStatus = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)
+                .getString("cStatus", "");
+        TextView textCardName = (TextView) view.findViewById(R.id.txtChooseCardName);
+        TextView textBalance = (TextView) view.findViewById(R.id.txtChooseCDBalance);
+        TextView textStatus = (TextView) view.findViewById(R.id.txtChooseStatus);
+
+        textCardName.setText(sCardName);
+        textBalance.setText(sBalance);
+        textStatus.setText(sStatus);
+
+        return view;
     }
 
     private class JSONParseCardNFC extends AsyncTask<String, String, JSONObject> {
@@ -108,11 +126,13 @@ public class FragmentChooseCard extends Fragment {
                 chooseCardNFCAdapter = new ChooseCardNFCAdapter(getActivity(), listCard);
                 listView = (ListView) getView().findViewById(R.id.listViewChooseCard);
                 listView.setAdapter(chooseCardNFCAdapter);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        CardNFC card = listCard.get(position);
-                        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE);
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        final CardNFC card = listCard.get(position);
+                        //Format number
+                        final NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
+                        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE);
                         sharedPreferences.edit().putString("NFCPayment", card.getCardID()).commit();
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                         alertDialogBuilder
@@ -124,16 +144,54 @@ public class FragmentChooseCard extends Fragment {
                                                 String cardid = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)
                                                         .getString("NFCPayment", "");
                                                 Log.d("NFCPayment ", "NFCPayment " + cardid);
+
+                                                double balance = card.getBalance();
+                                                int status = card.getStatus();
+                                                String strStatus = "";
+                                                String cardName = card.getCardName();
+                                                String strBalance = defaultFormat.format(balance);
+                                                if (status == 1) {
+                                                    strStatus = "Đã kích hoạt";
+                                                } else {
+                                                    strStatus = "Chưa kích hoạt";
+                                                }
+                                                if (cardid == card.getCardID()) {
+                                                    sharedPreferences.edit()
+                                                            .putString("cCardName", cardName)
+                                                            .putString("cBalance", strBalance)
+                                                            .putString("cStatus", strStatus)
+                                                            .commit();
+                                                }
+                                                String sCardName = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)
+                                                        .getString("cCardName", "");
+                                                String sBalance = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)
+                                                        .getString("cBalance", "");
+                                                String sStatus = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)
+                                                        .getString("cStatus", "");
+                                                TextView textCardName = (TextView) getView().findViewById(R.id.txtChooseCardName);
+                                                TextView textBalance = (TextView) getView().findViewById(R.id.txtChooseCDBalance);
+                                                TextView textStatus = (TextView) getView().findViewById(R.id.txtChooseStatus);
+
+                                                textCardName.setText(sCardName);
+                                                textBalance.setText(sBalance);
+                                                textStatus.setText(sStatus);
                                                 dialog.cancel();
                                             }
-                                        });
+                                        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // if this button is clicked, just close
+                                // the dialog box and do nothing
+                                dialog.cancel();
+                            }
+                        });
 
                         // create alert dialog
                         AlertDialog alertDialog = alertDialogBuilder.create();
                         alertDialog.show();
+                        return false;
                     }
                 });
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

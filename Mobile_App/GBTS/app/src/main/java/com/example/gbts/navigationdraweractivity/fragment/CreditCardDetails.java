@@ -24,6 +24,8 @@ import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 /**
@@ -130,7 +132,12 @@ public class CreditCardDetails extends DialogFragment
         @Override
         protected JSONObject doInBackground(String... params) {
             JSONParser jsonParser = new JSONParser();
-            url = Constance.API_CHANGE_CARD_NAME + "&cardId=" + params[0] + "&name=" + params[1];
+            try {
+                url = Constance.API_CHANGE_CARD_NAME + "&cardId=" + params[0] + "&name=" + URLEncoder.encode(params[1], "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            ;
             JSONObject json = jsonParser.getJSONFromUrlPOST(url);
             return json;
         }

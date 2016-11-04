@@ -77,7 +77,7 @@ public class GetReport extends Fragment {
 
         edtDayEnd = (EditText) view.findViewById(R.id.edtDayEnd);
         final String edtdateEnd = edtDayEnd.getText().toString();
-
+        Log.d(TAG, "edtdateStart" + edtdateEnd);
         setCurrentDateEnd(edtDayEnd);
         edtDayEnd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,18 +194,26 @@ public class GetReport extends Fragment {
         myCalendar1.add(Calendar.DAY_OF_MONTH, x);
 
         myear = myCalendar1.get(Calendar.YEAR);
-        mmonth = myCalendar1.get(Calendar.MONTH);
+        mmonth = myCalendar1.get(Calendar.MONTH) + 1;
         mday = myCalendar1.get(Calendar.DAY_OF_MONTH);
         String checkMonth = "";
+        String checkDay = "";
+        if (mday < 9) {
+            checkDay = "0" + mday;
+        } else {
+            checkDay = mday + "";
+        }
         if (mmonth < 9) {
             checkMonth = "0" + (mmonth + 1);
+            Log.d("checkMonth", "checkMonth1 " + checkMonth);
         } else {
             checkMonth = mmonth + "";
+            Log.d("checkMonth", "checkMonth2 " + checkMonth);
         }
         // set current date into textview
         edtStart.setText(new StringBuilder()
                 // Month is 0 based, just add 1
-                .append(mday).append("/")
+                .append(checkDay).append("/")
                 .append(checkMonth).append("/")
                 .append(myear));
     }
@@ -216,7 +224,13 @@ public class GetReport extends Fragment {
         mmonth = myCalendar2.get(Calendar.MONTH) + 1;
         mday = myCalendar2.get(Calendar.DAY_OF_MONTH);
         String checkMonth = "";
-        if (mmonth < 10) {
+        String checkDay = "";
+        if (mday < 9) {
+            checkDay = "0" + mday;
+        } else {
+            checkDay = mday + "";
+        }
+        if (mmonth < 9) {
             checkMonth = "0" + (mmonth + 1);
         } else {
             checkMonth = mmonth + "";
@@ -224,7 +238,7 @@ public class GetReport extends Fragment {
         // set current date into textview
         edtEnd.setText(new StringBuilder()
                 // Month is 0 based, just add 1
-                .append(mday).append("/")
+                .append(checkDay).append("/")
                 .append(checkMonth).append("/")
                 .append(myear));
     }

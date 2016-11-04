@@ -17,6 +17,7 @@ import android.util.Log;
 import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
+import com.example.gbts.navigationdraweractivity.fragment.MainContent;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -44,8 +45,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
+            String body = remoteMessage.getData().get("body");
+            String title = remoteMessage.getData().get("title");
             showNotification(remoteMessage.getData().get("body"), remoteMessage.getData().get("title"));
-            Log.d("Truongtq msg", "Message data payload: " + remoteMessage.getData());
+//            Log.d("Truongtqmsg", "Message data payload: " + remoteMessage.getData());
+            Log.d("Truongtqmsg", "sendBody");
+            MainContent mainContent = new MainContent();
+            Bundle bundle = new Bundle();
+            bundle.putString("notiBody", body);
+            bundle.putString("notiTitle", title);
+            mainContent.setArguments(bundle);
+
+
+            Log.d("Truongtqmsg1", "body: " + mainContent.getArguments().getString("notiBody"));
+            Log.d("Truongtqmsg1", "title " + mainContent.getArguments().getString("notiTitle"));
         }
 
 //         Check if message contains a notification payload.
@@ -67,7 +80,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param messageBody FCM message body received.
      */
     private void showNotification(String messageBody, String title) {
-        String phone = null;
         Intent intent = null;
         SharedPreferences sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
         boolean isLogout = sharedPreferences.getBoolean("isLogout", true);
@@ -76,6 +88,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         } else {
             intent = new Intent(this, MainActivity.class);
         }
+        intent.putExtra("messageBody", messageBody);
+        intent.putExtra("messageTile", title);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -88,6 +102,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentIntent(pendingIntent);
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager.notify(0, builder.build());
+    }
+
+    private void sendBody(String strBody, String strTitle) {
+        Log.d("Truongtqmsg", "sendBody");
+        MainContent mainContent = new MainContent();
+        Bundle bundle = new Bundle();
+        bundle.putString("notiBody", strBody);
+        bundle.putString("notiTitle", strTitle);
+        mainContent.setArguments(bundle);
     }
 }
 
