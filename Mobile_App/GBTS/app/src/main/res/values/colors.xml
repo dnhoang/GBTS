@@ -7,4 +7,5 @@
     <color name="fab2_color">#FFC107</color>
     <color name="colorGrey">#555555</color>
     <color name="colorBlack">#424242</color>
+    <color name="colorWhite90">#8CFFFFFF</color>
 </resources>
