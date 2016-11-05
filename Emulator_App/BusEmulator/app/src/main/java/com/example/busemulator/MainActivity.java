@@ -518,7 +518,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     new VerifyTicket().execute(params);
                 } else {
                     String[] decryptPhoneData = utility.getDataFromPhoneEncryptedString(result);
-                    Log.d("TOKEN",decryptPhoneData.toString());
                     VerifyPhoneTicket(decryptPhoneData);
                 }
 
