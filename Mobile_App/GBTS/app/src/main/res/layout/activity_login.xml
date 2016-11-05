@@ -4,7 +4,6 @@
     android:id="@+id/linearLayout_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#69F0AE"
     android:orientation="vertical"
     tools:context="com.example.gbts.navigationdraweractivity.activity.LoginActivity">
 
@@ -25,7 +24,6 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginBottom="10dp"
-            android:onClick="clickToHome"
             android:paddingTop="5dp"
             android:src="@drawable/ic_action_bus1" />
 
@@ -64,8 +62,8 @@
             android:id="@+id/table_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fff"
-            android:gravity="center">
+            android:layout_marginTop="40dp"
+            android:gravity="top|center">
 
             <TableRow
                 android:id="@+id/tableRow1"
@@ -83,8 +81,11 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/textviewshape"
-                    android:hint="   Nhập Số Điện Thoại..."
-                    android:inputType="phone">
+                    android:hint="Số điện thoại"
+                    android:inputType="phone"
+                    android:textSize="16sp"
+                    android:textAlignment="viewStart"
+                    android:fontFamily="sans-serif">
 
                     <requestFocus />
                 </EditText>
@@ -105,8 +106,11 @@
                     android:layout_height="35dp"
                     android:padding="3dp"
                     android:background="@drawable/textviewshape"
-                    android:hint="   Nhập Mật Khẩu..."
-                    android:inputType="textPassword" />
+                    android:hint="Mật khẩu"
+                    android:inputType="textPassword"
+                    android:fontFamily="sans-serif"
+                    android:textSize="16sp"
+                    android:textAlignment="viewStart" />
             </TableRow>
 
             <TableRow
@@ -120,7 +124,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="3dp"
-                    android:text="Lưu tài khoản" />
+                    android:text="Lưu tài khoản"
+                    android:textColor="@color/colorGrey" />
 
             </TableRow>
 
@@ -128,6 +133,7 @@
                 android:id="@+id/tableRow3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:gravity="center">
 
                 <Button
@@ -136,11 +142,12 @@
                     android:layout_height="35dp"
                     android:background="@drawable/buttonshape"
                     android:onClick="clickToLogin"
-                    android:text="Đăng Nhập"
-                    android:textColor="#FFFFFF"
+                    android:text="Đăng nhập"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="10dp"
-                    android:textSize="20sp" />
+                    android:textAppearance="@style/TextAppearance.AppCompat"
+                    android:textSize="16sp"
+                    android:textAllCaps="true" />
 
             </TableRow>
 
@@ -156,9 +163,10 @@
                     android:layout_height="35dp"
                     android:background="@drawable/buttonshape"
                     android:onClick="clickToActivateCard"
-                    android:text="Kích Hoạt"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp" />
+                    android:text="Kích hoạt"
+                    android:textAppearance="@style/TextAppearance.AppCompat"
+                    android:textSize="16sp"
+                    android:textAllCaps="true" />
             </TableRow>
         </TableLayout>
     </LinearLayout>
