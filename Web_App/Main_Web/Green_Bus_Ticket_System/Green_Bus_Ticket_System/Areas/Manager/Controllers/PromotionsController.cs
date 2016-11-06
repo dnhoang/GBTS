@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Globalization;
 
 namespace Green_Bus_Ticket_System.Areas.Manager.Controllers
 {
@@ -28,7 +29,7 @@ namespace Green_Bus_Ticket_System.Areas.Manager.Controllers
                 return Redirect("/Access/Login");
             }
 
-            ViewBag.Promos = _promotionService.GetAll().OrderByDescending(p => p.Id).Take(5).ToList();
+            ViewBag.Promos = _promotionService.GetAll().OrderByDescending(p => p.Id).Take(20).ToList();
             return View();
         }
 
@@ -51,7 +52,8 @@ namespace Green_Bus_Ticket_System.Areas.Manager.Controllers
                 {
                     Id = promo.Id,
                     Name = promo.Name,
-                    Description = promo.Description
+                    Description = promo.Description,
+                    Expired = promo.ExpiredDate.ToString("dd/MM/yyyy")
                 };
                 success = true;
             }
@@ -80,8 +82,7 @@ namespace Green_Bus_Ticket_System.Areas.Manager.Controllers
             Object result = new { };
             if (promo != null)
             {
-                promo.Status = (int)StatusReference.PromotionStatus.CANCELLED;
-                _promotionService.Update(promo);
+                _promotionService.Delete(promo);
 
                 success = true;
             }
@@ -109,8 +110,14 @@ namespace Green_Bus_Ticket_System.Areas.Manager.Controllers
                 Promotion promo = new Promotion();
                 promo.Name = form["name"];
                 promo.Description = form["content"];
+                promo.ExpiredDate = DateTime.ParseExact(form["expired"], "dd/MM/yyyy", CultureInfo.CurrentCulture);
                 promo.CreatedDate = DateTime.Now;
-                promo.Status = (int)StatusReference.PromotionStatus.SENDING;
+
+                if(promo.ExpiredDate >= DateTime.Now)
+                    promo.Status = (int)StatusReference.PromotionStatus.SENDING;
+                else
+                    promo.Status = (int)StatusReference.PromotionStatus.SENT;
+
                 _promotionService.Create(promo);
 
                 ViewBag.Login = false;

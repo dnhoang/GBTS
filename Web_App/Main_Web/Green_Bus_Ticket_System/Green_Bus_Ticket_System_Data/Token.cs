@@ -12,13 +12,9 @@ namespace Green_Bus_Ticket_System_Data
     using System;
     using System.Collections.Generic;
     
-    public partial class Promotion
+    public partial class Token
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public int Status { get; set; }
-        public System.DateTime CreatedDate { get; set; }
-        public System.DateTime ExpiredDate { get; set; }
+        public string TheKey { get; set; }
+        public string TheValue { get; set; }
     }
 }

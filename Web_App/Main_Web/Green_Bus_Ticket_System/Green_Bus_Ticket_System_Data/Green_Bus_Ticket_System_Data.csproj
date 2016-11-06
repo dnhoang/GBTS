@@ -112,6 +112,7 @@
     <Compile Include="Services\ScratchCardService.cs" />
     <Compile Include="Services\TicketService.cs" />
     <Compile Include="Services\TicketTypeService.cs" />
+    <Compile Include="Services\TokenService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\UserSubscriptionService.cs" />
     <Compile Include="sysdiagram.cs">
@@ -121,6 +122,9 @@
       <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
     </Compile>
     <Compile Include="TicketType.cs">
+      <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Token.cs">
       <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
     </Compile>
     <Compile Include="UnitOfWork\IUnitOfWork.cs" />
