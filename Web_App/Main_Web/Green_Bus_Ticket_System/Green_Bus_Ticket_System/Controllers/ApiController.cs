@@ -192,9 +192,9 @@ namespace Green_Bus_Ticket_System.Controllers
                     if (card.Balance > 0 && card.Balance <= minBalance && card.User != null && card.User.NotificationCode != null)
                     {
                         string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
-                        if (card.Balance < _creditPlanService.GetMinPlan())
+                        if (card.Balance < _ticketTypeService.GetMinPrice())
                         {
-                            msg = "Thẻ " + card.UniqueIdentifier + " đã hết tiền, vui lòng nạp thêm.";
+                            msg = "Thẻ " + card.UniqueIdentifier + " còn lại không đủ mua vé, vui lòng nạp thêm.";
                         }
                         Task task = SendToFireBase(card.User.NotificationCode, "Green Bus", msg);
                         Task.WhenAll(task);
@@ -421,7 +421,9 @@ namespace Green_Bus_Ticket_System.Controllers
             if (card != null)
             {
                 ScratchCard scCard = _scratchCardService.GetScratchCardByCode(code);
-                if (scCard != null && scCard.Status == (int)StatusReference.ScratchCardStatus.AVAILABLE)
+                if (scCard != null 
+                    && scCard.ExpiredDate >= DateTime.Now
+                    && scCard.Status == (int)StatusReference.ScratchCardStatus.AVAILABLE)
                 {
                     card.Balance = card.Balance + scCard.Price;
                     _cardService.Update(card);
@@ -435,7 +437,7 @@ namespace Green_Bus_Ticket_System.Controllers
                         PaymentTransaction payment = new PaymentTransaction();
                         payment.CardId = card.Id;
                         payment.CreditPlanId = cp.Id;
-                        payment.TransactionId = "TOPUP_" + code;
+                        payment.TransactionId = "TOPU_" + code;
                         payment.PaymentDate = DateTime.Now;
                         payment.Total = scCard.Price;
                         _paymentTransactionService.Create(payment);
@@ -449,7 +451,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 else
                 {
                     success = false;
-                    message = "Mã nạp tiền không hợp lệ";
+                    message = "Mã nạp tiền không hợp lệ hoặc hết hạn";
                 }
                 
             }
@@ -939,9 +941,9 @@ namespace Green_Bus_Ticket_System.Controllers
                             if (card.Balance > 0 && card.Balance <= minBalance && card.User != null && card.User.NotificationCode != null)
                             {
                                 string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
-                                if (card.Balance < _creditPlanService.GetMinPlan())
+                                if (card.Balance < _ticketTypeService.GetMinPrice())
                                 {
-                                    msg = "Thẻ " + card.UniqueIdentifier + " đã hết tiền, vui lòng nạp thêm.";
+                                    msg = "Thẻ " + card.UniqueIdentifier + " còn lại không đủ mua vé, vui lòng nạp thêm.";
                                 }
                                 Task task = SendToFireBase(card.User.NotificationCode, "Green Bus", msg);
                                 Task.WhenAll(task);
@@ -1001,9 +1003,9 @@ namespace Green_Bus_Ticket_System.Controllers
                             if (card.Balance > 0 && card.Balance <= minBalance && card.User != null && card.User.NotificationCode != null)
                             {
                                 string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
-                                if (card.Balance < _creditPlanService.GetMinPlan())
+                                if (card.Balance < _ticketTypeService.GetMinPrice())
                                 {
-                                    msg = "Thẻ " + card.UniqueIdentifier + " đã hết tiền, vui lòng nạp thêm.";
+                                    msg = "Thẻ " + card.UniqueIdentifier + " còn lại không đủ mua vé, vui lòng nạp thêm.";
                                 }
                                 Task task = SendToFireBase(card.User.NotificationCode, "Green Bus", msg);
                                 Task.WhenAll(task);
@@ -1203,9 +1205,9 @@ namespace Green_Bus_Ticket_System.Controllers
                             if (card.Balance > 0 && card.Balance <= minBalance && card.User != null && card.User.NotificationCode != null)
                             {
                                 string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
-                                if (card.Balance < _creditPlanService.GetMinPlan())
+                                if (card.Balance < _ticketTypeService.GetMinPrice())
                                 {
-                                    msg = "Thẻ " + card.UniqueIdentifier + " đã hết tiền, vui lòng nạp thêm.";
+                                    msg = "Thẻ " + card.UniqueIdentifier + " còn lại không đủ mua vé, vui lòng nạp thêm.";
                                 }
                                 Task task = SendToFireBase(card.User.NotificationCode, "Green Bus", msg);
                                 Task.WhenAll(task);
@@ -1265,9 +1267,9 @@ namespace Green_Bus_Ticket_System.Controllers
                             if (card.Balance > 0 && card.Balance <= minBalance && card.User != null && card.User.NotificationCode != null)
                             {
                                 string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
-                                if (card.Balance < _creditPlanService.GetMinPlan())
+                                if (card.Balance < _ticketTypeService.GetMinPrice())
                                 {
-                                    msg = "Thẻ " + card.UniqueIdentifier + " đã hết tiền, vui lòng nạp thêm.";
+                                    msg = "Thẻ " + card.UniqueIdentifier + " còn lại không đủ mua vé, vui lòng nạp thêm.";
                                 }
                                 Task task = SendToFireBase(card.User.NotificationCode, "Green Bus", msg);
                                 Task.WhenAll(task);

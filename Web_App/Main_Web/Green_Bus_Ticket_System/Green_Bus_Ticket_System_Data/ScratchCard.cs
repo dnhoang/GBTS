@@ -18,5 +18,6 @@ namespace Green_Bus_Ticket_System_Data
         public string Code { get; set; }
         public int Price { get; set; }
         public int Status { get; set; }
+        public System.DateTime ExpiredDate { get; set; }
     }
 }

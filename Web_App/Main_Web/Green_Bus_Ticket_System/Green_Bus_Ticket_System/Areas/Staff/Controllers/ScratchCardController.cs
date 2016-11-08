@@ -39,6 +39,7 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
                     card.Price = price;
                     card.Status = (int)StatusReference.ScratchCardStatus.AVAILABLE;
                     card.Code = CommonUtils.GeneratePre(1) + CommonUtils.GeneratePassword(6);
+                    card.ExpiredDate = DateTime.Now.AddMonths(6);
 
                     _scratchCardService.Create(card);
                     cards.Add(card);

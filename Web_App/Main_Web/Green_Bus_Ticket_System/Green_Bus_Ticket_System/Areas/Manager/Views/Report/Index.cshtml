@@ -1,6 +1,8 @@
 ﻿@{
     ViewBag.Title = "Báo cáo thu nhập";
-    
+    List<Green_Bus_Ticket_System_Data.BusRoute> busroutes = 
+        (List<Green_Bus_Ticket_System_Data.BusRoute>)ViewBag.Busroutes;
+
 }
 
 
@@ -11,65 +13,37 @@
                 <label for="beginDate" class="form-label">TỪ NGÀY</label>
                 <div class="input-prepend input-group">
                     <span class="add-on input-group-addon"><i class="fa fa-calendar"></i></span>
-                    <input type="text" id="date-picker-begin" class="form-control active" readonly value="@ViewBag.BeginDate">
+                    <input type="text" id="date-picker-begin" class="form-control active hdateinput" readonly value="@ViewBag.BeginDate">
                 </div>
             </div>
             <div class="form-group">
                 <label for="example2" class="form-label">ĐẾN NGÀY</label>
                 <div class="input-prepend input-group">
                     <span class="add-on input-group-addon"><i class="fa fa-calendar"></i></span>
-                    <input type="text" id="date-picker-end" class="form-control active" readonly value="@ViewBag.EndDate">
+                    <input type="text" id="date-picker-end" class="form-control active hdateinput" readonly value="@ViewBag.EndDate">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="example2" class="form-label">TUYẾN</label>
+                <div class="input-prepend input-group">
+                    <select class="form-control" id="route">
+                        @foreach(var item in busroutes)
+                        {
+                            <option value="@item.Id">@item.Code - @item.Name</option>
+                        }
+                    </select>
                 </div>
             </div>
             <button type="button" class="btn btn-default" id="get-report"><i class="fa fa-search"></i></button>
         </div>
     </div>
-    <div class="panel-body margin-t-20 margin-b-20" style="border: 1px solid #ddd; overflow: auto;">
+    <div class="panel-body margin-t-20 margin-b-20 text-center" style="border: 1px solid #ddd; overflow: auto;">
+        <h3>DOANH THU BÁN VÉ</h3>
         <div class="ct-chart ct-perfect-fourth"></div>
     </div>
     <div class="panel-body" id="data" style="border: 1px solid #ddd; overflow: auto;">
 
-        <div role="tabpanel" class="hidden">
-
-            <!-- Nav tabs -->
-            <ul class="nav nav-tabs tabcolor7-bg" role="tablist">
-                <li role="presentation" class="active"><a href="#via-card" aria-controls="via-card" role="tab" data-toggle="tab" aria-expanded="true" class="active">THU NHẬP MUA VÉ TỪ THẺ</a></li>
-                <li role="presentation" class=""><a href="#via-cash" aria-controls="via-cash" role="tab" data-toggle="tab" class="" aria-expanded="false">THU NHẬP MUA VÉ TIỀN MẶT</a></li>
-            </ul>
-
-            <!-- Tab panes -->
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="via-card">
-                    <table id="card-table" class="table display">
-                        <thead>
-                            <tr>
-                                <th>TUYẾN XE BUÝT</th>
-                                <th>TỔNG SỐ VÉ</th>
-                                <th>TỔNG SỐ TIỀN THU VỀ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           
-                        </tbody>
-                    </table>
-                </div>
-                <div role="tabpanel" class="tab-pane" id="via-cash">
-                    <table id="cash-table" class="table display">
-                        <thead>
-                            <tr>
-                                <th>TUYẾN XE BUÝT</th>
-                                <th>TỔNG SỐ VÉ</th>
-                                <th>TỔNG SỐ TIỀN THU VỀ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
+        
 
     </div>
     
@@ -203,65 +177,47 @@
         });
 
         
-        $('#card-table').DataTable({
-            'order': [],
-            'aLengthMenu': [[10, 50, 100, -1], [10, 50, 100, 'All']],
-            'iDisplayLength': 10,
-            columnDefs: [
-                { width: 100, targets: 1 },
-                { width: 150, targets: 2 }
-            ]
-        });
-
-        $('#cash-table').DataTable({
-            'order': [],
-            'aLengthMenu': [[10, 50, 100, -1], [10, 50, 100, 'All']],
-            'iDisplayLength': 10,
-            columnDefs: [
-                { width: 100, targets: 1 },
-                { width: 150, targets: 2 }
-            ]
-        });
+        
 
         $('#date-picker-begin').daterangepicker({
             singleDatePicker: true,
+            showDropdowns: true,
             format: 'DD/MM/YYYY',
             maxDate: new Date()
 
-        }, function (start, end, lable) {
-            var newEndDate = moment(start).add(30, "days");
-            if (newEndDate > moment()) {
-                newEndDate = moment();
-            }
-            $('#date-picker-end').data("daterangepicker").setStartDate(newEndDate);
-            $('#date-picker-end').data("daterangepicker").setEndDate(newEndDate);
+        }).on('hide.daterangepicker', function (ev, picker) {
+            $('.table-condensed tbody tr td').filter(function () {
+                return $(this).html() === "1";
+            }).click();
         });
 
         $('#date-picker-end').daterangepicker({
             singleDatePicker: true,
+            showDropdowns: true,
             format: 'DD/MM/YYYY',
             maxDate: new Date()
-        }, function (start, end, lable) {
-            var newBeginDate = moment(start).subtract(30, "days");
-            $('#date-picker-begin').data("daterangepicker").setStartDate(newBeginDate);
-            $('#date-picker-begin').data("daterangepicker").setEndDate(newBeginDate);
+        }).on('hide.daterangepicker', function (ev, picker) {
+            $('.table-condensed tbody tr td').filter(function () {
+                return $(this).html() === "1";
+            }).click();
         });
 
 
         $("#get-report").click(function () {
             var beginDate = $('#date-picker-begin').val();
             var endDate = $('#date-picker-end').val();
+            var route = $("#route").val();
             $("#get-report").html('<i class="fa fa-spinner fa-pulse fa-fw"></i>');
             $(".report").html("");
             $.ajax({
                 url: "/Manager/Report/GetReport",
                 dataType: "html",
-                data: { beginDate: beginDate, endDate: endDate },
+                data: { beginDate: beginDate, endDate: endDate, route: route },
                 method: "GET",
                 success: function (data) {
          
                         $("#data").html(data);
-
+                    /*
                         $('#card-table').DataTable().destroy();
                         $('#cash-table').DataTable().destroy();
 
@@ -284,7 +240,7 @@
                                 { width: 150, className: "dt-center", targets: 2 }
                             ]
                         });
-
+                     */
                         drawChart();
 
                         $("#get-report").html('<i class="fa fa-search"></i>');
@@ -298,11 +254,11 @@
         function drawChart() {
             var beginDate = $('#date-picker-begin').val();
             var endDate = $('#date-picker-end').val();
-            
+            var route = $("#route").val();
             $.ajax({
                 url: "/Manager/Report/DrawChart",
                 dataType: "json",
-                data: { beginDate: beginDate, endDate: endDate },
+                data: { beginDate: beginDate, endDate: endDate, route: route },
                 method: "GET",
                 success: function (response) {
                     if (response.success) {

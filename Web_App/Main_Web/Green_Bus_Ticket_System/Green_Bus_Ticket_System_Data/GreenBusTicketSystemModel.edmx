@@ -84,6 +84,7 @@
           <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Price" Type="int" Nullable="false" />
           <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="ExpiredDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -402,7 +403,6 @@
             <End Role="CreditPlan" EntitySet="CreditPlans" />
             <End Role="PaymentTransaction" EntitySet="PaymentTransactions" />
           </AssociationSet>
-          <EntitySet Name="ScratchCards" EntityType="GreenBusModel.ScratchCard" />
           <EntitySet Name="UserSubscriptions" EntityType="GreenBusModel.UserSubscription" />
           <AssociationSet Name="FK_UserSubscription_User" Association="GreenBusModel.FK_UserSubscription_User">
             <End Role="User" EntitySet="Users" />
@@ -415,6 +415,7 @@
             <End Role="OfferSubscription" EntitySet="OfferSubscriptions" />
             <End Role="UserSubscription" EntitySet="UserSubscriptions" />
           </AssociationSet>
+          <EntitySet Name="ScratchCards" EntityType="GreenBusModel.ScratchCard" />
         </EntityContainer>
         <EntityType Name="PaymentTransaction">
           <Key>
@@ -554,15 +555,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="ScratchCard">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Price" Type="Int32" Nullable="false" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
-        </EntityType>
         <EntityType Name="UserSubscription">
           <Key>
             <PropertyRef Name="Id" />
@@ -631,6 +623,16 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ScratchCard">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="ExpiredDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -738,16 +740,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ScratchCards">
-            <EntityTypeMapping TypeName="GreenBusModel.ScratchCard">
-              <MappingFragment StoreEntitySet="ScratchCards">
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="UserSubscriptions">
             <EntityTypeMapping TypeName="GreenBusModel.UserSubscription">
               <MappingFragment StoreEntitySet="UserSubscription">
@@ -789,6 +781,17 @@
                 <ScalarProperty Name="Price" ColumnName="Price" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ScratchCards">
+            <EntityTypeMapping TypeName="GreenBusModel.ScratchCard">
+              <MappingFragment StoreEntitySet="ScratchCards">
+                <ScalarProperty Name="ExpiredDate" ColumnName="ExpiredDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

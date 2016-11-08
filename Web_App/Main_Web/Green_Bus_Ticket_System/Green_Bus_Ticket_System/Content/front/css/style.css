@@ -4299,3 +4299,12 @@ img.adp-marker {
 .page-header .title {
     text-transform: uppercase;
 }
+
+.hdateinput{
+    max-width: 100px;
+}
+
+.table-condensed thead tr:nth-child(2),
+.table-condensed tbody {
+  display: none
+}
