@@ -1,5 +1,6 @@
 package com.example.gbts.navigationdraweractivity.fragment;
 
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.activity.CreditPlanActivity;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
+import com.example.gbts.navigationdraweractivity.utils.Utility;
 
 import org.json.JSONObject;
 
@@ -89,11 +91,39 @@ public class CreditCardDetails extends DialogFragment
         imgEditCardName.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                String cardName = edtCardName.getText().toString().trim();
-                String cardID = txtCardId.getText().toString();
+                final String cardName = edtCardName.getText().toString().trim();
+                final String cardID = txtCardId.getText().toString();
                 Log.d("changeaname ", "cardName " + cardName);
                 Log.d("changeaname ", "cardID " + cardID);
-                new AsyncChangeCardName().execute(cardID, cardName);
+
+                if (Utility.isNetworkConnected(getActivity())) {
+                    new AsyncChangeCardName().execute(cardID, cardName);
+                } else {
+                    // custom dialog
+                    final Dialog dialog = new Dialog(getActivity());
+                    dialog.setContentView(R.layout.custom_dialog);
+                    dialog.setTitle("Mất kết nối mạng ...");
+
+                    // set the custom dialog components - text, image and button
+                    TextView text = (TextView) dialog.findViewById(R.id.text);
+                    text.setText("Kiểm tra mạng wifi hoặc 3g");
+                    ImageView image = (ImageView) dialog.findViewById(R.id.image);
+                    image.setImageResource(R.drawable.ic_icon_wifi);
+
+                    Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+                    // if button is clicked, close the custom dialog
+                    dialogButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (Utility.isNetworkConnected(getActivity())) {
+                                dialog.dismiss();
+                                new AsyncChangeCardName().execute(cardID, cardName);
+                            }
+                        }
+                    });
+                    dialog.show();
+                }
+
                 return false;
             }
         });

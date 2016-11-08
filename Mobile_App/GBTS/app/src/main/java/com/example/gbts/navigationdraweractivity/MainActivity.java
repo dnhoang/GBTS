@@ -1,13 +1,18 @@
 package com.example.gbts.navigationdraweractivity;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -29,7 +34,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
@@ -148,24 +155,39 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
+    private String tokensv = "";
+
+    public String getTokensv() {
+        return tokensv;
+    }
+
+    public void setTokensv(String tokensv) {
+        this.tokensv = tokensv;
+    }
+
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
+        new AsyncGetToken().execute();
+        String tokenApi = getTokensv();
+        Log.d("tokenApi ", "tokenApi: " + tokenApi.toString());
+        if (tokenApi != null) {
+            SharedPreferences sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
+            String message = sharedPreferences.getString("NFCPayment", "");
 
-        SharedPreferences sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
-        String message = sharedPreferences.getString("NFCPayment", "");
-        String token = sharedPreferences.getString("token", "");
-        String carid_token = message + "@" + token;
-        Utility utility = new Utility();
+            String carid_token = message + "@" + tokenApi;
+            Log.d("tokenApi ", "carid_token: " + carid_token.toString());
+            String encryptcarid_token = Utility.encrypt(carid_token, keyAES);
+            Log.d("tokenne ", "encryptcarid_token: " + encryptcarid_token.toString());
 
-        Log.d("tokenne ", "carid_token: " + carid_token.toString());
-
-        String encryptcarid_token = utility.encrypt(carid_token, keyAES);
-        Log.d("tokenne ", "encryptcarid_token: " + encryptcarid_token.toString());
-
-        try {
             String decryptCardID = Utility.decrypt(encryptcarid_token, keyAES);
             Log.d("ndef1 ", "decryptCardID" + decryptCardID.toString());
-            NdefRecord[] records = new NdefRecord[]{Utility.createRecord(encryptcarid_token)};
+            NdefRecord[] records = new NdefRecord[0];
+            try {
+                records = new NdefRecord[]{Utility.createRecord(encryptcarid_token)};
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             NdefMessage msg = new NdefMessage(records);
             Log.d("ndef1 ", "msg" + msg.toString());
 //            NdefMessage msg = new NdefMessage(new NdefRecord[]{
@@ -173,8 +195,6 @@ public class MainActivity extends AppCompatActivity
 //            });
 
             return msg;
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return null;
     }
@@ -234,17 +254,47 @@ public class MainActivity extends AppCompatActivity
 
     //End
 
-    //ON CREATE
+
+    //CHECK CONNECTION
+    public static boolean internetConnectionCheck(Activity CurrentActivity) {
+        Boolean Connected = false;
+        ConnectivityManager connectivity = (ConnectivityManager) CurrentActivity.getApplicationContext()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null) for (int i = 0; i < info.length; i++)
+                if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+                    Log.e("My Network is: ", "Connected ");
+                    Connected = true;
+                } else {
+                }
+
+        } else {
+            Log.e("My Network is: ", "Not Connected");
+
+            Toast.makeText(CurrentActivity.getApplicationContext(),
+                    "Please Check Your internet connection",
+                    Toast.LENGTH_LONG).show();
+            Connected = false;
+
+        }
+        return Connected;
+
+    }
+
+    //================================== ON CREATE ===============================
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        // Set a Toolbar to replace the ActionBar.
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Xe bus thông minh");
+        setSupportActionBar(toolbar);
+
         //NFC Duc
-
-        //ASYNC GET TOKEN SERVER API
-        new AsyncGetToken().execute();
-
         adapter = NfcAdapter.getDefaultAdapter(this);
         adapter.setNdefPushMessageCallback(this, this);
         pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
@@ -252,28 +302,9 @@ public class MainActivity extends AppCompatActivity
         tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
         writeTagFilters = new IntentFilter[]{tagDetected};
 
-
-        // Set a Toolbar to replace the ActionBar.
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Xe bus thông minh");
-        setSupportActionBar(toolbar);
-
-
         //SHARED PREFERENCES PHONE NUMBER
         SharedPreferences preferences = getSharedPreferences("Info", MODE_PRIVATE);
         String phoneInfo = preferences.getString("Phonenumber", "Chào mừng bạn đến với thế giới hệ thống xe bus thông minh!!");
-
-
-        //NOTIFICATION
-        FirebaseMessaging.getInstance().subscribeToTopic("GBTS");
-        String token = FirebaseInstanceId.getInstance().getToken();
-        try {
-            Log.d("so dien thoai dc luu", "phone id " + phoneInfo);
-            new FireBaseIDTask().execute(phoneInfo, token);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
 
         //START FRAGMENT MAIN && INTEGRATION FB, PROMOTION
         if (savedInstanceState == null) {
@@ -352,6 +383,45 @@ public class MainActivity extends AppCompatActivity
         //NavigationView and NavigationItemSelectedListener
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //CHECK INTERNET CONNECTION
+        if (Utility.isNetworkConnected(MainActivity.this)) {
+            //ASYNC GET TOKEN SERVER API
+            new AsyncGetToken().execute();
+
+            //NOTIFICATION FIRE BASE
+            FirebaseMessaging.getInstance().subscribeToTopic("GBTS");
+            String token = FirebaseInstanceId.getInstance().getToken();
+            try {
+                Log.d("so dien thoai dc luu", "phone id " + phoneInfo);
+                new FireBaseIDTask().execute(phoneInfo, token);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            // custom dialog
+            final Dialog dialog = new Dialog(MainActivity.this);
+            dialog.setContentView(R.layout.custom_dialog);
+            dialog.setTitle("Mất kết nối mạng ...");
+
+            // set the custom dialog components - text, image and button
+            TextView text = (TextView) dialog.findViewById(R.id.text);
+            text.setText("Kiểm tra mạng wifi hoặc 3g");
+            ImageView image = (ImageView) dialog.findViewById(R.id.image);
+            image.setImageResource(R.drawable.ic_icon_wifi);
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+            // if button is clicked, close the custom dialog
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (Utility.isNetworkConnected(MainActivity.this)) {
+                        dialog.dismiss();
+                    }
+                }
+            });
+            dialog.show();
+        }
     }
 
     @Override
@@ -362,7 +432,6 @@ public class MainActivity extends AppCompatActivity
         ReadModeOn();
 
         if (intent.getExtras() != null) {
-
             String check = intent.getStringExtra("afterPay");
             String checkChangeCardName = intent.getStringExtra("action");
             String checkTopUp = intent.getStringExtra("topup");
@@ -381,7 +450,7 @@ public class MainActivity extends AppCompatActivity
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
             }
 
-            //LOGIN
+            //LOGIN GET INFO NOTIFICATION
             String body = intent.getStringExtra("messageBody");
             String titlte = intent.getStringExtra("messageTile");
             if (body != null && titlte != null) {
@@ -403,8 +472,7 @@ public class MainActivity extends AppCompatActivity
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
             }
-
-            //Not Login
+            //NOT LOGIN GET INFO NOTIFICATION
             String bodyNoLogin = intent.getStringExtra("lgNotiBody");
             String titlteNoLogin = intent.getStringExtra("lgNotiTitle");
             if (bodyNoLogin != null && titlteNoLogin != null) {
@@ -427,6 +495,8 @@ public class MainActivity extends AppCompatActivity
             }
 
         }
+
+
     }
 
     @Override
@@ -615,9 +685,12 @@ public class MainActivity extends AppCompatActivity
                 if (success) {
 //                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                     String token = jsonObject.getString("token");
+                    setTokensv(token);
                     Log.d("gettoken ", token);
                     getSharedPreferences("Info", MODE_PRIVATE).edit()
                             .putString("token", token).commit();
+                    String token1 = getSharedPreferences("Info", MODE_PRIVATE).getString("token", "");
+                    Log.d("tokensv ", "token1" + token1);
                 } else {
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                 }

@@ -11,6 +11,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.gbts.navigationdraweractivity.R;
+import com.example.gbts.navigationdraweractivity.constance.Constance;
+import com.example.gbts.navigationdraweractivity.utils.JSONParser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Created by truon on 9/23/2016.
@@ -24,6 +34,7 @@ public class MainContent extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_content, container, false);
+
         return view;
     }
 

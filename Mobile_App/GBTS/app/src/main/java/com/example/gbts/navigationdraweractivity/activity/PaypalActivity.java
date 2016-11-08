@@ -1,6 +1,7 @@
 package com.example.gbts.navigationdraweractivity.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -12,13 +13,16 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
+import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
+import com.example.gbts.navigationdraweractivity.utils.Utility;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
@@ -178,20 +182,46 @@ public class PaypalActivity extends AppCompatActivity {
                         //Get bundle from Intent
                         Bundle bundle = getIntent.getExtras();
 
-                        String cardId = bundle.getString("cardIDForPayPal1");
+                        final String cardId = bundle.getString("cardIDForPayPal1");
                         Log.d(TAG, "cardID" + cardId);
 
-                        String creditPlanId = bundle.getInt("creditPlanID") + "";
+                        final String creditPlanId = bundle.getInt("creditPlanID") + "";
                         Log.d(TAG, "creditPlanId " + creditPlanId);
 
                         String creditPlanPrice = bundle.getInt("creditPlanPrice") + "";
                         Log.d(TAG, "creditPlanPrice " + creditPlanPrice);
 
                         JSONObject jsonObj = new JSONObject(confirm.toJSONObject().toString());
-                        String transactionId = jsonObj.getJSONObject("response").getString("id");
+                        final String transactionId = jsonObj.getJSONObject("response").getString("id");
                         Log.d(TAG, "transactionId " + transactionId);
 
-                        new AddCardBalance().execute(cardId, creditPlanId, transactionId);
+                        if (Utility.isNetworkConnected(PaypalActivity.this)) {
+                            new AddCardBalance().execute(cardId, creditPlanId, transactionId);
+                        } else {
+                            // custom dialog
+                            final Dialog dialog = new Dialog(PaypalActivity.this);
+                            dialog.setContentView(R.layout.custom_dialog);
+                            dialog.setTitle("Mất kết nối mạng ...");
+
+                            // set the custom dialog components - text, image and button
+                            TextView text = (TextView) dialog.findViewById(R.id.text);
+                            text.setText("Kiểm tra mạng wifi hoặc 3g");
+                            ImageView image = (ImageView) dialog.findViewById(R.id.image);
+                            image.setImageResource(R.drawable.ic_icon_wifi);
+
+                            Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+                            // if button is clicked, close the custom dialog
+                            dialogButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (Utility.isNetworkConnected(PaypalActivity.this)) {
+                                        dialog.dismiss();
+                                        new AddCardBalance().execute(cardId, creditPlanId, transactionId);
+                                    }
+                                }
+                            });
+                            dialog.show();
+                        }
 
                         //Starting a new activity for the payment details and also putting the payment details with intent
 //                        Intent intent = new Intent(this, ConfirmationActivity.class);

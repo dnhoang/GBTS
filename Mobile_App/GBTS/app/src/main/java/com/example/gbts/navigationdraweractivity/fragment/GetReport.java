@@ -1,6 +1,7 @@
 package com.example.gbts.navigationdraweractivity.fragment;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,10 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.R;
@@ -22,6 +25,7 @@ import com.example.gbts.navigationdraweractivity.adapter.ReportAdapter;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.enity.ReportEntity;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
+import com.example.gbts.navigationdraweractivity.utils.Utility;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -99,11 +103,11 @@ public class GetReport extends Fragment {
             public void onClick(View v) {
                 //get phone number
                 SharedPreferences preferences = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE);
-                String phone = preferences.getString("Phonenumber", "Emty phone number");
+                final String phone = preferences.getString("Phonenumber", "Emty phone number");
 
-                String beginDay = edtDayStart.getText().toString();
+                final String beginDay = edtDayStart.getText().toString();
 //                Log.d("GetReport", "beginDay  " + beginDay);
-                String endDay = edtDayEnd.getText().toString();
+                final String endDay = edtDayEnd.getText().toString();
 //                new AsyncGetReport().execute(phone, beginDay, endDay);
                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -122,7 +126,37 @@ public class GetReport extends Fragment {
                 } catch (ParseException e1) {
                     Log.d("SimpleDateFormat ", "invalid format datetime ");
                 }
-                new AsyncGetReport().execute(phone, beginDay, endDay);
+
+                if (Utility.isNetworkConnected(getActivity())) {
+                    new AsyncGetReport().execute(phone, beginDay, endDay);
+                } else {
+                    // custom dialog
+                    final Dialog dialog = new Dialog(getActivity());
+                    dialog.setContentView(R.layout.custom_dialog);
+                    dialog.setTitle("Mất kết nối mạng ...");
+
+                    // set the custom dialog components - text, image and button
+                    TextView text = (TextView) dialog.findViewById(R.id.text);
+                    text.setText("Kiểm tra mạng wifi hoặc 3g");
+                    ImageView image = (ImageView) dialog.findViewById(R.id.image);
+                    image.setImageResource(R.drawable.ic_icon_wifi);
+
+                    Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+                    // if button is clicked, close the custom dialog
+                    dialogButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (Utility.isNetworkConnected(getActivity())) {
+                                dialog.dismiss();
+                                new AsyncGetReport().execute(phone, beginDay, endDay);
+                            }
+                        }
+                    });
+                    dialog.show();
+                }
+
+
+
             }
         });
 

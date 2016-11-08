@@ -1,5 +1,6 @@
 package com.example.gbts.navigationdraweractivity.activity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -29,14 +30,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.enity.AutoCompleteBean;
+import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
 import com.example.gbts.navigationdraweractivity.module.google.mapsAPI.DirectionFinder;
 import com.example.gbts.navigationdraweractivity.module.google.mapsAPI.DirectionFinderListener;
 import com.example.gbts.navigationdraweractivity.module.google.mapsAPI.Route;
+import com.example.gbts.navigationdraweractivity.utils.Utility;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -90,8 +94,8 @@ public class ActivityGoogleFindPath extends AppCompatActivity
         mapFragment.getMapAsync(this);
 
         Intent intent = getIntent();
-        String origin = intent.getStringExtra("origin");
-        String destination = intent.getStringExtra("destination");
+        final String origin = intent.getStringExtra("origin");
+        final String destination = intent.getStringExtra("destination");
 
         if (origin.isEmpty()) {
             return;
@@ -100,8 +104,38 @@ public class ActivityGoogleFindPath extends AppCompatActivity
             return;
         }
         try {
-            new DirectionFinder(this, origin, destination).execute();
 
+            if (Utility.isNetworkConnected(ActivityGoogleFindPath.this)) {
+                new DirectionFinder(this, origin, destination).execute();
+            } else {
+                // custom dialog
+                final Dialog dialog = new Dialog(ActivityGoogleFindPath.this);
+                dialog.setContentView(R.layout.custom_dialog);
+                dialog.setTitle("Mất kết nối mạng ...");
+
+                // set the custom dialog components - text, image and button
+                TextView text = (TextView) dialog.findViewById(R.id.text);
+                text.setText("Kiểm tra mạng wifi hoặc 3g");
+                ImageView image = (ImageView) dialog.findViewById(R.id.image);
+                image.setImageResource(R.drawable.ic_icon_wifi);
+
+                Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+                // if button is clicked, close the custom dialog
+                dialogButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (Utility.isNetworkConnected(ActivityGoogleFindPath.this)) {
+                            dialog.dismiss();
+                            try {
+                                new DirectionFinder(ActivityGoogleFindPath.this, origin, destination).execute();
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+                dialog.show();
+            }
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
