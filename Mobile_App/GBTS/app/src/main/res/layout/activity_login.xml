@@ -1,62 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#69F0AE"
+
     android:orientation="vertical"
     tools:context="com.example.gbts.navigationdraweractivity.activity.LoginActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@drawable/side_nav_bar"
-        android:gravity="bottom"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="70dp"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
+        android:layout_height="190dp"
+        android:background="#9BCC5F"
         android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
         <ImageView
             android:id="@+id/nav_icon"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginBottom="10dp"
-            android:onClick="clickToHome"
-            android:paddingTop="5dp"
-            android:src="@drawable/ic_action_bus1" />
+            android:src="@drawable/bus_logo"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txtTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="clickToHome"
-                android:text="Green Bus Ticket System"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-            <TextView
-                android:id="@+id/txtSubTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="clickToHome"
-                android:text="FPT University" />
-        </LinearLayout>
-
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:background="#9BCC5F"
         android:layout_weight="6"
         android:orientation="vertical">
 
@@ -64,8 +38,8 @@
             android:id="@+id/table_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fff"
-            android:gravity="center">
+            android:layout_marginTop="40dp"
+            android:gravity="top|center">
 
             <TableRow
                 android:id="@+id/tableRow1"
@@ -77,14 +51,20 @@
 
                 <EditText
                     android:id="@+id/edtPhone"
+                    android:ellipsize="start"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:padding="3dp"
+                    android:background="@drawable/edittextflat"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/textviewshape"
-                    android:hint="   Nhập Số Điện Thoại..."
-                    android:inputType="phone">
+                    android:hint="Số điện thoại"
+                    android:textColorHint="@color/colorWhite90"
+                    android:inputType="phone"
+                    android:textSize="16sp"
+                    android:textAlignment="center"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@android:color/white">
 
                     <requestFocus />
                 </EditText>
@@ -103,10 +83,15 @@
                     android:id="@+id/edtPassword"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
+                    android:textColorHint="@color/colorWhite90"
                     android:padding="3dp"
-                    android:background="@drawable/textviewshape"
-                    android:hint="   Nhập Mật Khẩu..."
-                    android:inputType="textPassword" />
+                    android:background="@drawable/edittextflat"
+                    android:hint="Mật khẩu"
+                    android:inputType="textPassword"
+                    android:fontFamily="sans-serif"
+                    android:textSize="16sp"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white" />
             </TableRow>
 
             <TableRow
@@ -119,8 +104,11 @@
                     android:id="@+id/saveLoginCheckBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="3dp"
-                    android:text="Lưu tài khoản" />
+                    android:padding="10dp"
+                    android:text="Lưu tài khoản"
+                    android:textColor="@color/colorWhite90"
+                    style="@android:style/Widget.DeviceDefault.Light.CompoundButton.CheckBox"
+                    app:buttonTint="@color/colorWhite90" />
 
             </TableRow>
 
@@ -128,19 +116,22 @@
                 android:id="@+id/tableRow3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:gravity="center">
 
                 <Button
                     android:id="@+id/btnLogin"
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:background="@drawable/buttonshape"
                     android:onClick="clickToLogin"
-                    android:text="Đăng Nhập"
-                    android:textColor="#FFFFFF"
+                    android:text="Đăng nhập"
+                    android:textColor="@color/colorWhite90"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="10dp"
-                    android:textSize="20sp" />
+                    android:textAppearance="@style/TextAppearance.AppCompat"
+                    android:textSize="16sp"
+                    android:textAllCaps="true" />
 
             </TableRow>
 
@@ -148,6 +139,7 @@
                 android:id="@+id/tableRow4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:gravity="center">
 
                 <Button
@@ -156,9 +148,12 @@
                     android:layout_height="35dp"
                     android:background="@drawable/buttonshape"
                     android:onClick="clickToActivateCard"
-                    android:text="Kích Hoạt"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp" />
+
+                    android:text="Kích hoạt"
+                    android:textAppearance="@style/TextAppearance.AppCompat"
+                    android:textColor="@color/colorWhite90"
+                    android:textSize="16sp"
+                    android:textAllCaps="true" />
             </TableRow>
         </TableLayout>
     </LinearLayout>

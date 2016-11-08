@@ -38,7 +38,7 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
                     ScratchCard card = new ScratchCard();
                     card.Price = price;
                     card.Status = (int)StatusReference.ScratchCardStatus.AVAILABLE;
-                    card.Code = "M" + CommonUtils.GeneratePassword(8);
+                    card.Code = CommonUtils.GeneratePre(1) + CommonUtils.GeneratePassword(6);
 
                     _scratchCardService.Create(card);
                     cards.Add(card);

@@ -77,4 +77,10 @@ namespace Green_Bus_Ticket_System_Data.Repositories
     {
         public UserSubscriptionRepository(GreenBusEntities context) : base(context) { }
     }
+
+    public interface ITokenRepository : IGenericRepository<Token> { }
+    public class TokenRepository : GenericRepository<Token>, ITokenRepository
+    {
+        public TokenRepository(GreenBusEntities context) : base(context) { }
+    }
 }

@@ -10,7 +10,7 @@
   color: #37363e;
 }
 .color2 {
-  color: #58666e;
+  color: #000000;
 }
 .color3 {
   color: #e4e4e4;
@@ -59,7 +59,7 @@
   background: #37363e;
 }
 .color2-bg {
-  background: #58666e;
+  background: #000000;
 }
 .color3-bg {
   background: #e4e4e4;
@@ -111,8 +111,8 @@
   color: #399bff;
 }
 body {
-  background: #3d464d;
-  color: #58666e;
+  background: #353535;
+  color: #000000;
   margin: 0;
   line-height: 1.7em;
   font-size: 13px;
@@ -740,7 +740,7 @@ Sidepanel
 .sidepanel-m-title .left-icon,
 .sidepanel-m-title .right-icon {
   border: 1px solid #e1e1e1;
-  color: #58666e;
+  color: #000000;
   position: absolute;
   width: 26px;
   font-size: 13px;
@@ -749,7 +749,7 @@ Sidepanel
 }
 .sidepanel-m-title .left-icon a,
 .sidepanel-m-title .right-icon a {
-  color: #58666e;
+  color: #000000;
   display: block;
 }
 .sidepanel-m-title .left-icon a:hover,
@@ -1657,7 +1657,7 @@ Mailbox
   left: 0px;
 }
 .status .comments .name {
-  color: #58666e;
+  color: #000000;
   display: block;
   font-weight: 600;
 }
@@ -1772,8 +1772,8 @@ Login Pages
   padding: 30px 0;
 }
 .login-form form .top .icon {
-  width: 100px;
-  height: 100px;
+  max-width: 100%;
+  max-height: 100px;
 }
 .login-form form .top h1,
 .login-form form .top h4 {
@@ -3122,7 +3122,7 @@ div[data-role="editor-toolbar"] {
 }
 .panel-title {
   font-family: 'Open Sans', sans-serif;
-  color: #58666e;
+  color: #000000;
   font-size: 13px;
   font-weight: bold;
   text-transform: uppercase;
@@ -3688,7 +3688,7 @@ Widgets
   font-size: 12px;
   z-index: 1;
   margin: 0;
-  color: #58666e;
+  color: #000000;
 }
 .widget .widget-title h2 {
   font-family: 'Open Sans', sans-serif;
@@ -3700,7 +3700,7 @@ Widgets
 .widget-inline-list {
   display: block;
   padding-left: 0;
-  color: #58666e;
+  color: #000000;
 }
 .widget-inline-list li {
   display: block;
@@ -3782,11 +3782,11 @@ Widgets
   font-size: 13px;
   margin: 0;
   opacity: 0.7;
-  color: #58666e;
+  color: #000000;
 }
 .chart-with-stats .title {
   font-family: 'Open Sans', sans-serif;
-  color: #58666e;
+  color: #000000;
   font-weight: bold;
   position: absolute;
   left: 20px;
@@ -4017,7 +4017,7 @@ Widgets
   opacity: 0.8;
 }
 .quick-menu a {
-  color: #58666e;
+  color: #000000;
   display: block;
   padding: 18px 0;
 }
@@ -4259,4 +4259,43 @@ img.adp-marker {
 
 .ct-series-a .ct-point {
   stroke: red!important;
+}
+
+.logo img{
+    max-height: 50px;
+}
+
+.applogo {
+
+    padding: 5px 0 0 0px;
+}
+.sidebar-open-button {
+    color: rgb(255, 255, 255);
+}
+.login-form {
+    width: 420px;
+}
+.login-form form .form-area .form-control {
+    background: transparent;
+}
+.login-form form {
+    background: rgba(255, 255, 255, 0.85);
+    border: 2px solid #ffffff;
+    border-radius: 5px;
+}
+.sidebar {
+    background: #353535;
+}
+.sidebar-panel li a {
+    font-weight: 600;
+}
+.content {
+    background: #ffffff;
+    min-height: 100vh;
+}
+.footer{
+    display: none;
+}
+.page-header .title {
+    text-transform: uppercase;
 }

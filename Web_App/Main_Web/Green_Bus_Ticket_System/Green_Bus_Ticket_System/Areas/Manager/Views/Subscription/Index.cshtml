@@ -1,0 +1,238 @@
+﻿
+@{
+    ViewBag.Title = "Quản lý ưu đãi";
+    List<Green_Bus_Ticket_System_Data.OfferSubscription> subscriptions =
+        (List<Green_Bus_Ticket_System_Data.OfferSubscription>)ViewBag.Subscriptions;
+}
+
+@section CustomHeader{
+    <button class="btn btn-success pull-right" id="addButton"><i class="fa fa-plus"></i> THÊM ƯU ĐÃI MỚI</button>
+}
+
+<div class="container-padding">
+
+    @if (subscriptions.Count == 0)
+    {
+        <p class="text-center">Chưa có gói ưu đãi nào!</p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td>TÊN ƯU ĐÃI</td>
+                    <td>MÃ ƯU ĐÃI</td>
+                    <td>GIÁ GÓI (VND)</td>
+                    <td>MỨC GIẢM (%/vé)</td>
+                    <td>SỐ LƯỢNG VÉ</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody id="subList">
+                @foreach (var item in subscriptions)
+                {
+
+                    <tr>
+                        <td><input type="text" class="form-control p-name" value="@item.Name" /></td>
+                        <td><input type="text" class="form-control p-code" value="@item.Code" /></td>
+                        <td><input type="text" class="form-control p-price" value="@item.Price" /></td>
+                        <td><input type="text" class="form-control p-percent" value="@item.DiscountPercent" /></td>
+                        <td><input type="text" class="form-control p-number" value="@item.TicketNumber" /></td>
+                        <td>
+                            <button type="button" class="btn btn-primary save" id="@item.Id"><i class="fa fa-floppy-o"></i></button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger delete" id="@item.Id"><i class="fa fa-times"></i></button>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+       
+
+
+    }
+</div>
+
+@section CustomJs{
+<script src="~/Content/front/js/sweet-alert/sweet-alert.min.js"></script>
+    <script>
+        function validate(current) {
+            var name = current.find(".p-name").val().trim();
+            var code = current.find(".p-code").val().trim();
+            var price = current.find(".p-price").val().trim();
+            var percent = current.find(".p-percent").val().trim();
+            var num = current.find(".p-number").val().trim();
+
+            if (name.length < 3) {
+                errorKia(current);
+                return false;
+            }
+
+            if (code.length == 0) {
+                errorKia(current);
+                return false;
+            }
+
+            if (price.length == 0) {
+                errorKia(current);
+                return false;
+            }
+
+            if (percent.length == 0) {
+                errorKia(current);
+                return false;
+            }
+
+            if (num.length == 0) {
+                errorKia(current);
+                return false;
+            }
+
+            return true;
+        }
+
+        function errorKia(current) {
+            current.find(".save").html('<i class="fa fa-exclamation-triangle"></i>');
+            setTimeout(function () {
+                current.find(".save").html('<i class="fa fa-floppy-o"></i>');
+            }, 500);
+
+            current.find(".create").html('<i class="fa fa-exclamation-triangle"></i>');
+            setTimeout(function () {
+                current.find(".create").html('<i class="fa fa-floppy-o"></i>');
+            }, 500);
+        }
+
+        $(document).on("click", ".save", function () {
+            var id = this.id;
+            var item = $(this);
+            var current = $(this).parents("tr");
+            if (validate(current)) {
+                var name = current.find(".p-name").val().trim();
+                var code = current.find(".p-code").val().trim();
+                var price = current.find(".p-price").val().trim();
+                var percent = current.find(".p-percent").val().trim();
+                var num = current.find(".p-number").val().trim();
+
+                $.ajax({
+                    url: "/Manager/Subscription/Update",
+                    method: "POST",
+                    dataType: "json",
+                    data: { id: id, name: name, code: code, price: price, percent: percent, num: num },
+                    success: function (data) {
+                        if (data.success) {
+                            item.html('<i class="fa fa-check"></i>');
+                            setTimeout(function () {
+                                item.html('<i class="fa fa-floppy-o"></i>');
+                            }, 500);
+                        }else {
+                            swal({
+                                title: "...",
+                                text: data.message,
+                                type: "error"
+                            });
+                        }
+                    }
+                });
+            }
+        });
+
+        $(document).on("click", ".delete", function () {
+            var id = this.id;
+            var item = $(this);
+            var current = $(this).parents("tr");
+            if (id == 0) {
+                current.remove();
+                return;
+            }
+            swal({
+                title: "",
+                text: "Bạn có chắc chắn muốn xóa!",
+                type: "warning", showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "XÓA",
+                cancelButtonText: "HỦY",
+                closeOnConfirm: true
+            }, function () {
+                $.ajax({
+                    url: "/Manager/Subscription/Delete",
+                    method: "GET",
+                    dataType: "json",
+                    data: { id: id },
+                    success: function (data) {
+                        if (data.success) {
+                            current.remove();
+                        } else {
+                            swal({
+                                title: "...",
+                                text: data.message,
+                                type: "error"
+                            });
+                        }
+                    }
+                });
+            });
+
+            
+
+        });
+
+        $(document).on("click", ".create", function () {
+            var id = this.id;
+            var item = $(this);
+            var current = $(this).parents("tr");
+
+            if (validate(current)) {
+                var name = current.find(".p-name").val().trim();
+                var code = current.find(".p-code").val().trim();
+                var price = current.find(".p-price").val().trim();
+                var percent = current.find(".p-percent").val().trim();
+                var num = current.find(".p-number").val().trim();
+
+                $.ajax({
+                    url: "/Manager/Subscription/Create",
+                    method: "POST",
+                    dataType: "json",
+                    data: { name: name, code: code, price: price, percent: percent, num: num },
+                    success: function (data) {
+                        if (data.success) {
+                            
+                            item.html('<i class="fa fa-check"></i>');
+                            setTimeout(function () {
+                                item.html('<i class="fa fa-floppy-o"></i>');
+                                item.prop('id', data.Id);
+                                item.addClass("save");
+                                item.removeClass("create");
+                                current.find(".delete").prop('id', data.Id);
+                            }, 500);
+
+                        } else {
+                            swal({
+                                title: "...",
+                                text: data.message,
+                                type: "error"
+                            });
+                        }
+                    }
+                });
+            }
+        });
+
+        $("#addButton").click(function () {
+            $.ajax({
+                url: "/Manager/Subscription/CreateForm",
+                method: "GET",
+                dataType: "html",
+                data: {  },
+                success: function (data) {
+                    $("#subList").prepend(data);
+                }
+            });
+        });
+        
+    </script>
+}

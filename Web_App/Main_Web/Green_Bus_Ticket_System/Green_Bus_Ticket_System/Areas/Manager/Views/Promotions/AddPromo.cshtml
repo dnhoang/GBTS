@@ -11,30 +11,22 @@ else
 {
     <tr>
         <td>@item.Name</td>
-        <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
-        @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.PromotionStatus.SENDING)
+        <td>@item.ExpiredDate.ToString("dd/MM/yyyy")</td>
+        @if (item.ExpiredDate >= DateTime.Now)
         {
-            <td><span class="label label-primary" id="status-@item.Id">ĐANG GỬI...</span></td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary view" id="@item.Id"><i class="fa fa-eye"></i> CHI TIẾT</button>
-                                        <button type="button" class="btn btn-danger stop" id="@item.Id"><i class="fa fa-remove"></i> HỦY</button>
-                                    </td>
+            <td><span class="label label-success" id="status-@item.Id">ĐANG HOẠT ĐỘNG</span></td>
+            <td>
+                <button type="button" class="btn btn-primary view" id="@item.Id"><i class="fa fa-eye"></i> CHI TIẾT</button>
+                <button type="button" class="btn btn-danger stop" id="@item.Id"><i class="fa fa-remove"></i> XÓA</button>
+            </td>
         }
-        else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.PromotionStatus.SENT)
+        else
         {
-            <td><span class="label label-success" id="status-@item.Id">ĐÃ GỬI</span></td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary view" id="@item.Id"><i class="fa fa-eye"></i> CHI TIẾT</button>
-                                        <button type="button" class="btn disabled"><i class="fa fa-remove"></i> HỦY</button>
-                                    </td>
-        }
-        else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.PromotionStatus.CANCELLED)
-        {
-            <td><span class="label label-danger" id="status-@item.Id">ĐÃ HỦY</span></td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary view" id="@item.Id"><i class="fa fa-eye"></i> CHI TIẾT</button>
-                                        <button type="button" class="btn disabled"><i class="fa fa-remove"></i> HỦY</button>
-                                    </td>
+            <td><span class="label label-danger" id="status-@item.Id">ĐÃ HẾT HẠN</span></td>
+            <td>
+                <button type="button" class="btn btn-primary view" id="@item.Id"><i class="fa fa-eye"></i> CHI TIẾT</button>
+                <button type="button" class="btn btn-danger stop" id="@item.Id"><i class="fa fa-remove"></i> XÓA</button>
+            </td>
         }
 
 

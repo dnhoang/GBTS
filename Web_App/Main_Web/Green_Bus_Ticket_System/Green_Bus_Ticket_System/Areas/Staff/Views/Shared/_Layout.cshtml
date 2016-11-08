@@ -27,7 +27,9 @@
     <div id="top" class="clearfix">
         <!-- Start App Logo -->
         <div class="applogo">
-            <a href="#" class="logo">GBTS</a>
+            <a href="#" class="logo">
+                <img src="~/Content/front/logo-h.png" />
+            </a>
         </div>
         <!-- End App Logo -->
         <!-- Start Sidebar Show Hide Button -->
@@ -58,7 +60,7 @@
             <li><a href="/Staff/Home"><span class="icon color5"><i class="fa fa-home"></i></span>BẢNG ĐIỀU KHIỂN</a></li>
             <li><a href="/Staff/Card"><span class="icon color1"><i class="fa fa-credit-card"></i></span>QUẢN LÝ THẺ</a></li>
             <li><a href="/Staff/Passenger"><span class="icon color3"><i class="fa fa-users"></i></span>QUẢN LÝ HÀNH KHÁCH</a></li>
-            <li><a id="btn-pub" href="#"><span class="icon color6"><i class="fa fa-paper-plane"></i></span>PHÁT HÀNH THẺ CÀO</a></li>
+            <li><a id="btn-pub" href="#"><span class="icon color7"><i class="fa fa-paper-plane"></i></span>PHÁT HÀNH THẺ CÀO</a></li>
             
         </ul>
         <ul class="sidebar-panel nav">
@@ -75,7 +77,7 @@
     <div class="content">
         <!-- Start Page Header -->
         <div class="page-header">
-            <h1 class="title pull-left">@ViewBag.Title</h1>
+            <h1 class="title pull-left"><i class="fa fa-bus"></i> @ViewBag.Title</h1>
             @if (IsSectionDefined("CustomHeader"))
             {
                 @RenderSection("CustomHeader", required: false);
