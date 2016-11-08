@@ -45,11 +45,13 @@ namespace Green_Bus_Ticket_System.Controllers
         IOfferSubscriptionService _offerSubscriptionService;
         IUserSubscriptionService _userSubscriptionService;
         ITokenService _tokenService;
+        IPromotionService _promotionService;
         public ApiController(ICardService cardService, ITicketTypeService ticketTypeService,
             ITicketService ticketService, IBusRouteService busRouteService, IUserService userService,
             ICreditPlanService creditPlanService, IPaymentTransactionService paymentTransactionService,
             IScratchCardService scratchCardService, IOfferSubscriptionService offerSubscriptionService,
-            IUserSubscriptionService userSubscriptionService, ITokenService tokenService)
+            IUserSubscriptionService userSubscriptionService, ITokenService tokenService,
+            IPromotionService promotionService)
         {
             _cardService = cardService;
             _ticketTypeService = ticketTypeService;
@@ -62,6 +64,7 @@ namespace Green_Bus_Ticket_System.Controllers
             _offerSubscriptionService = offerSubscriptionService;
             _userSubscriptionService = userSubscriptionService;
             _tokenService = tokenService;
+            _promotionService = promotionService;
         }
 
 
@@ -1898,6 +1901,32 @@ namespace Green_Bus_Ticket_System.Controllers
             success = true;
             message = "Server đã gửi tin nhắn cho Tân rồi nha!";
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetPromotion(string key)
+        {
+            string message = "";
+            bool success = false;
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            List<Promotion> promotions = _promotionService.GetAll().Where(p => p.ExpiredDate >= DateTime.Now).ToList();
+            string html = "";
+            foreach(var item in promotions)
+            {
+                html += "<h3>"+item.Name +"</h3>" + item.Description + "<br /><hr /><br />";
+            }
+
+            bool hasPromotion = promotions.Count > 0;
+            success = true;
+
+            return Json(new { success = success, message = message, hasPromotion = hasPromotion, html = html }, JsonRequestBehavior.AllowGet);
+
         }
 
         private void SendNotification(string code, string msg)

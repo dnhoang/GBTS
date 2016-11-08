@@ -4,7 +4,14 @@
         (List<Green_Bus_Ticket_System_Data.BusRoute>)ViewBag.Busroutes;
 
 }
-
+@section CustomCss{
+    <style>
+        .table-condensed thead tr:nth-child(2),
+        .table-condensed tbody {
+          display: none
+        }
+    </style>    
+}
 
 <div class="container-padding" style="overflow: hidden;">
     <div class="col col-md-12 gb-padding text-center">

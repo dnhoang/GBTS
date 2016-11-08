@@ -4304,7 +4304,6 @@ img.adp-marker {
     max-width: 100px;
 }
 
-.table-condensed thead tr:nth-child(2),
-.table-condensed tbody {
-  display: none
+#info-content{
+    overflow: auto;
 }
