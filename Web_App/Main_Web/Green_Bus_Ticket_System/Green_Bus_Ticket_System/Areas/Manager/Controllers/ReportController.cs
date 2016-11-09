@@ -41,7 +41,7 @@ namespace Green_Bus_Ticket_System.Areas.Manager.Controllers
             DateTime lastThirtyDate = currentDate.AddMonths(-3);
 
             ViewBag.BeginDate = "01/" + lastThirtyDate.ToString("MM/yyyy");
-            ViewBag.EndDate = "01/" + currentDate.ToString("MM/yyyy");
+            ViewBag.EndDate = currentDate.ToString("dd/MM/yyyy");
             ViewBag.Busroutes = _busRouteService.GetAll().ToList();
 
             return View();

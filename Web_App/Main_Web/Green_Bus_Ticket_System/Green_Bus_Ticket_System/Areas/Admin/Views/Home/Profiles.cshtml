@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewBag.Title = "Tài khoản";
+    Green_Bus_Ticket_System_Data.User user = (Green_Bus_Ticket_System_Data.User)ViewBag.User;
+}
+<div class="container-padding">
+    <form class="form-horizontal col-sm-6">
+        <div class="form-group">
+            <label class="col-sm-3 control-label form-label">Số điện thoại</label>
+            <div class="col-sm-9">
+                <label class="control-label form-label">@user.PhoneNumber</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label form-label">Họ tên</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" id="name" value="@user.Fullname">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label form-label">Mật khẩu</label>
+            <div class="col-sm-9">
+                <input type="password" class="form-control" id="password" placeholder="Để trống nếu không muốn đổi mật khẩu">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-7 col-sm-10">
+                <button type="button" class="btn btn-default" id="updateProfile"><i class="fa fa-floppy-o"> </i>LƯU THÔNG TIN</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+@section CustomJs{
+    <!-- ================================================
+    Sweet Alert
+    ================================================ -->
+    <script src="~/Content/front/js/sweet-alert/sweet-alert.min.js"></script>
+    <script>
+
+        $("#updateProfile").click(function () {
+            if (validate()) {
+                var name = $("#name").val();
+                var password = $("#password").val();
+
+                $.ajax({
+                    url: "/Admin/Home/UpdateProfile",
+                    method: "POST",
+                    dataType: "json",
+                    data: { name: name, password: password },
+                    success: function(data) {
+                        if (data.success) {
+                            swal({
+                                title: "",
+                                text: data.message,
+                                type: "success"
+                            });
+                        } else {
+                            swal({
+                                title: "",
+                                text: data.message,
+                                type: "error"
+                            });
+                        }
+                    }
+                });
+            }
+        });
+        function validate() {
+            var passwordLen = $("#password").val().trim().length;
+            if (passwordLen > 0 && passwordLen < 6) {
+                swal({
+                    title: "",
+                    text: "Mật khẩu từ 6-50 ký tự",
+                    type: "warning"
+                });
+                return false;
+            }
+            return true;
+        }
+    </script>
+}

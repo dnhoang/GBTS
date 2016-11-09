@@ -198,11 +198,14 @@
             }).click();
         });
 
+        var CurrentDate = new Date();
+        CurrentDate.setMonth(CurrentDate.getMonth() + 1);
+
         $('#date-picker-end').daterangepicker({
             singleDatePicker: true,
             showDropdowns: true,
             format: 'DD/MM/YYYY',
-            maxDate: new Date()
+            maxDate: CurrentDate
         }).on('hide.daterangepicker', function (ev, picker) {
             $('.table-condensed tbody tr td').filter(function () {
                 return $(this).html() === "1";

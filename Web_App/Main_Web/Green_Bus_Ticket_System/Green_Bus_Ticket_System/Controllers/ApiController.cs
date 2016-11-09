@@ -1919,7 +1919,7 @@ namespace Green_Bus_Ticket_System.Controllers
             string html = "";
             foreach(var item in promotions)
             {
-                html += "<h3>"+item.Name +"</h3>" + item.Description + "<br /><hr /><br />";
+                html += item.Description + "<br /><hr /><br />";
             }
 
             bool hasPromotion = promotions.Count > 0;

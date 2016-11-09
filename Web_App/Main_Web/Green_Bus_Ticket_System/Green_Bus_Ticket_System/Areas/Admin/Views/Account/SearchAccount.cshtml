@@ -1,0 +1,61 @@
+﻿
+@{
+    List<Green_Bus_Ticket_System_Data.User> users = 
+        (List<Green_Bus_Ticket_System_Data.User>)ViewBag.Users;
+}
+
+@if (users.Count == 0)
+{
+    <p>Không tìm thấy kết quả nào...</p>
+}
+
+@foreach (var item in users)
+{
+    <div class="col-md-6">
+        <div class="panel panel-default dash-card margin-5">
+            <div class="panel-title">
+                <i class="fa fa-user titleicon"></i><span class="cardUID" id="@item.UserId">@item.Fullname</span>
+                <ul class="panel-tools">
+                    @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.UserStatus.ACTIVATED)
+                    {
+                        <li><span class="statuslable" id="@item.UserId"><span class="green">ĐANG HOẠT ĐỘNG</span></span></li>
+                    }
+                    else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.UserStatus.DEACTIVATED)
+                    {
+                        <li><span class="statuslable" id="@item.UserId"><span class="red">ĐANG BỊ KHÓA</span></span></li>
+                    }
+                    else
+                    {
+                        <li><span>CHƯA KÍCH HOẠT</span></li>
+                    }
+
+                </ul>
+            </div>
+            <div class="panel-body">
+                <p class="pull-left">
+                    Điện thoại: @item.PhoneNumber
+                    <br />
+                    Số thẻ: @item.Cards.Count thẻ
+                    <br />
+                    Vai trò: @item.Role.Name
+                </p>
+                <p class="pull-right padding-t-30">
+                    
+                    @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.UserStatus.ACTIVATED)
+                    {
+                        <button data-toggle="tooltip" title="Khóa tài khoản" type="button" class="btn btn-danger lockuser" id="@item.UserId"><i class="fa fa-lock"></i></button>
+
+                    }
+                    else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.UserStatus.DEACTIVATED)
+                    {
+                        <button data-toggle="tooltip" title="Mở khóa thẻ" type="button" class="btn btn-primary unlockuser" id="@item.UserId"><i class="fa fa-unlock"></i></button>
+                    }
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+}
+
+

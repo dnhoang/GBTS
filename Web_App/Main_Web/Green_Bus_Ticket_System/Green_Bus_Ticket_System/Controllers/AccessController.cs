@@ -39,22 +39,33 @@ namespace Green_Bus_Ticket_System.Controllers
             string url = "";
             if (_userService.IsUserExist(phone))
             {
+                
                 User user = _userService.GetUserByPhone(phone);
                 var hashedPassword = CommonUtils.HashPassword(password);
-                if (user.Password.Equals(hashedPassword))
+
+                if(user.Status == (int)StatusReference.UserStatus.DEACTIVATED)
                 {
-                    Session["user"] = user;
-                    Session.Timeout = 60;
-                    success = true;
-                    message = "Đăng nhập thành công!";
-                    
-                    url = GetAuthorizedUrl(user);                    
+                    success = false;
+                    message = "Tài khoản đang bị khóa!";
                 }
                 else
                 {
-                    success = false;
-                    message = "Sai điện thoại hoặc mật khẩu!";
+                    if (user.Password.Equals(hashedPassword))
+                    {
+                        Session["user"] = user;
+                        Session.Timeout = 6000;
+                        success = true;
+                        message = "Đăng nhập thành công!";
+
+                        url = GetAuthorizedUrl(user);
+                    }
+                    else
+                    {
+                        success = false;
+                        message = "Sai điện thoại hoặc mật khẩu!";
+                    }
                 }
+                
             }
             else
             {

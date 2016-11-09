@@ -262,6 +262,9 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
+    <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Manager\Controllers\HomeController.cs" />
     <Compile Include="Areas\Manager\Controllers\PlansController.cs" />
     <Compile Include="Areas\Manager\Controllers\PromotionsController.cs" />
@@ -457,6 +460,13 @@
     <Content Include="Areas\Staff\Views\ScratchCard\Publish.cshtml" />
     <Content Include="Areas\Manager\Views\Subscription\Index.cshtml" />
     <Content Include="Areas\Manager\Views\Subscription\CreateForm.cshtml" />
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Home\Profiles.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\SearchAccount.cshtml" />
     <None Include="Properties\PublishProfiles\GBTS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -495,6 +505,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Manager\Models\" />
     <Folder Include="Areas\Passenger\Models\" />
     <Folder Include="Areas\Staff\Models\" />
