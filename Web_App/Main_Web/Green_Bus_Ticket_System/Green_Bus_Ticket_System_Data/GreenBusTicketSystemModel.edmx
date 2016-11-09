@@ -45,6 +45,7 @@
           <Property Name="Price" Type="int" Nullable="false" />
           <Property Name="DiscountPercent" Type="float" Nullable="false" />
           <Property Name="TicketNumber" Type="int" Nullable="false" />
+          <Property Name="Status" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="PaymentTransaction">
           <Key>
@@ -66,6 +67,7 @@
           <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
           <Property Name="Status" Type="int" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ExpiredDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -82,6 +84,7 @@
           <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Price" Type="int" Nullable="false" />
           <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="ExpiredDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -114,6 +117,13 @@
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="Price" Type="int" Nullable="false" />
           <Property Name="Status" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Token">
+          <Key>
+            <PropertyRef Name="TheKey" />
+          </Key>
+          <Property Name="TheKey" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TheValue" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -258,6 +268,7 @@
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Ticket" EntityType="Self.Ticket" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TicketType" EntityType="Self.TicketType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Token" EntityType="Self.Token" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserSubscription" EntityType="Self.UserSubscription" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Card_User" Association="Self.FK_Card_User">
@@ -392,18 +403,19 @@
             <End Role="CreditPlan" EntitySet="CreditPlans" />
             <End Role="PaymentTransaction" EntitySet="PaymentTransactions" />
           </AssociationSet>
-          <EntitySet Name="Promotions" EntityType="GreenBusModel.Promotion" />
-          <EntitySet Name="ScratchCards" EntityType="GreenBusModel.ScratchCard" />
-          <EntitySet Name="OfferSubscriptions" EntityType="GreenBusModel.OfferSubscription" />
           <EntitySet Name="UserSubscriptions" EntityType="GreenBusModel.UserSubscription" />
-          <AssociationSet Name="FK_UserSubscription_OfferSubscription" Association="GreenBusModel.FK_UserSubscription_OfferSubscription">
-            <End Role="OfferSubscription" EntitySet="OfferSubscriptions" />
-            <End Role="UserSubscription" EntitySet="UserSubscriptions" />
-          </AssociationSet>
           <AssociationSet Name="FK_UserSubscription_User" Association="GreenBusModel.FK_UserSubscription_User">
             <End Role="User" EntitySet="Users" />
             <End Role="UserSubscription" EntitySet="UserSubscriptions" />
           </AssociationSet>
+          <EntitySet Name="Tokens" EntityType="GreenBusModel.Token" />
+          <EntitySet Name="Promotions" EntityType="GreenBusModel.Promotion" />
+          <EntitySet Name="OfferSubscriptions" EntityType="GreenBusModel.OfferSubscription" />
+          <AssociationSet Name="FK_UserSubscription_OfferSubscription" Association="GreenBusModel.FK_UserSubscription_OfferSubscription">
+            <End Role="OfferSubscription" EntitySet="OfferSubscriptions" />
+            <End Role="UserSubscription" EntitySet="UserSubscriptions" />
+          </AssociationSet>
+          <EntitySet Name="ScratchCards" EntityType="GreenBusModel.ScratchCard" />
         </EntityContainer>
         <EntityType Name="PaymentTransaction">
           <Key>
@@ -543,6 +555,38 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="UserSubscription">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="SubscriptionId" Type="Int32" Nullable="false" />
+          <Property Name="ExpiredDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="TicketRemaining" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="GreenBusModel.FK_UserSubscription_User" FromRole="UserSubscription" ToRole="User" />
+          <NavigationProperty Name="OfferSubscription" Relationship="GreenBusModel.FK_UserSubscription_OfferSubscription" FromRole="UserSubscription" ToRole="OfferSubscription" />
+        </EntityType>
+        <Association Name="FK_UserSubscription_User">
+          <End Type="GreenBusModel.User" Role="User" Multiplicity="1" />
+          <End Type="GreenBusModel.UserSubscription" Role="UserSubscription" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserSubscription">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Token">
+          <Key>
+            <PropertyRef Name="TheKey" />
+          </Key>
+          <Property Name="TheKey" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TheValue" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="Promotion">
           <Key>
             <PropertyRef Name="Id" />
@@ -552,15 +596,7 @@
           <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Int32" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-        </EntityType>
-        <EntityType Name="ScratchCard">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Price" Type="Int32" Nullable="false" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="ExpiredDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="OfferSubscription">
           <Key>
@@ -572,20 +608,8 @@
           <Property Name="Price" Type="Int32" Nullable="false" />
           <Property Name="DiscountPercent" Type="Double" Nullable="false" />
           <Property Name="TicketNumber" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
           <NavigationProperty Name="UserSubscriptions" Relationship="GreenBusModel.FK_UserSubscription_OfferSubscription" FromRole="OfferSubscription" ToRole="UserSubscription" />
-        </EntityType>
-        <EntityType Name="UserSubscription">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserId" Type="Int32" Nullable="false" />
-          <Property Name="SubscriptionId" Type="Int32" Nullable="false" />
-          <Property Name="ExpiredDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="TicketRemaining" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="OfferSubscription" Relationship="GreenBusModel.FK_UserSubscription_OfferSubscription" FromRole="UserSubscription" ToRole="OfferSubscription" />
-          <NavigationProperty Name="User" Relationship="GreenBusModel.FK_UserSubscription_User" FromRole="UserSubscription" ToRole="User" />
         </EntityType>
         <Association Name="FK_UserSubscription_OfferSubscription">
           <End Type="GreenBusModel.OfferSubscription" Role="OfferSubscription" Multiplicity="1" />
@@ -599,18 +623,16 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_UserSubscription_User">
-          <End Type="GreenBusModel.User" Role="User" Multiplicity="1" />
-          <End Type="GreenBusModel.UserSubscription" Role="UserSubscription" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="UserSubscription">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
+        <EntityType Name="ScratchCard">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="ExpiredDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -718,9 +740,30 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="UserSubscriptions">
+            <EntityTypeMapping TypeName="GreenBusModel.UserSubscription">
+              <MappingFragment StoreEntitySet="UserSubscription">
+                <ScalarProperty Name="TicketRemaining" ColumnName="TicketRemaining" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ExpiredDate" ColumnName="ExpiredDate" />
+                <ScalarProperty Name="SubscriptionId" ColumnName="SubscriptionId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tokens">
+            <EntityTypeMapping TypeName="GreenBusModel.Token">
+              <MappingFragment StoreEntitySet="Token">
+                <ScalarProperty Name="TheValue" ColumnName="TheValue" />
+                <ScalarProperty Name="TheKey" ColumnName="TheKey" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Promotions">
             <EntityTypeMapping TypeName="GreenBusModel.Promotion">
               <MappingFragment StoreEntitySet="Promotion">
+                <ScalarProperty Name="ExpiredDate" ColumnName="ExpiredDate" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
@@ -729,19 +772,10 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ScratchCards">
-            <EntityTypeMapping TypeName="GreenBusModel.ScratchCard">
-              <MappingFragment StoreEntitySet="ScratchCards">
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="OfferSubscriptions">
             <EntityTypeMapping TypeName="GreenBusModel.OfferSubscription">
               <MappingFragment StoreEntitySet="OfferSubscription">
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="TicketNumber" ColumnName="TicketNumber" />
                 <ScalarProperty Name="DiscountPercent" ColumnName="DiscountPercent" />
                 <ScalarProperty Name="Price" ColumnName="Price" />
@@ -751,14 +785,13 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UserSubscriptions">
-            <EntityTypeMapping TypeName="GreenBusModel.UserSubscription">
-              <MappingFragment StoreEntitySet="UserSubscription">
-                <ScalarProperty Name="TicketRemaining" ColumnName="TicketRemaining" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <EntitySetMapping Name="ScratchCards">
+            <EntityTypeMapping TypeName="GreenBusModel.ScratchCard">
+              <MappingFragment StoreEntitySet="ScratchCards">
                 <ScalarProperty Name="ExpiredDate" ColumnName="ExpiredDate" />
-                <ScalarProperty Name="SubscriptionId" ColumnName="SubscriptionId" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

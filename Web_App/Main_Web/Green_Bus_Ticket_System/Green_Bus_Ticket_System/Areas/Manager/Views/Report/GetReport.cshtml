@@ -1,9 +1,17 @@
 ﻿@{
-    List<Green_Bus_Ticket_System_Data.BusRoute> cardRoutes =
-        (List<Green_Bus_Ticket_System_Data.BusRoute>)ViewBag.CardRoutes;
+    List<Green_Bus_Ticket_System_Utils.Income> cardincomes =
+        (List< Green_Bus_Ticket_System_Utils.Income>)ViewBag.CardIncomes;
+    List<Green_Bus_Ticket_System_Utils.Income> cashincomes =
+        (List<Green_Bus_Ticket_System_Utils.Income>)ViewBag.CashIncomes;
 
-    List<Green_Bus_Ticket_System_Data.BusRoute> cashRoutes =
-        (List<Green_Bus_Ticket_System_Data.BusRoute>)ViewBag.CashRoutes;
+    List<Green_Bus_Ticket_System_Utils.Income> defaultPays =
+       (List<Green_Bus_Ticket_System_Utils.Income>)ViewBag.DefaultPays;
+    List<Green_Bus_Ticket_System_Utils.Income> cashPays =
+       (List<Green_Bus_Ticket_System_Utils.Income>)ViewBag.CashPays;
+    List<Green_Bus_Ticket_System_Utils.Income> topupPays =
+       (List<Green_Bus_Ticket_System_Utils.Income>)ViewBag.TopupPays;
+
+
 }
 <div role="tabpanel">
 
@@ -11,6 +19,9 @@
     <ul class="nav nav-tabs tabcolor7-bg" role="tablist">
         <li role="presentation" class="active"><a href="#via-card" aria-controls="via-card" role="tab" data-toggle="tab" aria-expanded="true" class="active">THU NHẬP MUA VÉ TỪ THẺ</a></li>
         <li role="presentation" class=""><a href="#via-cash" aria-controls="via-cash" role="tab" data-toggle="tab" class="" aria-expanded="false">THU NHẬP MUA VÉ TIỀN MẶT</a></li>
+        <li role="presentation" class=""><a href="#pay-default" aria-controls="pay-default" role="tab" data-toggle="tab" class="" aria-expanded="false">NẠP TIỀN PAYPAL</a></li>
+        <li role="presentation" class=""><a href="#pay-cash" aria-controls="pay-cash" role="tab" data-toggle="tab" class="" aria-expanded="false">NẠP TIỀN MẶT</a></li>
+        <li role="presentation" class=""><a href="#pay-topup" aria-controls="pay-topup" role="tab" data-toggle="tab" class="" aria-expanded="false">NẠP THẺ CÀO</a></li>
     </ul>
 
     <!-- Tab panes -->
@@ -19,30 +30,21 @@
             <table id="card-table" class="table display">
                 <thead>
                     <tr>
-                        <th>TUYẾN XE BUÝT</th>
+                        <th>THỜI GIAN</th>
                         <th>TỔNG SỐ VÉ</th>
                         <th>TỔNG SỐ TIỀN THU VỀ</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (Green_Bus_Ticket_System_Data.BusRoute route in cardRoutes)
+                    @foreach (var item in cardincomes)
                     {
-                        int count = 0;
-                        int total = 0;
-                        foreach (Green_Bus_Ticket_System_Data.Ticket ticket in route.Tickets.ToList())
-                        {
-                            count++;
-                            total += ticket.Total;
-                        }
-
-                        if (count > 0)
-                        {
+                        
                             <tr>
-                                <td>@route.Code - @route.Name</td>
-                                <td>@count</td>
-                                <td>@total.ToString("#,##0") đ</td>
+                                <td>@item.Title</td>
+                                <td>@item.TotalTicket</td>
+                                <td>@item.TotalIncome.ToString("#,##0") đ</td>
                             </tr>
-                        }
+                        
 
                     }
                 </tbody>
@@ -52,30 +54,89 @@
             <table id="cash-table" class="table display">
                 <thead>
                     <tr>
-                        <th>TUYẾN XE BUÝT</th>
+                        <th>THỜI GIAN</th>
                         <th>TỔNG SỐ VÉ</th>
                         <th>TỔNG SỐ TIỀN THU VỀ</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (Green_Bus_Ticket_System_Data.BusRoute route in cashRoutes)
+                    @foreach (var item in cashincomes)
                     {
-                        int count = 0;
-                        int total = 0;
-                        foreach (Green_Bus_Ticket_System_Data.Ticket ticket in route.Tickets.ToList())
-                        {
-                            count++;
-                            total += ticket.Total;
-                        }
 
-                        if (count > 0)
-                        {
-                            <tr>
-                                <td>@route.Code - @route.Name</td>
-                                <td>@count</td>
-                                <td>@total.ToString("#,##0") đ</td>
-                            </tr>
-                        }
+                        <tr>
+                            <td>@item.Title</td>
+                            <td>@item.TotalTicket</td>
+                            <td>@item.TotalIncome.ToString("#,##0") đ</td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="pay-default">
+            <table id="pay-default-table" class="table display">
+                <thead>
+                    <tr>
+                        <th>THỜI GIAN</th>
+                        <th>TỔNG SỐ LẦN</th>
+                        <th>TỔNG SỐ TIỀN THU VỀ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in defaultPays)
+                    {
+
+                        <tr>
+                            <td>@item.Title</td>
+                            <td>@item.TotalTicket</td>
+                            <td>@item.TotalIncome.ToString("#,##0") đ</td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="pay-cash">
+            <table id="pay-cash-table" class="table display">
+                <thead>
+                    <tr>
+                        <th>THỜI GIAN</th>
+                        <th>TỔNG SỐ LẦN</th>
+                        <th>TỔNG SỐ TIỀN THU VỀ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in cashPays)
+                    {
+
+                        <tr>
+                            <td>@item.Title</td>
+                            <td>@item.TotalTicket</td>
+                            <td>@item.TotalIncome.ToString("#,##0") đ</td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="pay-topup">
+            <table id="pay-topup-table" class="table display">
+                <thead>
+                    <tr>
+                        <th>THỜI GIAN</th>
+                        <th>TỔNG SỐ THẺ</th>
+                        <th>TỔNG SỐ TIỀN THU VỀ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in topupPays)
+                    {
+
+                        <tr>
+                            <td>@item.Title</td>
+                            <td>@item.TotalTicket</td>
+                            <td>@item.TotalIncome.ToString("#,##0") đ</td>
+                        </tr>
 
                     }
                 </tbody>

@@ -1,15 +1,23 @@
 package com.example.gbts.navigationdraweractivity.module.google.mapsAPI;
 
+import android.app.Dialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.activity.ActivityGoogleFindPath;
+import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
 import com.example.gbts.navigationdraweractivity.fragment.FragmentDirection;
 import com.example.gbts.navigationdraweractivity.fragment.GetAllButRoute;
+import com.example.gbts.navigationdraweractivity.utils.Utility;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -54,7 +62,7 @@ public class DirectionFinder {
 
     public void execute() throws UnsupportedEncodingException {
         listener.onDirectionFinderStart();
-        new DownloadRawData().execute(createUrl());
+            new DownloadRawData().execute(createUrl());
     }
 
     private String createUrl() throws UnsupportedEncodingException {

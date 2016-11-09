@@ -1,5 +1,6 @@
 package com.example.gbts.navigationdraweractivity.fragment;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +28,7 @@ import com.example.gbts.navigationdraweractivity.adapter.ChooseCardNFCAdapter;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.enity.CardNFC;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
+import com.example.gbts.navigationdraweractivity.utils.Utility;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,7 +57,36 @@ public class FragmentChooseCard extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        new JSONParseCardNFC().execute();
+        if (Utility.isNetworkConnected(getActivity())) {
+            new JSONParseCardNFC().execute();
+        } else {
+            // custom dialog
+            final Dialog dialog = new Dialog(getActivity());
+            dialog.setContentView(R.layout.custom_dialog);
+            dialog.setTitle("Mất kết nối mạng ...");
+
+            // set the custom dialog components - text, image and button
+            TextView text = (TextView) dialog.findViewById(R.id.text);
+            text.setText("Kiểm tra mạng wifi hoặc 3g");
+            ImageView image = (ImageView) dialog.findViewById(R.id.image);
+            image.setImageResource(R.drawable.ic_icon_wifi);
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+            // if button is clicked, close the custom dialog
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (Utility.isNetworkConnected(getActivity())) {
+                        dialog.dismiss();
+                        new JSONParseCardNFC().execute();
+                    }
+                }
+            });
+            dialog.show();
+        }
+
+
+
 
         View view = inflater.inflate(R.layout.fragment_choose_card, container, false);
         String sCardName = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)

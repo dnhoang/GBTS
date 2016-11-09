@@ -2,44 +2,49 @@
 @{
     Layout = null;
     ViewBag.Title = "Tạo mã nạp tiền";
+    int count = 0;
     List<Green_Bus_Ticket_System_Data.ScratchCard> cards = (List<Green_Bus_Ticket_System_Data.ScratchCard>)ViewBag.Cards;
 }
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Green Bus Ticket System - Fast - Cheap - Convenient">
-    <meta name="keywords" content="bus, green, ticket, convenient" />
-    <title>@ViewBag.Title | Green Bus Ticket System</title>
-    <!-- ========== Css Files ========== -->
-    <link href="~/Content/front/css/root.css" rel="stylesheet">
-    <!--Other Css Here-->
-    <style>
-        body {
-            background: #ffffff;
-            padding:20px;
-        }
-    </style>
-</head>
+<html>
 <body>
     <div class="row padding-t-20">
-        @foreach (var item in cards)
-        {
-            <div class="col-md-4">
-                <div class="widget socialbox" style="background:#47639E; height:150px;">
-                    <p class="text">@item.Code</p>
-                    <p class="text-info">NT [Mã_Thẻ] @item.Code gửi 14794312404</p>
-                    <div class="logo"><i class="fa fa-credit-card"></i></div>
-                    <ul class="info">
-                        <li>Mệnh giá: @item.Price.ToString("#,##0") đ</li>
-                    </ul>
-                </div>
-            </div>
+        <h2 style="text-align:center">GBTS - MÃ THẺ CÀO</h2>
+        <p style="text-align: center">Phát hành ngày: @DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")</p>
+        <table style="width: 100%">
+            <tbody>
 
-        }
-    </div>
+                @foreach (var item in cards)
+            {
+                if (count == 0)
+                {
+                        @Html.Raw("<tr>")
+                    }
 
-</body>
+                <td style="width: 25%; width: 25%; border: 1px solid #000; padding: 10px;">
+                    <h3>@item.Code</h3>
+                    <p style="font-size:12px;">NT [Mã_Thẻ] @item.Code gửi 14794312404</p>
+                    <p>Mệnh giá: @item.Price.ToString("#,##0") đ</p>
+                    <p>Hết hạn: @item.ExpiredDate.ToString("dd/MM/yyyy")</p>
+                </td>
+
+                    if (count == 3)
+                    {
+                        @Html.Raw("</tr>")
+                        count = 0;
+                    }
+                    else
+                    {
+                        count++;
+                    }
+
+                }
+                </tbody>
+            </table>
+        <script src="~/Content/front/js/jquery.min.js"></script>
+            <script>
+    
+                $(document).ready(function () { window.print(); });
+            </script>
+        </div>
+    </body>
 </html>

@@ -26,6 +26,7 @@ namespace Green_Bus_Ticket_System_Data
         public int Price { get; set; }
         public double DiscountPercent { get; set; }
         public int TicketNumber { get; set; }
+        public int Status { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserSubscription> UserSubscriptions { get; set; }

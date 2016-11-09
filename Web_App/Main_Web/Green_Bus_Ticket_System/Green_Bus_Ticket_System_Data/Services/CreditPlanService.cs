@@ -1,6 +1,7 @@
 ﻿using Green_Bus_Ticket_System_Data.Model;
 using Green_Bus_Ticket_System_Data.Repositories;
 using Green_Bus_Ticket_System_Data.UnitOfWork;
+using Green_Bus_Ticket_System_Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,6 @@ namespace Green_Bus_Ticket_System_Data.Services
     public interface ICreditPlanService : IEntityService<CreditPlan>
     {
         CreditPlan GetCreditPlan(int id);
-        int GetMinPlan();
     }
 
     public class CreditPlanService : EntityService<CreditPlan>, ICreditPlanService
@@ -31,9 +31,6 @@ namespace Green_Bus_Ticket_System_Data.Services
             return _repository.FindBy(obj => obj.Id == id).FirstOrDefault();
         }
 
-        public int GetMinPlan()
-        {
-            return _repository.GetAll().Min(c => c.Price);
-        }
+        
     }
 }

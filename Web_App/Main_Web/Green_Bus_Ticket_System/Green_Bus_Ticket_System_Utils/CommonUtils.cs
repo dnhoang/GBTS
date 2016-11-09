@@ -73,6 +73,18 @@ namespace Green_Bus_Ticket_System_Utils
             return res.ToString();
         }
 
-       
+        public static string GeneratePre(int length)
+        {
+            const string valid = "QƯERTYUIOPASDFGHJKLZXCVBNM";
+            StringBuilder res = new StringBuilder();
+            Random rnd = new Random();
+            while (0 < length--)
+            {
+                res.Append(valid[rnd.Next(valid.Length)]);
+            }
+            return res.ToString();
+        }
+
+
     }
 }

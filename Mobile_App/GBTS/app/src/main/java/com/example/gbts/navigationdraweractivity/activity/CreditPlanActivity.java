@@ -1,5 +1,6 @@
 package com.example.gbts.navigationdraweractivity.activity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,14 +13,19 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.adapter.CreditPlanAdapter;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.enity.CreditPlan;
+import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
 import com.example.gbts.navigationdraweractivity.listener.RecyclerTouchListener;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
+import com.example.gbts.navigationdraweractivity.utils.Utility;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,17 +58,48 @@ public class CreditPlanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_credit_plan);
         actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        new AsyncFetch().execute();
+
+        if (Utility.isNetworkConnected(CreditPlanActivity.this)) {
+            new AsyncFetch().execute();
+        } else {
+            // custom dialog
+            final Dialog dialog = new Dialog(CreditPlanActivity.this);
+            dialog.setContentView(R.layout.custom_dialog);
+            dialog.setTitle("Mất kết nối mạng ...");
+
+            // set the custom dialog components - text, image and button
+            TextView text = (TextView) dialog.findViewById(R.id.text);
+            text.setText("Kiểm tra mạng wifi hoặc 3g");
+            ImageView image = (ImageView) dialog.findViewById(R.id.image);
+            image.setImageResource(R.drawable.ic_icon_wifi);
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+            // if button is clicked, close the custom dialog
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (Utility.isNetworkConnected(CreditPlanActivity.this)) {
+                        dialog.dismiss();
+                        new AsyncFetch().execute();
+                    }
+                }
+            });
+            dialog.show();
+        }
+
+
     }
-    public void clickToTopUp(View v){
-        Intent intent=new Intent(this,TopUpActivity.class);
+
+    public void clickToTopUp(View v) {
+        Intent intent = new Intent(this, TopUpActivity.class);
         Intent intentGetCardID = getIntent();
         Bundle bundle = intentGetCardID.getExtras();
         //get cardid
         String cardId = bundle.getString("cardIDForPayPal");
-        intent.putExtra("cardId",cardId);
+        intent.putExtra("cardId", cardId);
         startActivity(intent);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

@@ -16,11 +16,15 @@
                     <form>
                         <div class="form-group" style="overflow: auto;">
                             <label class="col-sm-2 control-label form-label">Tên quảng cáo</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-5">
                                 <input type="text" id="name" name="name" class="form-control">
                             </div>
+                            <label class="col-sm-2 control-label form-label">Hết hạn</label>
+                            <div class="col-sm-3">
+                                <input type="text" readonly value="@DateTime.Now.AddDays(1).ToString("dd/MM/yyyy")" id="expired" name="expired" class="form-control">
+                            </div>
                         </div>
-                        <input type="hidden" name="content" id="content"/>
+                        <input type="hidden" name="content" id="content" />
                         <div id="summernote"></div>
                         <button class="btn btn-default" id="send"><i class="fa fa-paper-plane"></i> GỬI</button>
                         <p class="hcolor-red pull-right padding-l-20 hidden" id="validate"></p>
@@ -36,7 +40,7 @@
         <div class="col-md-12">
             @if (promos.Count <= 0)
             {
-                <p>Bạn chưa có thẻ nào!</p>
+                
             }
             else
             {
@@ -44,7 +48,7 @@
                     <thead>
                         <tr>
                             <td>TÊN QUẢNG CÁO</td>
-                            <td>NGÀY TẠO</td>
+                            <td>NGÀY HẾT HẠN</td>
                             <td>TRẠNG THÁI</td>
                             <td></td>
                         </tr>
@@ -55,29 +59,21 @@
 
                             <tr>
                                 <td>@item.Name</td>
-                                <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
-                                @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.PromotionStatus.SENDING)
+                                <td>@item.ExpiredDate.ToString("dd/MM/yyyy")</td>
+                                @if (item.ExpiredDate >= DateTime.Now)
                                 {
-                                    <td><span class="label label-primary" id="status-@item.Id">ĐANG GỬI...</span></td>
+                                    <td><span class="label label-success" id="status-@item.Id">ĐANG HOẠT ĐỘNG</span></td>
                                     <td>
                                         <button type="button" class="btn btn-primary view" id="@item.Id"><i class="fa fa-eye"></i> CHI TIẾT</button>
-                                        <button type="button" class="btn btn-danger stop" id="@item.Id"><i class="fa fa-remove"></i> HỦY</button>
+                                        <button type="button" class="btn btn-danger stop" id="@item.Id"><i class="fa fa-remove"></i> XÓA</button>
                                     </td>
                                 }
-                                else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.PromotionStatus.SENT)
+                                else
                                 {
-                                    <td><span class="label label-success" id="status-@item.Id">ĐÃ GỬI</span></td>
+                                    <td><span class="label label-danger" id="status-@item.Id">ĐÃ HẾT HẠN</span></td>
                                     <td>
                                         <button type="button" class="btn btn-primary view" id="@item.Id"><i class="fa fa-eye"></i> CHI TIẾT</button>
-                                        <button type="button" class="btn disabled"><i class="fa fa-remove"></i> HỦY</button>
-                                    </td>
-                                }
-                                else if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.PromotionStatus.CANCELLED)
-                                {
-                                    <td><span class="label label-danger" id="status-@item.Id">ĐÃ HỦY</span></td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary view" id="@item.Id"><i class="fa fa-eye"></i> CHI TIẾT</button>
-                                        <button type="button" class="btn disabled"><i class="fa fa-remove"></i> HỦY</button>
+                                        <button type="button" class="btn btn-danger stop" id="@item.Id"><i class="fa fa-remove"></i> XÓA</button>
                                     </td>
                                 }
 
@@ -117,114 +113,122 @@
     </div>
 </div>
 
-        @section CustomJs{
-            <!-- ================================================
-            Summernote
-            ================================================ -->
-            <script src="~/Content/front/js/summernote/summernote.min.js"></script>
-            <script src="~/Content/front/js/sweet-alert/sweet-alert.min.js"></script>
-            <script>
-                /* SUMMERNOTE*/
-                $(document).ready(function () {
-                    $('#summernote').summernote();
-                });
-                function validate() {
-                    var content = $('#summernote').code().trim().length;
-                    var name = $("#name").val().trim().length;
+@section CustomJs{
+    <!-- ================================================
+    Summernote
+    ================================================ -->
+    <script src="~/Content/front/js/summernote/summernote.min.js"></script>
+    <script src="~/Content/front/js/sweet-alert/sweet-alert.min.js"></script>
+    <script type="text/javascript" src="~/Content/front/js/moment/moment.min.js"></script>
+    <script src="~/Content/front/js/date-range-picker/daterangepicker.js"></script>
+    <script>
+        /* SUMMERNOTE*/
+        $(document).ready(function () {
+            $('#summernote').summernote();
+        });
 
-                    if (name < 6) {
-                        $("#validate").removeClass("hidden");
-                        $("#validate").html("Tên quảng cáo ít nhất 6 ký tự.");
-                        return false;
-                    }
+        $('#expired').daterangepicker({
+            singleDatePicker: true,
+            format: 'DD/MM/YYYY',
+            minDate: moment(new Date()).add(1, "days")
 
-                    if (content < 20) {
-                        $("#validate").removeClass("hidden");
-                        $("#validate").html("Vui lòng nhập nội dung tối thiểu 20 ký tự.");
-                        return false;
-                    }
+        }, function (start, end, lable) {
+            
+        });
 
-                    $("#validate").addClass("hidden");
-                    return true;
-                }
+        function validate() {
+            var content = $('#summernote').code().trim().length;
+            var name = $("#name").val().trim().length;
 
-                $("form").submit(function (e) {
-                    e.preventDefault();
-                    if (validate()) {
-                        var content = $('#summernote').code();
-                        var name = $("#name").val().trim();
-                        $("#content").val(content);
-                        $.ajax({
-                            url: "/Manager/Promotions/AddPromo",
-                            dataType: "html",
-                            data: $('form').serialize(),
-                            method: 'POST',
-                            success: function (data) {
-                                $('#list-promo').prepend(data);
-                                var content = $('#summernote').code("");
-                                var name = $("#name").val("");
-                            }
-                        });
-                    }
-                });
+            if (name < 6) {
+                $("#validate").removeClass("hidden");
+                $("#validate").html("Tên quảng cáo ít nhất 6 ký tự.");
+                return false;
+            }
 
-                $(document).on("click", ".view", function () {
-                    var id = this.id;
-                    $.ajax({
-                        url: "/Manager/Promotions/GetPromo",
-                        dataType: "json",
-                        data: { id: id },
-                        method: 'GET',
-                        success: function (data) {
-                            if (data.success) {
-                                $("#info-title").html(data.data.Name);
-                                $("#info-content").html(data.data.Description);
-                                $("#detailsModal").modal("show");
-                            } else {
-                                swal({
-                                    title: "",
-                                    text: data.message,
-                                    type: "error"
-                                });
-                            }
-                        }
-                    });
-                });
+            if (content < 20) {
+                $("#validate").removeClass("hidden");
+                $("#validate").html("Vui lòng nhập nội dung tối thiểu 20 ký tự.");
+                return false;
+            }
 
-                $(document).on("click", ".stop", function () {
-                    var id = this.id;
-                    var cur = $(this);
-                    swal({
-                        title: "",
-                        text: "Bạn có chắc chắn muốn hủy gửi quảng cáo này!",
-                        type: "warning", showCancelButton: true,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "XÁC NHẬN",
-                        cancelButtonText: "ĐÓNG",
-                        closeOnConfirm: true
-                    }, function () {
-                        $.ajax({
-                            url: "/Manager/Promotions/CancelPromo",
-                            dataType: "json",
-                            data: { id: id },
-                            method: 'GET',
-                            success: function (data) {
-                                if (data.success) {
-                                    cur.removeClass("btn-danger");
-                                    cur.addClass("disabled");
-                                    $("#status-" + id).removeClass("label-primary");
-                                    $("#status-" + id).addClass("label-danger");
-                                    $("#status-" + id).html("ĐÃ HỦY");
-                                } else {
-                                    swal({
-                                        title: "",
-                                        text: data.message,
-                                        type: "error"
-                                    });
-                                }
-                            }
-                        });
-                    });
-                });
-            </script>
+            $("#validate").addClass("hidden");
+            return true;
         }
+
+        $("form").submit(function (e) {
+            e.preventDefault();
+            if (validate()) {
+                var content = $('#summernote').code();
+                var name = $("#name").val().trim();
+                $("#content").val(content);
+                $.ajax({
+                    url: "/Manager/Promotions/AddPromo",
+                    dataType: "html",
+                    data: $('form').serialize(),
+                    method: 'POST',
+                    success: function (data) {
+                        $('#list-promo').prepend(data);
+                        var content = $('#summernote').code("");
+                        var name = $("#name").val("");
+                    }
+                });
+            }
+        });
+
+        $(document).on("click", ".view", function () {
+            var id = this.id;
+            $.ajax({
+                url: "/Manager/Promotions/GetPromo",
+                dataType: "json",
+                data: { id: id },
+                method: 'GET',
+                success: function (data) {
+                    if (data.success) {
+                        $("#info-title").html(data.data.Name);
+                        $("#info-content").html(data.data.Description);
+                        $("#detailsModal").modal("show");
+                    } else {
+                        swal({
+                            title: "",
+                            text: data.message,
+                            type: "error"
+                        });
+                    }
+                }
+            });
+        });
+
+        $(document).on("click", ".stop", function () {
+            var id = this.id;
+            var cur = $(this);
+            swal({
+                title: "",
+                text: "Bạn có chắc chắn muốn xóa gửi quảng cáo này!",
+                type: "warning", showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "XÓA",
+                cancelButtonText: "ĐÓNG",
+                closeOnConfirm: true
+            }, function () {
+                $.ajax({
+                    url: "/Manager/Promotions/CancelPromo",
+                    dataType: "json",
+                    data: { id: id },
+                    method: 'GET',
+                    success: function (data) {
+                        if (data.success) {
+                            cur.parents("tr").remove()
+                        } else {
+                            swal({
+                                title: "",
+                                text: data.message,
+                                type: "error"
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

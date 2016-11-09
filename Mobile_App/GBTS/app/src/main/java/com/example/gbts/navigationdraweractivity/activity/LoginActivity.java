@@ -1,6 +1,8 @@
 package com.example.gbts.navigationdraweractivity.activity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -11,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.MainActivity;
@@ -23,6 +27,7 @@ import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "LoginActivity";
+    Context context;
     //define controls
     EditText edtPhone, edtPass;
     CheckBox checkBox;
@@ -62,9 +67,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (Utility.isNetworkConnected(LoginActivity.this)) {
                     new JSONParse().execute();
                 } else {
-                    Toast.makeText(LoginActivity.this, "Không thể kết nối với máy chủ!", Toast.LENGTH_SHORT).show();
+                    // custom dialog
+                    final Dialog dialog = new Dialog(LoginActivity.this);
+                    dialog.setContentView(R.layout.custom_dialog);
+                    dialog.setTitle("Mất kết nối mạng ...");
+
+                    // set the custom dialog components - text, image and button
+                    TextView text = (TextView) dialog.findViewById(R.id.text);
+                    text.setText("Kiểm tra mạng wifi hoặc 3g");
+                    ImageView image = (ImageView) dialog.findViewById(R.id.image);
+                    image.setImageResource(R.drawable.ic_icon_wifi);
+
+                    Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+                    // if button is clicked, close the custom dialog
+                    dialogButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (Utility.isNetworkConnected(LoginActivity.this)) {
+                                dialog.dismiss();
+                                new JSONParse().execute();
+                            }
+                        }
+                    });
+                    dialog.show();
                 }
-//                doLogin();
             }
         });
     }
@@ -152,12 +178,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             String strURL = Constance.API_LOGIN + "&phone=" + phone.trim() + "&password=" + pwd.trim();
 //            String strURL = Constance.API_LOGIN + "&phone=01212184802&password=123456";
-            Log.d("meow", "url " + strURL);
-
+//            Log.d("meow", "url " + strURL);
             // Getting JSON from URL
-            JSONObject json = jParser.getJSONFromUrlPOST(strURL);
-            Log.d("meow", "json " + json.toString());
-            return json;
+            if (Utility.isNetworkConnected(LoginActivity.this)) {
+                JSONObject json = jParser.getJSONFromUrlPOST(strURL);
+                return json;
+            }
+            return null;
         }
 
         @Override
@@ -166,53 +193,53 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             // Hide dialog
             pDialog.dismiss();
             //check success
-            Log.d("meow", "JSONObject " + jsonObject.toString());
+            if (jsonObject != null) {
+                boolean success = jsonObject.optBoolean(TAG_SUCCESS);
+                if (success) {
+                    try {
+                        data = jsonObject.getJSONObject("data");
+                        String fullname = data.getString("Fullname");
+                        Log.d(TAG, "fullname " + fullname);
 
-            boolean success = jsonObject.optBoolean(TAG_SUCCESS);
-            Log.d("meow", "success: " + success);
+                        //SharedPreferences
+                        preferences = getSharedPreferences("Info", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString("Phonenumber", phone);
+                        editor.putString("Password", pwd);
+                        editor.putBoolean("isLogout", false);
+                        editor.putString("Fullname", fullname);
+                        editor.commit();
 
-            if (success) {
-                try {
-                    data = jsonObject.getJSONObject("data");
-                    String fullname = data.getString("Fullname");
-                    Log.d(TAG, "fullname " + fullname);
-
-                    //SharedPreferences
-                    preferences = getSharedPreferences("Info", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("Phonenumber", phone);
-                    editor.putString("Password", pwd);
-                    editor.putBoolean("isLogout", false);
-                    editor.putString("Fullname", fullname);
-                    editor.commit();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                Intent intentNoti = getIntent();
-                String lgNotiBody = intentNoti.getStringExtra("messageBody");
-                String lgNotiTitle = intentNoti.getStringExtra("messageTile");
-                if (checkBox.isChecked()) {
-                    //check box is checked
-                    rememberMe(phone, pwd);
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("saveAccount", "saveAccount");
-                    if (lgNotiBody != null && lgNotiTitle != null) {
-                        intent.putExtra("lgNotiBody", lgNotiBody);
-                        intent.putExtra("lgNotiTitle", lgNotiTitle);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    startActivity(intent);
+                    Intent intentNoti = getIntent();
+                    String lgNotiBody = intentNoti.getStringExtra("messageBody");
+                    String lgNotiTitle = intentNoti.getStringExtra("messageTile");
+                    if (checkBox.isChecked()) {
+                        //check box is checked
+                        rememberMe(phone, pwd);
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("saveAccount", "saveAccount");
+                        if (lgNotiBody != null && lgNotiTitle != null) {
+                            intent.putExtra("lgNotiBody", lgNotiBody);
+                            intent.putExtra("lgNotiTitle", lgNotiTitle);
+                        }
+                        startActivity(intent);
+                    } else {
+                        //not check
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        if (lgNotiBody != null && lgNotiTitle != null) {
+                            intent.putExtra("lgNotiBody", lgNotiBody);
+                            intent.putExtra("lgNotiTitle", lgNotiTitle);
+                        }
+                        startActivity(intent);
+                    }
                 } else {
-                    //not check
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    if (lgNotiBody != null && lgNotiTitle != null) {
-                        intent.putExtra("lgNotiBody", lgNotiBody);
-                        intent.putExtra("lgNotiTitle", lgNotiTitle);
-                    }
-                    startActivity(intent);
+                    Toast.makeText(getBaseContext(), "Sai điện thoại hoặc mật khẩu!", Toast.LENGTH_LONG).show();
                 }
             } else {
-                Toast.makeText(getBaseContext(), "Sai điện thoại hoặc mật khẩu!", Toast.LENGTH_LONG).show();
+                Log.d("meow", "jsonObject null ");
             }
         }
     }

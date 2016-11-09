@@ -1,5 +1,6 @@
 package com.example.gbts.navigationdraweractivity.fragment;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,10 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
+import com.example.gbts.navigationdraweractivity.utils.Utility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,22 +55,51 @@ public class Profile extends Fragment {
         btUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String oldPassword = edtOldPassword.getText().toString().trim();
-                String newPassword = edtNewPassword.getText().toString().trim();
-                String confirmPassword = edtConfirmPassword.getText().toString().trim();
-                if (oldPassword.equals("") && newPassword.equals("") && confirmPassword.equals("")) {
-                    String password = sharedPreferences.getString("Password", "");
-                    String[] params = {password};
-                    new UpdateProfile().execute(params);
-                } else if (checkPassword(oldPassword, newPassword, confirmPassword)) {
-                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences(preference, Context.MODE_PRIVATE);
-                    if (oldPassword.equals(sharedPreferences.getString("Password", ""))) {
 
-                        String[] params = {newPassword};
+                if (Utility.isNetworkConnected(getActivity())) {
+                    String oldPassword = edtOldPassword.getText().toString().trim();
+                    String newPassword = edtNewPassword.getText().toString().trim();
+                    String confirmPassword = edtConfirmPassword.getText().toString().trim();
+                    if (oldPassword.equals("") && newPassword.equals("") && confirmPassword.equals("")) {
+                        String password = sharedPreferences.getString("Password", "");
+                        String[] params = {password};
                         new UpdateProfile().execute(params);
+                    } else if (checkPassword(oldPassword, newPassword, confirmPassword)) {
+                        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(preference, Context.MODE_PRIVATE);
+                        if (oldPassword.equals(sharedPreferences.getString("Password", ""))) {
+
+                            String[] params = {newPassword};
+                            new UpdateProfile().execute(params);
+                        }
+
                     }
 
+                } else {
+                    // custom dialog
+                    final Dialog dialog = new Dialog(getActivity());
+                    dialog.setContentView(R.layout.custom_dialog);
+                    dialog.setTitle("Mất kết nối mạng ...");
+
+                    // set the custom dialog components - text, image and button
+                    TextView text = (TextView) dialog.findViewById(R.id.text);
+                    text.setText("Kiểm tra mạng wifi hoặc 3g");
+                    ImageView image = (ImageView) dialog.findViewById(R.id.image);
+                    image.setImageResource(R.drawable.ic_icon_wifi);
+
+                    Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+                    // if button is clicked, close the custom dialog
+                    dialogButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (Utility.isNetworkConnected(getActivity())) {
+                                dialog.dismiss();
+
+                            }
+                        }
+                    });
+                    dialog.show();
                 }
+
             }
         });
 

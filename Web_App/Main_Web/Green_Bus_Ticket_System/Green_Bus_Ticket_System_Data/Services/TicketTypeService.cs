@@ -1,6 +1,7 @@
 ﻿using Green_Bus_Ticket_System_Data.Model;
 using Green_Bus_Ticket_System_Data.Repositories;
 using Green_Bus_Ticket_System_Data.UnitOfWork;
+using Green_Bus_Ticket_System_Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace Green_Bus_Ticket_System_Data.Services
     public interface ITicketTypeService : IEntityService<TicketType>
     {
         TicketType GetTicketType(int id);
+        int GetMinPrice();
     }
 
     public class TicketTypeService : EntityService<TicketType>, ITicketTypeService
@@ -28,6 +30,11 @@ namespace Green_Bus_Ticket_System_Data.Services
         public TicketType GetTicketType(int id)
         {
             return _repository.FindBy(obj => obj.Id == id).FirstOrDefault();
+        }
+
+        public int GetMinPrice()
+        {
+            return _repository.FindBy(c => c.Status == (int)StatusReference.TicketTypeStatus.ACTIVATED).Min(c => c.Price);
         }
     }
 }

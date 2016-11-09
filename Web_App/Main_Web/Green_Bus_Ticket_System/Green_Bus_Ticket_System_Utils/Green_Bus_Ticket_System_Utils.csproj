@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Income.cs" />
     <Compile Include="MapPoint.cs" />
     <Compile Include="RestClient.cs" />
     <Compile Include="JsonResponse.cs" />

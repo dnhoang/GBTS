@@ -26,17 +26,23 @@ namespace Green_Bus_Ticket_System.Controllers
         IScratchCardService _scratchCardService;
         IOfferSubscriptionService _offerSubscriptionService;
         IUserSubscriptionService _userSubscriptionService;
+        IPaymentTransactionService _paymentTransactionService;
+        ICreditPlanService _creditPlanService;
 
         public SMSController(ICardService cardService, IUserService userService,
             IScratchCardService scratchCardService,
             IOfferSubscriptionService offerSubscriptionService,
-        IUserSubscriptionService userSubscriptionService)
+        IUserSubscriptionService userSubscriptionService,
+        IPaymentTransactionService paymentTransactionService,
+        ICreditPlanService creditPlanService)
         {
             _cardService = cardService;
             _userService = userService;
             _scratchCardService = scratchCardService;
             _offerSubscriptionService = offerSubscriptionService;
             _userSubscriptionService = userSubscriptionService;
+            _paymentTransactionService = paymentTransactionService;
+            _creditPlanService = creditPlanService;
         }
 
         public JsonResult ActivateAccount(string From, string Body)
@@ -114,6 +120,16 @@ namespace Green_Bus_Ticket_System.Controllers
 
                                 scCard.Status = (int)StatusReference.ScratchCardStatus.USED;
                                 _scratchCardService.Update(scCard);
+
+                                CreditPlan cp = _creditPlanService.GetAll().FirstOrDefault();
+                                PaymentTransaction payment = new PaymentTransaction();
+                                payment.CardId = card.Id;
+                                payment.CreditPlanId = cp.Id;
+                                payment.TransactionId = "TOPU_" + code;
+                                payment.PaymentDate = DateTime.Now;
+                                payment.Total = scCard.Price;
+                                _paymentTransactionService.Create(payment);
+
 
                                 responseMessage = "Nap tien vao the thanh cong!";
                             }

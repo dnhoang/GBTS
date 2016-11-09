@@ -266,6 +266,7 @@
     <Compile Include="Areas\Manager\Controllers\PlansController.cs" />
     <Compile Include="Areas\Manager\Controllers\PromotionsController.cs" />
     <Compile Include="Areas\Manager\Controllers\ReportController.cs" />
+    <Compile Include="Areas\Manager\Controllers\SubscriptionController.cs" />
     <Compile Include="Areas\Manager\Controllers\TicketsController.cs" />
     <Compile Include="Areas\Manager\ManagerAreaRegistration.cs" />
     <Compile Include="Areas\Passenger\Controllers\BusController.cs" />
@@ -389,6 +390,7 @@
     <Content Include="Content\front\js\sparkline\sparkline.js" />
     <Content Include="Content\front\js\summernote\summernote.min.js" />
     <Content Include="Content\front\js\sweet-alert\sweet-alert.min.js" />
+    <Content Include="Content\front\logo-h.png" />
     <Content Include="Content\front\logo\gblogo.png" />
     <Content Include="Content\front\logo\notification_error.png" />
     <Content Include="Content\front\logo\success-icon-10.png" />
@@ -453,6 +455,8 @@
     <Content Include="Areas\Manager\Views\Report\GetReport.cshtml" />
     <Content Include="Areas\Manager\Views\Home\Profiles.cshtml" />
     <Content Include="Areas\Staff\Views\ScratchCard\Publish.cshtml" />
+    <Content Include="Areas\Manager\Views\Subscription\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\Subscription\CreateForm.cshtml" />
     <None Include="Properties\PublishProfiles\GBTS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

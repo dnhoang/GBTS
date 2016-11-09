@@ -14,6 +14,7 @@ namespace Green_Bus_Ticket_System_Data.Services
     {
         ScratchCard GetScratchCard(int id);
         ScratchCard GetScratchCardByCode(string code);
+        
 
     }
 

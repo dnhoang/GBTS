@@ -1,5 +1,6 @@
 package com.example.gbts.navigationdraweractivity.activity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,13 +10,18 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.adapter.GoStopAdapter;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
+import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
 import com.example.gbts.navigationdraweractivity.module.google.mapsAPI.BusStop;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
+import com.example.gbts.navigationdraweractivity.utils.Utility;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -64,11 +70,38 @@ public class BusStopActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_stop);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.btMap);
         mapFragment.getMapAsync(this);
 
         new AsyncGoStop(this).execute();
+        if (Utility.isNetworkConnected(BusStopActivity.this)) {
+            mapFragment.getMapAsync(this);
+        } else {
+            // custom dialog
+            final Dialog dialog = new Dialog(BusStopActivity.this);
+            dialog.setContentView(R.layout.custom_dialog);
+            dialog.setTitle("Mất kết nối mạng ...");
+
+            // set the custom dialog components - text, image and button
+            TextView text = (TextView) dialog.findViewById(R.id.text);
+            text.setText("Kiểm tra mạng wifi hoặc 3g");
+            ImageView image = (ImageView) dialog.findViewById(R.id.image);
+            image.setImageResource(R.drawable.ic_icon_wifi);
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+            // if button is clicked, close the custom dialog
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (Utility.isNetworkConnected(BusStopActivity.this)) {
+                        dialog.dismiss();
+                        mapFragment.getMapAsync(BusStopActivity.this);
+                    }
+                }
+            });
+            dialog.show();
+        }
 
 
     }
