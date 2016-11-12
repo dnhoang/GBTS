@@ -297,18 +297,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     protected void onNewIntent(Intent intent) {
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
 
-        }
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             if (bin2hex(tag.getId()).equals("DD7F7F81")) {
                 showFabOffline();
             } else if (Utility.isNetworkConnected(MainActivity.this)) {
-
                 mytag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-
-
                 SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
                 cardId = bin2hex(mytag.getId());
                 ticketTypeId = sharedPreferences.getString("ticketTypeId", "");
@@ -316,12 +311,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
                 String[] techList = mytag.getTechList();
                 String searchedTech = Ndef.class.getName();
-
+                boolean readError=true;
                 for (String tech : techList) {
                     if (searchedTech.equals(tech)) {
+                        Log.d("TAG", "BTH");
                         new NdefReaderTask().execute(mytag);
+                        readError=false;
                         break;
                     }
+                }
+                if (readError==true){
+                    Log.d("TAG", "Card bi loi");
+                    String[] params = {cardId, routeCode, "0", "-1"};
+                    new VerifyTicket().execute(params);
                 }
             } else {
                 mytag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
@@ -335,7 +337,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
                 for (String tech : techList) {
                     if (searchedTech.equals(tech)) {
-                        readNDEFMessage(mytag);
+                        try {
+                            readNDEFMessage(mytag);
+                            break;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         break;
                     }
                 }
@@ -462,9 +469,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 // NDEF is not supported by this Tag.
                 return null;
             }
-
             NdefMessage ndefMessage = ndef.getCachedNdefMessage();
             if (ndefMessage != null) {
+
                 NdefRecord[] records = ndefMessage.getRecords();
                 if (records != null) {
                     for (NdefRecord ndefRecord : records) {
@@ -480,34 +487,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     return null;
                 }
             }
-
             return null;
 
 
         }
 
         private String readText(NdefRecord record) throws UnsupportedEncodingException {
-
             byte[] payload = record.getPayload();
-
-            // Get the Text Encoding
             String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
-
-            // Get the Language Code
             int languageCodeLength = payload[0] & 0063;
-
-            // String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
-            // e.g. "en"
-
-            // Get the Text
             return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
         }
 
         @Override
         protected void onPostExecute(String result) {
             if (result != null) {
-
-
                 Utility utility = new Utility();
                 String cardData[] = utility.getCardDataFromEncryptedString(result);
                 if (cardData[1] != null) {
@@ -696,7 +690,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             boolean success = false;
             //check success
             if (jsonObject != null) {
-                Log.d("TOKEN",jsonObject.toString());
                 try {
                     success = jsonObject.getBoolean("success");
                     if (success) {
@@ -763,9 +756,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             @Override
             public void onFinish() {
                 if (result == true) {
-                    Log.d("TOKEN","SUCCESS");
                     sucess.setVisibility(View.INVISIBLE);
-
                 } else {
                     //fail
                     fail.setVisibility(View.INVISIBLE);
@@ -804,16 +795,26 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     //Quet the bang dien thoai
     private void VerifyPhoneTicket(String[] cardIdNDEF) {
 
-        if (cardId != null) {
+        if (cardIdNDEF != null) {
             SharedPreferences sharedPreferences = getSharedPreferences(setting, MODE_PRIVATE);
-            String cardId, routeCode, cardDataVersion, cardBalance,token;
-            cardId = cardIdNDEF[0];
-            token=cardIdNDEF[1];
+            String cardId = "", routeCode, cardDataVersion, cardBalance, token = "";
             routeCode = sharedPreferences.getString("code", "");
             cardBalance = "0";
             cardDataVersion = "-1";
-            String params[] = {cardId, routeCode, cardBalance, cardDataVersion,token};
-            new VerifyPhoneTicketWithToken().execute(params);
+            try {
+                cardId = cardIdNDEF[0];
+                token = cardIdNDEF[1];
+                String params[] = {cardId, routeCode, cardBalance, cardDataVersion, token};
+                new VerifyPhoneTicketWithToken().execute(params);
+            } catch (NullPointerException e) {
+                failTicket = (RelativeLayout) findViewById(R.id.containerfail);
+                TextView tvFail = (TextView) findViewById(R.id.tvFail);
+                tvFail.setText("Không có token, vui lòng thử lại");
+                failTicket.setVisibility(View.VISIBLE);
+                MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.b7);
+                mediaPlayer.start();
+                changeLayout(false);
+            }
         }
     }
 
@@ -885,7 +886,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     //End push offline data
-    //Push offline cash data
+//Push offline cash data
     private class PushOfflineCashData extends AsyncTask<Void, Void, Void> {
 
         String ticketTypeId, routeCode, boughtDate, id;

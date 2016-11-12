@@ -111,24 +111,19 @@ public class Utility {
         }
         return null;
     }
+
     public String[] getDataFromPhoneEncryptedString(String cardData) {
         String decryptedCardData = decrypt(cardData, keyAES);
-        try {
-            String result[] = decryptedCardData.split("[@]");
-            Log.d("TOKEN",result[1]);
-            Log.d("TOKEN",result[0]);
-            String data[] = new String[2];
-            int i = 0;
-            for (String r : result) {
-                data[i] = r;
-                i++;
-            }
-            return data;
-        } catch (Exception e) {
-            e.printStackTrace();
+        String result[] = decryptedCardData.split("[@]");
+        String data[] = new String[2];
+        int i = 0;
+        for (String r : result) {
+            data[i] = r;
+            i++;
         }
-        return null;
+        return data;
     }
+
     public static String decrypt(String strToDecrypt, String secret) {
         try {
             setKey(secret);
@@ -192,7 +187,7 @@ public class Utility {
                 }
             }
             return true;
-        }  catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -211,7 +206,7 @@ public class Utility {
     }
 
     public JSONObject getJSONFromUrl(String apiUrl) {
-        String json=null;
+        String json = null;
         // Making HTTP request
         try {
             URL url = new URL(apiUrl);
@@ -255,7 +250,7 @@ public class Utility {
 
         }
         // try parse the string to a JSON object
-        JSONObject jObj=null;
+        JSONObject jObj = null;
         try {
             jObj = new JSONObject(json);
         } catch (Exception e) {
@@ -278,6 +273,7 @@ public class Utility {
         Log.d("DATA!!!!", data[data.length - 1].toString());
         return data[0].trim();
     }
+
     //Distance between 2 points
     public static double distance(double lat1, double lat2, double lon1,
                                   double lon2, double el1, double el2) {
