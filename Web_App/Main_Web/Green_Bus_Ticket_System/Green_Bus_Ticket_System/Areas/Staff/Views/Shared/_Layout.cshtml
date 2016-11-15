@@ -60,7 +60,12 @@
             <li><a href="/Staff/Home"><span class="icon color5"><i class="fa fa-home"></i></span>BẢNG ĐIỀU KHIỂN</a></li>
             <li><a href="/Staff/Card"><span class="icon color1"><i class="fa fa-credit-card"></i></span>QUẢN LÝ THẺ</a></li>
             <li><a href="/Staff/Passenger"><span class="icon color3"><i class="fa fa-users"></i></span>QUẢN LÝ HÀNH KHÁCH</a></li>
-            <li><a id="btn-pub" href="#"><span class="icon color7"><i class="fa fa-paper-plane"></i></span>PHÁT HÀNH THẺ CÀO</a></li>
+            <li><a href="#"><span class="icon color7"><i class="fa fa-paper-plane"></i></span>PHÁT HÀNH THẺ CÀO</a>
+                <ul>
+                    <li><a id="btn-pub" href="#"><i class="fa fa-plus"></i> Phát hành mới</a></li>
+                    <li><a id="btn-his" href="#"><i class="fa fa-clock-o"></i> Lịch sử phát hành</a></li>
+                </ul>
+            </li>
             
         </ul>
         <ul class="sidebar-panel nav">
@@ -139,6 +144,37 @@
             </div>
 
             <!-- End Moda Code -->
+
+            <!-- Modal -->
+            <div class="modal fade" id="ntHisModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Lịch sử phát hành</h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="form-inline">
+                                <div class="form-group text-center">
+                                    <label for="nt-quantity" class="form-label">Ngày phát hành:</label>
+                                    <select class="form-control" id="nt-date">
+
+                                    </select>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" data-dismiss="modal">HỦY</button>
+                            <button type="button" class="btn btn-default" id="nt-find"><i class="fa fa-search"></i> TRA CỨU</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- End Moda Code -->
         </div>
         <!-- END CONTAINER -->
         <!-- //////////////////////////////////////////////////////////////////////////// -->
@@ -197,7 +233,29 @@
 
             
 
-            window.location = "/Staff/ScratchCard/Publish?num=" + quantity + "&type=" + type;
+            var url = "/Staff/ScratchCard/Publish?num=" + quantity + "&type=" + type;
+            $("#ntCardModal").modal("hide");
+            window.open(url, "_blank");
+        });
+
+        $("#btn-his").click(function () {
+            $.ajax({
+                url: "/Staff/ScratchCard/GetDate",
+                dataType: "html",
+                data: {},
+                method: "GET",
+                success: function (data) {
+                    $("#nt-date").html(data);
+                    $("#ntHisModal").modal("show");
+                }
+            });
+        });
+
+        $("#nt-find").click(function () {
+            var date = $("#nt-date").val();
+            var url = "/Staff/ScratchCard/History?date=" + date;
+            $("#ntHisModal").modal("hide");
+            window.open(url, "_blank");
         });
     </script>
     <!--Other Js Here-->
