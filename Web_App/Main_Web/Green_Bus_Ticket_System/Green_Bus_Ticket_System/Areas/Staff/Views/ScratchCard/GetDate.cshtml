@@ -1,0 +1,9 @@
+﻿@{ 
+    List<String> dates = (List<String>)ViewBag.Dates;
+
+}
+
+@foreach(var item in dates)
+{
+    <option value="@item">@item</option>
+}

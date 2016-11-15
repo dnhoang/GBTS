@@ -1215,6 +1215,13 @@ namespace Green_Bus_Ticket_System.Controllers
                                 Task task = SendToFireBase(card.User.NotificationCode, "Green Bus", msg);
                                 Task.WhenAll(task);
                             }
+
+                            if(card.User != null && card.User.NotificationCode != null)
+                            {
+                                string msg = "PLEASEUPDATECARDLIST";
+                                Task task = SendToFireBase(card.User.NotificationCode, "Green Bus", msg);
+                                Task.WhenAll(task);
+                            }
                         }
 
                     }
@@ -1274,6 +1281,13 @@ namespace Green_Bus_Ticket_System.Controllers
                                 {
                                     msg = "Thẻ " + card.UniqueIdentifier + " còn lại không đủ mua vé, vui lòng nạp thêm.";
                                 }
+                                Task task = SendToFireBase(card.User.NotificationCode, "Green Bus", msg);
+                                Task.WhenAll(task);
+                            }
+
+                            if (card.User != null && card.User.NotificationCode != null)
+                            {
+                                string msg = "PLEASEUPDATECARDLIST";
                                 Task task = SendToFireBase(card.User.NotificationCode, "Green Bus", msg);
                                 Task.WhenAll(task);
                             }
