@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.adapter.ChooseCardNFCAdapter;
+import com.example.gbts.navigationdraweractivity.adapter.CreditCardAdapter;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.enity.CardNFC;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
@@ -129,15 +130,6 @@ public class CreditCard extends Fragment {
                         strStatus = "Thẻ khoá";
                     }
 
-                    // Adding value HashMap key => value
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put(TAG_CARD_ID, cardID);
-                    map.put(TAG_CARD_NAME, name);
-                    map.put(TAG_REGISTRATION_DATE, registrationDate);
-                    map.put(TAG_BALANCE, strBalance);
-                    map.put(TAG_CARD_STATUS, strStatus);
-                    listCard.add(map);
-
                     CardNFC cardNFC = new CardNFC();
                     cardNFC.setCardID(cardID);
                     cardNFC.setCardName(name);
@@ -146,25 +138,17 @@ public class CreditCard extends Fragment {
                     cardNFC.setStatus(status);
                     listCardNFC.add(cardNFC);
                 }
-                ListAdapter adapter = new SimpleAdapter(getActivity(), listCard,
-                        R.layout.custom_listview_cardnfc,
-                        new String[]{TAG_CARD_NAME, TAG_BALANCE, TAG_CARD_STATUS}, new int[]{R.id.txtCardName, R.id.txtCDBalance, R.id.txtStatus});
 
-                ChooseCardNFCAdapter chooseCardNFCAdapter = new ChooseCardNFCAdapter(getActivity(), listCardNFC);
+                CreditCardAdapter creditCardAdapter = new CreditCardAdapter(getActivity(), listCardNFC);
                 listView = (ListView) getView().findViewById(R.id.listViewCard);
-                listView.setAdapter(chooseCardNFCAdapter);
+                listView.setAdapter(creditCardAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                        HashMap<String, String> card = listCard.get(position);
                         CardNFC cardNFC = listCardNFC.get(position);
                         Bundle bundle = new Bundle();
                         bundle.putString(TAG_CARD_ID, cardNFC.getCardID());
-                        bundle.putString(TAG_CARD_NAME, cardNFC.getCardName());
-                        bundle.putString(TAG_REGISTRATION_DATE, cardNFC.getRegistrationDate());
-                        bundle.putString(TAG_BALANCE, cardNFC.getBalance() + "");
-                        bundle.putString(TAG_CARD_STATUS, cardNFC.getStatus() + "");
 
                         CreditCardDetails creditCardDetails = new CreditCardDetails();
                         creditCardDetails.setArguments(bundle);

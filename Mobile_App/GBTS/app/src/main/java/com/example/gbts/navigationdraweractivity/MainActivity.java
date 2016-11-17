@@ -22,6 +22,7 @@ import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -293,7 +294,7 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
-        new AsyncGetToken().execute();
+//        new AsyncGetToken().execute();
 
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -375,7 +376,37 @@ public class MainActivity extends AppCompatActivity
         fab_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getAllButRoute.show(manager, "Fragment Get Busroute");
+                if (Utility.isNetworkConnected(MainActivity.this)) {
+                    getAllButRoute.show(manager, "Fragment Get Busroute");
+                } else {
+                    // custom dialog
+                    final Dialog dialog = new Dialog(MainActivity.this);
+                    dialog.setContentView(R.layout.custom_dialog_login);
+                    dialog.setTitle("Mất kết nối mạng ...");
+
+                    Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
+                    // if button is clicked, close the custom dialog
+                    dialogButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (Utility.isNetworkConnected(MainActivity.this)) {
+                                dialog.dismiss();
+                                getAllButRoute.show(manager, "Fragment Get Busroute");
+                            }
+                        }
+                    });
+
+                    Button dialogCancel = (Button) dialog.findViewById(R.id.dialogBtnCancel);
+                    // if button is clicked, close the custom dialog
+                    dialogCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                        }
+                    });
+                    dialog.show();
+                }
+
             }
         });
 
@@ -394,7 +425,7 @@ public class MainActivity extends AppCompatActivity
         //CHECK INTERNET CONNECTION
         if (Utility.isNetworkConnected(MainActivity.this)) {
             //ASYNC GET TOKEN SERVER API
-            //new AsyncGetToken().execute();
+            new AsyncGetToken().execute();
             //START FRAGMENT MAIN && INTEGRATION FB, PROMOTION
             if (savedInstanceState == null) {
                 Fragment fragment = null;
@@ -402,6 +433,9 @@ public class MainActivity extends AppCompatActivity
                 fragmentClass = MainContent.class;
                 try {
                     fragment = (Fragment) fragmentClass.newInstance();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("action", "transferMainContent");
+                    fragment.setArguments(bundle);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -428,7 +462,7 @@ public class MainActivity extends AppCompatActivity
                     .commit();
         }
     }
-    //===================================== ON RESUME() ======================================
+    //===================================== ON RESUME ======================================
 
     @Override
     protected void onResume() {

@@ -25,9 +25,11 @@ import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.activity.CreditPlanActivity;
 import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
+import com.example.gbts.navigationdraweractivity.enity.CardNFC;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 import com.example.gbts.navigationdraweractivity.utils.Utility;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -63,59 +65,51 @@ public class CreditCardDetails extends DialogFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_contain_details, container, false);
-
-        //Format number
-        Locale locale = new Locale("vi_VN", "VN");
-        Log.d("locale ", locale + "");
-        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance(locale);
-        //Send data by intent
-        //Get bundle
         Bundle bundle = getArguments();
-        card.put(TAG_CARD_ID, bundle.getString(TAG_CARD_ID));
-        card.put(TAG_CARD_NAME, bundle.getString(TAG_CARD_NAME));
-        card.put(TAG_REGISTRATION_DATE, bundle.getString(TAG_REGISTRATION_DATE));
-        card.put(TAG_BALANCE, bundle.getString(TAG_BALANCE));
-        card.put(TAG_CARD_STATUS, bundle.getString(TAG_CARD_STATUS));
+        if (bundle != null) {
+            final String cardId = bundle.getString(TAG_CARD_ID);
+            if (Utility.isNetworkConnected(getActivity())) {
+                new AsyncGetCardInfo().execute(cardId);
+            } else {
+                // custom dialog
+                final Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.custom_dialog_login);
+                dialog.setTitle("Mất kết nối mạng ...");
 
-        //Get control
-        txtCardId = (TextView) view.findViewById(R.id.txtCardIDDetails);
-        txtBalance = (TextView) view.findViewById(R.id.txtBalanceDetails);
-        txtRegistration = (TextView) view.findViewById(R.id.txtRegistrationDateDetails);
-        txtStatus = (TextView) view.findViewById(R.id.txtStatusDetails);
-        txtStatusName = (TextView) view.findViewById(R.id.txtStatusName);
-        edtCardName = (EditText) view.findViewById(R.id.edtCardNameDetails);
-        imgEditCardName = (ImageView) view.findViewById(R.id.imgEditCardViewDetails);
+                Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
+                // if button is clicked, close the custom dialog
+                dialogButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (Utility.isNetworkConnected(getActivity())) {
+                            dialog.dismiss();
+                            new AsyncGetCardInfo().execute(cardId);
+                        }
+                    }
+                });
+
+                Button dialogCancel = (Button) dialog.findViewById(R.id.dialogBtnCancel);
+                // if button is clicked, close the custom dialog
+                dialogCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }
+                });
+                dialog.show();
+            }
+        }
+
         btnPurchase = (Button) view.findViewById(R.id.btnPurchase);
         btnPurchase.setOnClickListener(this);
 
-        txtCardId.setText(card.get(TAG_CARD_ID));
-        edtCardName.setSingleLine(true);
-        edtCardName.setEllipsize(TextUtils.TruncateAt.END);
-        edtCardName.setText(card.get(TAG_CARD_NAME));
-        txtRegistration.setText(card.get(TAG_REGISTRATION_DATE));
-
-        double balance = Double.parseDouble(card.get(TAG_BALANCE));
-
-        txtBalance.setText(defaultFormat.format(balance));
-        Log.d("testbunble", "status " + card.get(TAG_CARD_STATUS));
-        if (card.get(TAG_CARD_STATUS).equals("1")) {
-            txtStatus.setBackgroundResource(R.drawable.shap_circle_online);
-            txtStatusName.setText("Đã kích hoạt");
-
-        } else {
-            txtStatus.setBackgroundResource(R.drawable.shap_circle_offline);
-            txtStatusName.setText("Đã bị khoá");
-
-        }
-
         //EVENT CHANGE CARD NAME
+        imgEditCardName = (ImageView) view.findViewById(R.id.imgEditCardViewDetails);
         imgEditCardName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String cardName = edtCardName.getText().toString().trim();
                 final String cardID = txtCardId.getText().toString();
-                Log.d("changeaname ", "cardName " + cardName);
-                Log.d("changeaname ", "cardID " + cardID);
+                final String cardName = edtCardName.getText().toString().trim();
 
                 if (Utility.isNetworkConnected(getActivity())) {
                     new AsyncChangeCardName().execute(cardID, cardName);
@@ -151,27 +145,53 @@ public class CreditCardDetails extends DialogFragment
         });
 
 
-//        btnPurchase = (Button) view.findViewById(R.id.btnPurchase);
-//            btnPurchase.setOnClickListener(this);
-//        if (card.get(TAG_CARD_STATUS).equals("Thẻ khoá")) {
-//            Toast.makeText(getActivity(), "Thẻ của bạn đã bị khoá xin vui lòng liên hệ với nhà cung cấp dịch vụ", Toast.LENGTH_SHORT).show();
-//        } else {
-//        }
         return view;
     }
 
     @Override
     public void onClick(View v) {
-        Bundle bundle = getArguments();
-        String cardID = bundle.getString(TAG_CARD_ID);
+        txtStatusName = (TextView) getView().findViewById(R.id.txtStatusName);
+        txtCardId = (TextView) getView().findViewById(R.id.txtCardIDDetails);
+        String status = txtStatusName.getText().toString();
+        final String cardID = txtCardId.getText().toString();
 
-        if (card.get(TAG_CARD_STATUS).equals("1")) {
+        if (status.equals("Đã kích hoạt")) {
             if (R.id.btnPurchase == v.getId()) {
-                Intent intent = new Intent(getActivity(), CreditPlanActivity.class);
+                final Intent intent = new Intent(getActivity(), CreditPlanActivity.class);
                 Bundle bundle1 = new Bundle();
                 bundle1.putString("cardIDForPayPal", cardID);
                 intent.putExtras(bundle1);
-                startActivity(intent);
+                if (Utility.isNetworkConnected(getActivity())) {
+                    startActivity(intent);
+                } else {
+                    // custom dialog
+                    final Dialog dialog = new Dialog(getActivity());
+                    dialog.setContentView(R.layout.custom_dialog_login);
+                    dialog.setTitle("Mất kết nối mạng ...");
+
+                    Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
+                    // if button is clicked, close the custom dialog
+                    dialogButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (Utility.isNetworkConnected(getActivity())) {
+                                dialog.dismiss();
+                                startActivity(intent);
+                            }
+                        }
+                    });
+
+                    Button dialogCancel = (Button) dialog.findViewById(R.id.dialogBtnCancel);
+                    // if button is clicked, close the custom dialog
+                    dialogCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                        }
+                    });
+                    dialog.show();
+                }
+
             } else {
                 // do the same for signInButton
             }
@@ -180,6 +200,83 @@ public class CreditCardDetails extends DialogFragment
 //            btnPurchase.
         }
     }
+
+    private class AsyncGetCardInfo extends AsyncTask<String, Void, JSONObject> {
+        String url, cardId;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            JSONParser jsonParser = new JSONParser();
+            url = Constance.API_GET_CARD_INFO + "&cardId=" + params[0];
+            JSONObject json = jsonParser.getJSONFromUrlGET(url);
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            super.onPostExecute(jsonObject);
+            if (jsonObject != null) {
+
+                Log.d("CREDITDETAILS ", "cardId " + cardId);
+                Log.d("CREDITDETAILS ", "url " + url);
+                boolean success = jsonObject.optBoolean("success");
+                if (success) {
+                    try {
+                        JSONObject object = jsonObject.getJSONObject("data");
+
+                        Locale locale = new Locale("vi_VN", "VN");
+                        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance(locale);
+
+                        String cardID = object.optString(TAG_CARD_ID);
+                        String name = object.optString(TAG_CARD_NAME);
+                        String registrationDate = object.optString(TAG_REGISTRATION_DATE);
+                        double balance = object.optDouble(TAG_BALANCE);
+                        String strBalance = defaultFormat.format(balance);
+                        int status = object.optInt(TAG_CARD_STATUS);
+
+                        txtCardId = (TextView) getView().findViewById(R.id.txtCardIDDetails);
+                        txtBalance = (TextView) getView().findViewById(R.id.txtBalanceDetails);
+                        txtRegistration = (TextView) getView().findViewById(R.id.txtRegistrationDateDetails);
+                        txtStatus = (TextView) getView().findViewById(R.id.txtStatusDetails);
+                        txtStatusName = (TextView) getView().findViewById(R.id.txtStatusName);
+                        edtCardName = (EditText) getView().findViewById(R.id.edtCardNameDetails);
+                        imgEditCardName = (ImageView) getView().findViewById(R.id.imgEditCardViewDetails);
+
+                        txtCardId.setText(cardID);
+                        edtCardName.setSingleLine(true);
+                        edtCardName.setEllipsize(TextUtils.TruncateAt.END);
+                        edtCardName.setText(name);
+                        txtRegistration.setText(registrationDate);
+                        txtBalance.setText(strBalance);
+                        if (status == 1) {
+                            txtStatus.setBackgroundResource(R.drawable.shap_circle_online);
+                            txtStatusName.setText("Đã kích hoạt");
+
+                        } else {
+                            txtStatus.setBackgroundResource(R.drawable.shap_circle_offline);
+                            txtStatusName.setText("Đã bị khoá");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    String message = jsonObject.optString("message");
+                    Log.d("CREDITDETAILS ", "changeaname " + message);
+                }
+
+            } else {
+                Log.d("CREDITDETAILS ", "Json Object is Null ");
+            }
+
+        }
+    }
+
 
     private class AsyncChangeCardName extends AsyncTask<String, Void, JSONObject> {
         String url;
@@ -198,7 +295,6 @@ public class CreditCardDetails extends DialogFragment
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            ;
             JSONObject json = jsonParser.getJSONFromUrlPOST(url);
             return json;
         }
@@ -220,9 +316,13 @@ public class CreditCardDetails extends DialogFragment
                             .setPositiveButton("OK",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
-                                            Intent intent = new Intent(getActivity(), MainActivity.class);
-                                            intent.putExtra("action", "changeCardName");
-                                            startActivity(intent);
+                                            Bundle bundle = getArguments();
+                                            if (bundle != null) {
+                                                String cardId = bundle.getString(TAG_CARD_ID);
+                                                new AsyncGetCardInfo().execute(cardId);
+                                            } else {
+                                                Log.d("AsyncGetCardInfo", "cardId is null");
+                                            }
                                         }
                                     });
                     // create alert dialog
@@ -234,4 +334,6 @@ public class CreditCardDetails extends DialogFragment
             }
         }
     }
+
+
 }

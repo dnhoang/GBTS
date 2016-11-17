@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.adapter.GoStopAdapter;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
@@ -75,30 +77,35 @@ public class BusStopActivity extends FragmentActivity
                 .findFragmentById(R.id.btMap);
         mapFragment.getMapAsync(this);
 
-        new AsyncGoStop(this).execute();
+
         if (Utility.isNetworkConnected(BusStopActivity.this)) {
+            new AsyncGoStop(BusStopActivity.this).execute();
             mapFragment.getMapAsync(this);
         } else {
             // custom dialog
             final Dialog dialog = new Dialog(BusStopActivity.this);
-            dialog.setContentView(R.layout.custom_dialog);
+            dialog.setContentView(R.layout.custom_dialog_login);
             dialog.setTitle("Mất kết nối mạng ...");
 
-            // set the custom dialog components - text, image and button
-            TextView text = (TextView) dialog.findViewById(R.id.text);
-            text.setText("Kiểm tra mạng wifi hoặc 3g");
-            ImageView image = (ImageView) dialog.findViewById(R.id.image);
-            image.setImageResource(R.drawable.ic_icon_wifi);
-
-            Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+            Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
             // if button is clicked, close the custom dialog
             dialogButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (Utility.isNetworkConnected(BusStopActivity.this)) {
                         dialog.dismiss();
+                        new AsyncGoStop(BusStopActivity.this).execute();
                         mapFragment.getMapAsync(BusStopActivity.this);
                     }
+                }
+            });
+
+            Button dialogCancel = (Button) dialog.findViewById(R.id.dialogBtnCancel);
+            // if button is clicked, close the custom dialog
+            dialogCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                 }
             });
             dialog.show();

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -66,16 +67,10 @@ public class CreditPlanActivity extends AppCompatActivity {
         } else {
             // custom dialog
             final Dialog dialog = new Dialog(CreditPlanActivity.this);
-            dialog.setContentView(R.layout.custom_dialog);
+            dialog.setContentView(R.layout.custom_dialog_login);
             dialog.setTitle("Mất kết nối mạng ...");
 
-            // set the custom dialog components - text, image and button
-            TextView text = (TextView) dialog.findViewById(R.id.text);
-            text.setText("Kiểm tra mạng wifi hoặc 3g");
-            ImageView image = (ImageView) dialog.findViewById(R.id.image);
-            image.setImageResource(R.drawable.ic_icon_wifi);
-
-            Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+            Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
             // if button is clicked, close the custom dialog
             dialogButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -86,15 +81,21 @@ public class CreditPlanActivity extends AppCompatActivity {
                     }
                 }
             });
+
+            Button dialogCancel = (Button) dialog.findViewById(R.id.dialogBtnCancel);
+            // if button is clicked, close the custom dialog
+            dialogCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                }
+            });
             dialog.show();
         }
-
-
     }
 
+    //ANH TRUONG
     public void clickToTopUp(View v) {
-
-        //ANH TRUONG
         Intent intentGetCardID = getIntent();
         String cardID = intentGetCardID.getStringExtra("cardIDForPayPal").toString();
 //        Log.d("truongne", "getintent " + cardID);

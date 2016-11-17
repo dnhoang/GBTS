@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/imgCard"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:padding="5dp"
+        android:src="@drawable/ic_card_gbts" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtccCardName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tên thẻ"
+            android:padding="5dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/txtccStatus"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:padding="5dp"
+                android:layout_gravity="center"
+                android:background="@drawable/shap_circle_online"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/txtccStatusName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:text="Kich hoat" />
+        </LinearLayout>
+
+       </LinearLayout>
+
+</LinearLayout>

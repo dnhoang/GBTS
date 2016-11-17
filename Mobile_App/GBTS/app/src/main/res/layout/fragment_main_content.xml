@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:background="#fff"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/textView1"
@@ -23,28 +23,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="3dp"
         android:text=""
         android:textColor="#F44336"
-        android:textSize="15dp"/>
+        android:textSize="15dp" />
 
-<WebView
-    android:id="@+id/webViewPromotion"
-    android:layout_gravity="center"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    <WebView
+        android:id="@+id/webViewPromotion"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
 
-</WebView>
+    </WebView>
 
 
     <!--<ImageView-->
-        <!--android:id="@+id/imgBusICON"-->
-        <!--android:layout_width="280dp"-->
-        <!--android:layout_height="280dp"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:layout_marginTop="30dp"-->
-        <!--android:padding="5dp"-->
-        <!--android:src="@drawable/ic_bus_background1" />-->
+    <!--android:id="@+id/imgBusICON"-->
+    <!--android:layout_width="280dp"-->
+    <!--android:layout_height="280dp"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:layout_marginTop="30dp"-->
+    <!--android:padding="5dp"-->
+    <!--android:src="@drawable/ic_bus_background1" />-->
 
 
 </LinearLayout>

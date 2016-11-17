@@ -177,10 +177,8 @@ public class FragmentChooseCard extends Fragment {
                 String checkCardID = sharedPreferences.getString("NFCPayment", "");
                 if (checkCardID == "") {
                     TextView textCardName = (TextView) getView().findViewById(R.id.txtChooseCardName);
-                    TextView textBalance = (TextView) getView().findViewById(R.id.txtChooseCDBalance);
                     TextView textStatus = (TextView) getView().findViewById(R.id.txtChooseStatus);
                     textCardName.setText("");
-                    textBalance.setText("");
                     textStatus.setText("");
 
                     String choosenCardID = "";
@@ -229,20 +227,20 @@ public class FragmentChooseCard extends Fragment {
                 double balance = object.getDouble("Balance");
                 String registrationDate = object.getString("RegistrationDate");
                 int status = object.getInt("Status");
-                String strStatus = "";
-                String strBalance = defaultFormat.format(balance);
-                if (status == 1) {
-                    strStatus = "Đã kích hoạt";
-                } else {
-                    strStatus = "Chưa kích hoạt";
-                }
 
                 TextView textCardName = (TextView) getView().findViewById(R.id.txtChooseCardName);
-                TextView textBalance = (TextView) getView().findViewById(R.id.txtChooseCDBalance);
                 TextView textStatus = (TextView) getView().findViewById(R.id.txtChooseStatus);
+                TextView textStatusName = (TextView) getView().findViewById(R.id.txtChooseName);
+
+                if (status == 1) {
+                    textStatusName.setText("Đã kích hoạt");
+                    textStatus.setBackgroundResource(R.drawable.shap_circle_online);
+
+                } else {
+                    textStatusName.setText("Chưa kích hoạt");
+                    textStatus.setBackgroundResource(R.drawable.shap_circle_offline);
+                }
                 textCardName.setText(cardName);
-                textBalance.setText(strBalance);
-                textStatus.setText(strStatus);
 
             } catch (Exception e) {
                 e.printStackTrace();

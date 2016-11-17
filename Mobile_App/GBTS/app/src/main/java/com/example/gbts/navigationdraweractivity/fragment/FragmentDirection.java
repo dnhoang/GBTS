@@ -1,5 +1,6 @@
 package com.example.gbts.navigationdraweractivity.fragment;
 
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -9,12 +10,15 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,6 +34,7 @@ import android.widget.Toast;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.activity.ActivityGoogleFindPath;
 import com.example.gbts.navigationdraweractivity.enity.AutoCompleteBean;
+import com.example.gbts.navigationdraweractivity.utils.Utility;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -137,16 +142,53 @@ public class FragmentDirection extends DialogFragment {
             public void onClick(View v) {
                 String origin = AutoOrigin.getText().toString();
                 String destination = AutoDestination.getText().toString();
-
-                if (origin != null && destination != null) {
-                    Intent intent = new Intent(getActivity(), ActivityGoogleFindPath.class);
+                if (origin.length() == 0) {
+                    Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
+                    AutoOrigin.startAnimation(shake);
+                    AutoOrigin.requestFocus();
+                } else if (origin.length() > 0 && destination.length() == 0) {
+                    Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
+                    AutoDestination.startAnimation(shake);
+                    AutoDestination.requestFocus();
+                } else if (origin.length() == 0 && destination.length() > 0) {
+                    Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
+                    AutoOrigin.startAnimation(shake);
+                    AutoOrigin.requestFocus();
+                } else {
+                    final Intent intent = new Intent(getActivity(), ActivityGoogleFindPath.class);
                     intent.putExtra("origin", origin);
                     intent.putExtra("destination", destination);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getActivity(), "Vui lòng nhập điểm đi điểm đến!", Toast.LENGTH_LONG).show();
-                }
+                    if (Utility.isNetworkConnected(getActivity())) {
+                        startActivity(intent);
+                    } else {
+                        // custom dialog
+                        final Dialog dialog = new Dialog(getActivity());
+                        dialog.setContentView(R.layout.custom_dialog_login);
+                        dialog.setTitle("Mất kết nối mạng ...");
 
+                        Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
+                        // if button is clicked, close the custom dialog
+                        dialogButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (Utility.isNetworkConnected(getActivity())) {
+                                    dialog.dismiss();
+                                    startActivity(intent);
+                                }
+                            }
+                        });
+
+                        Button dialogCancel = (Button) dialog.findViewById(R.id.dialogBtnCancel);
+                        // if button is clicked, close the custom dialog
+                        dialogCancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            }
+                        });
+                        dialog.show();
+                    }
+                }
             }
         });
         return view;

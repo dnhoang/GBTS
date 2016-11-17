@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -100,28 +101,31 @@ public class PaypalActivity extends AppCompatActivity {
 
     public void getSetData() {
         //Get getIntent from CreditPlanActivity
-        Intent getIntent = getIntent();
         //Get bundle from Intent
         Locale locale = new Locale("vi_VN", "VN");
         Log.d("locale ", locale + "");
         NumberFormat defaultFormat = NumberFormat.getCurrencyInstance(locale);
-        Bundle bundle = getIntent.getExtras();
-        int id = bundle.getInt("creditPlanID");
-        String name = bundle.getString("creditPlanName");
-        String description = bundle.getString("creditPlanDescription");
-        double price = bundle.getDouble("creditPlanPrice");
-        String strPrice = defaultFormat.format(price);
-        //Get and Set Text Control
-        txtName = (TextView) findViewById(R.id.txtCreditPlanName);
-        txtName.setText(name);
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            int id = bundle.getInt("creditPlanID");
+            String name = bundle.getString("creditPlanName");
+            String description = bundle.getString("creditPlanDescription");
+            Log.d("description", "des" + description.toString() + "");
+            double price = bundle.getDouble("creditPlanPrice");
+            String strPrice = defaultFormat.format(price);
+            //Get and Set Text Control
+            txtName = (TextView) findViewById(R.id.txtCreditPlanName);
+            txtName.setText(name);
 
-        txtCreditDescription = (TextView) findViewById(R.id.txtCreditDescription);
-        txtCreditDescription.setText(description);
+            txtCreditDescription = (TextView) findViewById(R.id.txtCreditDescription);
+            txtCreditDescription.setText(description);
 
-        txtCreditPlanPrice = (TextView) findViewById(R.id.txtCreditPlanPrice);
-        txtCreditPlanPrice.setText(strPrice);
+            txtCreditPlanPrice = (TextView) findViewById(R.id.txtCreditPlanPrice);
+            txtCreditPlanPrice.setText(strPrice);
+        } else {
+            Log.d(TAG, "bunle is null ");
+        }
 
-//        Log.d(TAG, "id: " + id);+rice);
     }
 
     // IMPLEMENTATION PAYMENT
@@ -142,23 +146,55 @@ public class PaypalActivity extends AppCompatActivity {
     public void onBuyPress() {
 //        startPayPalService();
         //Get getIntent from CreditPlanActivity
-        Intent getIntent = getIntent();
-        //Get bundle from Intent
-        Bundle bundle = getIntent.getExtras();
-        String name = bundle.getString("creditPlanName");
-        double price = bundle.getDouble("creditPlanPrice") / Rate;
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            //Get bundle from Intent
+            String name = bundle.getString("creditPlanName");
+            double price = bundle.getDouble("creditPlanPrice") / Rate;
 
-        PayPalPayment payment = new PayPalPayment(new BigDecimal(price),
-                "USD", name,
-                PayPalPayment.PAYMENT_INTENT_SALE);
+            PayPalPayment payment = new PayPalPayment(new BigDecimal(price),
+                    "USD", name,
+                    PayPalPayment.PAYMENT_INTENT_SALE);
 
-        Intent intent = new Intent(this, PaymentActivity.class);
-        //send the same configuration for restart resilience
-        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
-        intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
-        startActivityForResult(intent, REQUEST_CODE_PAYMENT);
+            final Intent intent = new Intent(this, PaymentActivity.class);
+            //send the same configuration for restart resilience
+            intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
+            intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
+
+            if (Utility.isNetworkConnected(PaypalActivity.this)) {
+                startActivityForResult(intent, REQUEST_CODE_PAYMENT);
+            } else {
+                // custom dialog
+                final Dialog dialog = new Dialog(PaypalActivity.this);
+                dialog.setContentView(R.layout.custom_dialog_login);
+                dialog.setTitle("Mất kết nối mạng ...");
+
+                Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
+                // if button is clicked, close the custom dialog
+                dialogButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (Utility.isNetworkConnected(PaypalActivity.this)) {
+                            dialog.dismiss();
+                            startActivityForResult(intent, REQUEST_CODE_PAYMENT);
+                        }
+                    }
+                });
+
+                Button dialogCancel = (Button) dialog.findViewById(R.id.dialogBtnCancel);
+                // if button is clicked, close the custom dialog
+                dialogCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }
+                });
+                dialog.show();
+            }
+        } else {
+            Log.i(TAG, "bundle is null");
+        }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -179,59 +215,91 @@ public class PaypalActivity extends AppCompatActivity {
                         Log.i(TAG, confirm.toJSONObject().toString(4));
                         Log.i(TAG, confirm.getPayment().toJSONObject().toString(4));
 
-                        //Get getIntent from CreditPlanActivity
-                        Intent getIntent = getIntent();
                         //Get bundle from Intent
-                        Bundle bundle = getIntent.getExtras();
+                        Bundle bundle = getIntent().getExtras();
+                        if (bundle != null) {
+                            final String cardId = bundle.getString("cardIDForPayPal1");
+                            Log.d(TAG, "cardID" + cardId);
 
-                        final String cardId = bundle.getString("cardIDForPayPal1");
-                        Log.d(TAG, "cardID" + cardId);
+                            final String creditPlanId = bundle.getInt("creditPlanID") + "";
+                            Log.d(TAG, "creditPlanId " + creditPlanId);
 
-                        final String creditPlanId = bundle.getInt("creditPlanID") + "";
-                        Log.d(TAG, "creditPlanId " + creditPlanId);
+                            String creditPlanPrice = bundle.getInt("creditPlanPrice") + "";
+                            Log.d(TAG, "creditPlanPrice " + creditPlanPrice);
 
-                        String creditPlanPrice = bundle.getInt("creditPlanPrice") + "";
-                        Log.d(TAG, "creditPlanPrice " + creditPlanPrice);
+                            JSONObject jsonObj = new JSONObject(confirm.toJSONObject().toString());
+                            final String transactionId = jsonObj.getJSONObject("response").getString("id");
+                            Log.d(TAG, "transactionId " + transactionId);
 
-                        JSONObject jsonObj = new JSONObject(confirm.toJSONObject().toString());
-                        final String transactionId = jsonObj.getJSONObject("response").getString("id");
-                        Log.d(TAG, "transactionId " + transactionId);
+                            if (Utility.isNetworkConnected(PaypalActivity.this)) {
+                                new AddCardBalance().execute(cardId, creditPlanId, transactionId);
+                            } else {
+                                // custom dialog
+                                final Dialog dialog = new Dialog(PaypalActivity.this);
+                                dialog.setContentView(R.layout.custom_dialog_login);
+                                dialog.setTitle("Mất kết nối mạng ...");
 
+                                Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
+                                // if button is clicked, close the custom dialog
+                                dialogButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if (Utility.isNetworkConnected(PaypalActivity.this)) {
+                                            dialog.dismiss();
+                                            new AddCardBalance().execute(cardId, creditPlanId, transactionId);
+                                        }
+                                    }
+                                });
+
+                                Button dialogCancel = (Button) dialog.findViewById(R.id.dialogBtnCancel);
+                                // if button is clicked, close the custom dialog
+                                dialogCancel.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                    }
+                                });
+                                dialog.show();
+                            }
+                        } else {
+                            Log.e(TAG, "creditPlanId || creditPlanPrice||creditPlanPrice is null ");
+                        }
+
+
+                        //Starting a new activity for the payment details and also putting the payment details with intent
+//                        Intent intent = new Intent(this, ConfirmationActivity.class);
+                        final Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra("afterPay", "1");
                         if (Utility.isNetworkConnected(PaypalActivity.this)) {
-                            new AddCardBalance().execute(cardId, creditPlanId, transactionId);
+                            startActivity(intent);
                         } else {
                             // custom dialog
                             final Dialog dialog = new Dialog(PaypalActivity.this);
-                            dialog.setContentView(R.layout.custom_dialog);
+                            dialog.setContentView(R.layout.custom_dialog_login);
                             dialog.setTitle("Mất kết nối mạng ...");
 
-                            // set the custom dialog components - text, image and button
-                            TextView text = (TextView) dialog.findViewById(R.id.text);
-                            text.setText("Kiểm tra mạng wifi hoặc 3g");
-                            ImageView image = (ImageView) dialog.findViewById(R.id.image);
-                            image.setImageResource(R.drawable.ic_icon_wifi);
-
-                            Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+                            Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
                             // if button is clicked, close the custom dialog
                             dialogButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     if (Utility.isNetworkConnected(PaypalActivity.this)) {
                                         dialog.dismiss();
-                                        new AddCardBalance().execute(cardId, creditPlanId, transactionId);
+                                        startActivity(intent);
                                     }
+                                }
+                            });
+
+                            Button dialogCancel = (Button) dialog.findViewById(R.id.dialogBtnCancel);
+                            // if button is clicked, close the custom dialog
+                            dialogCancel.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                                 }
                             });
                             dialog.show();
                         }
-
-                        //Starting a new activity for the payment details and also putting the payment details with intent
-//                        Intent intent = new Intent(this, ConfirmationActivity.class);
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putExtra("afterPay", "1");
-                        startActivity(intent);
-
-
 //                        Toast.makeText(
 //                                getApplicationContext(),
 //                                "PaymentConfirmation info received from PayPal", Toast.LENGTH_LONG)

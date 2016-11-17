@@ -5,54 +5,52 @@
     android:orientation="vertical">
 
 
-
-        <ListView
-            android:id="@+id/listViewChooseCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:padding="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="0.68" />
+    <ListView
+        android:id="@+id/listViewChooseCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.68"
+        android:padding="5dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Thẻ mặc định"
+        android:background="@color/colorPrimary"
         android:gravity="center"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:textColor="#fff"
         android:padding="5dp"
-        android:background="#9E9E9E"/>
+        android:text="THẺ ĐƯỢC CHỌN"
+        android:textColor="#fff"
+        android:textSize="25dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
         android:layout_margin="5dp"
         android:background="@drawable/background_table"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="5dp">
 
         <ImageView
-            android:id="@+id/imgCardName"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:padding="2dp"
-            android:src="@drawable/ic_action_card" />
+            android:id="@+id/imgCard"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_card_gbts" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/txtChooseCardName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="2dp"
-                android:text="Tên thẻ"
-                android:textColor="#FF9800"
-                android:textSize="20dp" />
+                android:padding="5dp"
+                android:text="Tên thẻ" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -60,20 +58,21 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/txtChooseCDBalance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/txtChooseStatus"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/shap_circle_online"
                     android:padding="5dp"
-                    android:text="Số dư: 50000"
-                    android:textColor="#F44336" />
+                    android:text="" />
 
                 <TextView
-                    android:id="@+id/txtChooseStatus"
+                    android:id="@+id/txtChooseName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:padding="2dp"
-                    android:text="Trạng thái" />
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:text="Kich hoat" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

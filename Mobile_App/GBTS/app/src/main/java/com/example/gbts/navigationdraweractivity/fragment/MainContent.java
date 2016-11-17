@@ -69,7 +69,6 @@ public class MainContent extends Fragment {
                     .commit();
         }
 
-
         return view;
     }
 
