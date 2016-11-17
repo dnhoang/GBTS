@@ -44,7 +44,7 @@ public class MainContent extends Fragment {
     private static final String RESULT_OK = null;
     TextView txtNoti;
     WebView webViewPromotion;
-
+    private static final String TAG_FRAGMENT = "MainContent";
     private String tokensv = "";
 
 
@@ -56,7 +56,19 @@ public class MainContent extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_content, container, false);
-        new AsyncPromotion().execute();
+        if (Utility.isNetworkConnected(getActivity())) {
+            new AsyncPromotion().execute();
+        } else {
+            FragmentDisconnect disconnect = new FragmentDisconnect();
+            Bundle bundle = new Bundle();
+            bundle.putString("action", "transferMainContent");
+            disconnect.setArguments(bundle);
+            getActivity().getFragmentManager().beginTransaction()
+                    .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
+                    .addToBackStack(null)
+                    .commit();
+        }
+
 
         return view;
     }
@@ -135,7 +147,6 @@ public class MainContent extends Fragment {
         protected JSONObject doInBackground(String... params) {
             JSONParser jsonParser = new JSONParser();
             url = Constance.API_GET_PROMOTION;
-
             JSONObject json = jsonParser.getJSONFromUrlGET(url);
             return json;
         }
@@ -145,7 +156,7 @@ public class MainContent extends Fragment {
             // Hide dialog
             pDialog.dismiss();
             Log.d("meow1", "url " + url);
-            if(jsonObject!=null){
+            if (jsonObject != null) {
                 try {
                     boolean success = jsonObject.getBoolean("success");
                     if (success) {
@@ -165,7 +176,7 @@ public class MainContent extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }else {
+            } else {
                 Log.d("Maincontent", "get promotion null ");
             }
 

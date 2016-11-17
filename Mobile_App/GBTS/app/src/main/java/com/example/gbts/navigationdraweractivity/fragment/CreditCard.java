@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,9 +52,11 @@ public class CreditCard extends Fragment {
     private static final String TAG_REGISTRATION_DATE = "RegistrationDate";
     private static final String TAG_BALANCE = "Balance";
     private static final String TAG_CARD_STATUS = "Status";
+    private static final String TAG_FRAGMENT = "CreditCard";
     ArrayList<HashMap<String, String>> listCard = new ArrayList<>();
     JSONArray jsonArray = null;
     List<CardNFC> listCardNFC = new ArrayList<>();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,31 +64,15 @@ public class CreditCard extends Fragment {
         if (Utility.isNetworkConnected(getActivity())) {
             new JSONParseCardNFC().execute();
         } else {
-            // custom dialog
-            final Dialog dialog = new Dialog(getActivity());
-            dialog.setContentView(R.layout.custom_dialog);
-            dialog.setTitle("Mất kết nối mạng ...");
-
-            // set the custom dialog components - text, image and button
-            TextView text = (TextView) dialog.findViewById(R.id.text);
-            text.setText("Kiểm tra mạng wifi hoặc 3g");
-            ImageView image = (ImageView) dialog.findViewById(R.id.image);
-            image.setImageResource(R.drawable.ic_icon_wifi);
-
-            Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-            // if button is clicked, close the custom dialog
-            dialogButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (Utility.isNetworkConnected(getActivity())) {
-                        dialog.dismiss();
-                        new JSONParseCardNFC().execute();
-                    }
-                }
-            });
-            dialog.show();
+            FragmentDisconnect disconnect = new FragmentDisconnect();
+            Bundle bundle = new Bundle();
+            bundle.putString("action", "transferCreditCardDetails");
+            disconnect.setArguments(bundle);
+            getActivity().getFragmentManager().beginTransaction()
+                    .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
+                    .addToBackStack(null)
+                    .commit();
         }
-
 
         return view;
     }
@@ -182,8 +169,8 @@ public class CreditCard extends Fragment {
                         CreditCardDetails creditCardDetails = new CreditCardDetails();
                         creditCardDetails.setArguments(bundle);
 
-                            final FragmentManager manager = getFragmentManager();
-                            creditCardDetails.show(manager, "Details Account");
+                        final FragmentManager manager = getFragmentManager();
+                        creditCardDetails.show(manager, "Details Account");
                     }
                 });
 

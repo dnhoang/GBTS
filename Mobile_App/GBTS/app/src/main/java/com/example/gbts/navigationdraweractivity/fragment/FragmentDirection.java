@@ -82,6 +82,7 @@ public class FragmentDirection extends DialogFragment {
         //Get Control Widget
         AutoOrigin = (AutoCompleteTextView) view.findViewById(R.id.AutoOrigin);
         AutoDestination = (AutoCompleteTextView) view.findViewById(R.id.AutoDestination);
+
         txtClear1 = (TextView) view.findViewById(R.id.txtClear1);
         txtClear2 = (TextView) view.findViewById(R.id.txtClear2);
         txtClear1.setOnClickListener(new View.OnClickListener() {
@@ -98,7 +99,6 @@ public class FragmentDirection extends DialogFragment {
         });
 
 
-        AutoDestination = (AutoCompleteTextView) view.findViewById(R.id.AutoDestination);
         btnFindPath = (Button) view.findViewById(R.id.btnFind);
 
         //Event onclick

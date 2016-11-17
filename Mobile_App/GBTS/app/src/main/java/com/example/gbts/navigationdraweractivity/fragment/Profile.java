@@ -36,28 +36,37 @@ import java.net.URLEncoder;
 
 public class Profile extends Fragment {
     final String TAG = "Profile";
+    private static final String TAG_FRAGMENT = "Profile";
     String preference = "Info";
     String hostAddress = "https://grinbuz.com";
-
+    Button btUpdate;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup
             container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-
-        new GetProfile().execute();
-
+        if (Utility.isNetworkConnected(getActivity())) {
+            new GetProfile().execute();
+        } else {
+            FragmentDisconnect disconnect = new FragmentDisconnect();
+            Bundle bundle = new Bundle();
+            bundle.putString("action", "transferProfile");
+            disconnect.setArguments(bundle);
+            getActivity().getFragmentManager().beginTransaction()
+                    .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
+                    .addToBackStack(null)
+                    .commit();
+        }
+        //GET preference info
+        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences(preference, Context.MODE_PRIVATE);
         final EditText edtFullName = (EditText) view.findViewById(R.id.edtFullName);
         final EditText edtNewPassword = (EditText) view.findViewById(R.id.edtNewPassword);
         final EditText edtOldPassword = (EditText) view.findViewById(R.id.edtOldPassword);
         final EditText edtConfirmPassword = (EditText) view.findViewById(R.id.edtConfirmPassword);
         final EditText edtMinBalance = (EditText) view.findViewById(R.id.edtGetNotification);
-        final Button btUpdate = (Button) view.findViewById(R.id.btnUpdateProfile);
+        btUpdate = (Button) view.findViewById(R.id.btnUpdateProfile);
 
-        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences(preference, Context.MODE_PRIVATE);
-//        edtFullName.setText(sharedPreferences.getString("Fullname", ""));
-//        Log.d(TAG, "fullname" + sharedPreferences.getString("Fullname", ""));
 
         btUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,28 +99,14 @@ public class Profile extends Fragment {
                     }
 
                 } else {
-                    // custom dialog
-                    final Dialog dialog = new Dialog(getActivity());
-                    dialog.setContentView(R.layout.custom_dialog);
-                    dialog.setTitle("Mất kết nối mạng ...");
-
-                    // set the custom dialog components - text, image and button
-                    TextView text = (TextView) dialog.findViewById(R.id.text);
-                    text.setText("Kiểm tra mạng wifi hoặc 3g");
-                    ImageView image = (ImageView) dialog.findViewById(R.id.image);
-                    image.setImageResource(R.drawable.ic_icon_wifi);
-
-                    Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-                    // if button is clicked, close the custom dialog
-                    dialogButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (Utility.isNetworkConnected(getActivity())) {
-                                dialog.dismiss();
-                            }
-                        }
-                    });
-                    dialog.show();
+                    FragmentDisconnect disconnect = new FragmentDisconnect();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("action", "transferProfile");
+                    disconnect.setArguments(bundle);
+                    getActivity().getFragmentManager().beginTransaction()
+                            .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
+                            .addToBackStack(null)
+                            .commit();
                 }
 
             }

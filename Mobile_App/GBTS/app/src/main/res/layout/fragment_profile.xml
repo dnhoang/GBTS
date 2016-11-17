@@ -42,7 +42,7 @@
                 android:ems="8"
                 android:inputType="text"
                 android:paddingLeft="1dp"
-                android:text="truongtq"
+                android:text=""
                 android:textColor="#006064">
 
                 <requestFocus />
@@ -136,27 +136,29 @@
                 android:text="Hạn mức thông báo "
                 android:textSize="16dp" />
 
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="horizontal">
-               <android.support.design.widget.TextInputEditText
-                   android:id="@+id/edtGetNotification"
-                   android:layout_width="100dp"
-                   android:layout_height="30dp"
-                   android:text=""
-                   android:inputType="number"
-                   android:textColor="#01579B"
-                   android:background="@drawable/edittext_profile"
-                   android:paddingLeft="1dp" />
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:paddingLeft="3dp"
-                   android:textSize="17dp"
-                   android:textColor="#01579B"
-                   android:text="đ"/>
-           </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edtGetNotification"
+                    android:layout_width="100dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/edittext_profile"
+                    android:inputType="number"
+                    android:paddingLeft="1dp"
+                    android:text=""
+                    android:textColor="#01579B" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="3dp"
+                    android:text="đ"
+                    android:textColor="#01579B"
+                    android:textSize="17dp" />
+            </LinearLayout>
 
         </LinearLayout>
 

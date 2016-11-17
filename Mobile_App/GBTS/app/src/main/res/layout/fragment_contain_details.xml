@@ -49,10 +49,10 @@
                 android:id="@+id/imgEditCardViewDetails"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:padding="3dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="5dp"
-                android:src="@drawable/ic_action_card" />
+                android:padding="3dp"
+                android:src="@drawable/ic_edit" />
         </LinearLayout>
 
         <LinearLayout
@@ -115,13 +115,16 @@
                 android:id="@+id/txtStatusDetails"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
+                android:layout_gravity="center"
                 android:layout_marginLeft="20dp"
                 android:background="@drawable/shap_circle_online"
                 android:text="" />
+
             <TextView
                 android:id="@+id/txtStatusName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginLeft="20dp"
                 android:text="Kich hoat" />
         </LinearLayout>
@@ -136,6 +139,7 @@
                 android:id="@+id/textView7"
                 android:layout_width="100dp"
                 android:layout_height="30dp"
+                android:layout_gravity="center"
                 android:gravity="center|left"
                 android:paddingLeft="10dp"
                 android:text="Số dư" />
@@ -144,6 +148,7 @@
                 android:id="@+id/txtBalanceDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginLeft="20dp"
                 android:text="50,000 đ"
                 android:textColor="#01579B" />
@@ -156,8 +161,8 @@
             android:layout_height="35dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/btn_purchase"
-            android:textColor="#424242"
-            android:text="Nạp Tiền" />
+            android:text="Nạp Tiền"
+            android:textColor="#424242" />
     </LinearLayout>
 
 </LinearLayout>

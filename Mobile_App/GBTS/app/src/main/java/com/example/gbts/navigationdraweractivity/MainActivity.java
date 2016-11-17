@@ -48,6 +48,7 @@ import com.example.gbts.navigationdraweractivity.fragment.CreditCardDetails;
 import com.example.gbts.navigationdraweractivity.fragment.FragmentChooseCard;
 import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
 import com.example.gbts.navigationdraweractivity.fragment.FragmentDirection;
+import com.example.gbts.navigationdraweractivity.fragment.FragmentDisconnect;
 import com.example.gbts.navigationdraweractivity.fragment.GetAllButRoute;
 import com.example.gbts.navigationdraweractivity.fragment.GetReport;
 import com.example.gbts.navigationdraweractivity.fragment.MainContent;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity
     private final String PREF_USERNAME = "username";
     private final String PREF_PASSWORD = "password";
     private final String PREF_REMEMBER = "check";
+    private static final String TAG_FRAGMENT = "MainActivity";
 
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -324,19 +326,6 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences preferences = getSharedPreferences("Info", MODE_PRIVATE);
         String phoneInfo = preferences.getString("Phonenumber", "Chào mừng bạn đến với thế giới hệ thống xe bus thông minh!!");
 
-        //START FRAGMENT MAIN && INTEGRATION FB, PROMOTION
-        if (savedInstanceState == null) {
-            Fragment fragment = null;
-            Class fragmentClass = null;
-            fragmentClass = MainContent.class;
-            try {
-                fragment = (Fragment) fragmentClass.newInstance();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-        }
 
         // FloatingAction Button
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -405,8 +394,20 @@ public class MainActivity extends AppCompatActivity
         //CHECK INTERNET CONNECTION
         if (Utility.isNetworkConnected(MainActivity.this)) {
             //ASYNC GET TOKEN SERVER API
-//            new AsyncGetToken().execute();
-
+            //new AsyncGetToken().execute();
+            //START FRAGMENT MAIN && INTEGRATION FB, PROMOTION
+            if (savedInstanceState == null) {
+                Fragment fragment = null;
+                Class fragmentClass = null;
+                fragmentClass = MainContent.class;
+                try {
+                    fragment = (Fragment) fragmentClass.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+            }
             //NOTIFICATION FIRE BASE
             FirebaseMessaging.getInstance().subscribeToTopic("GBTS");
             String token = FirebaseInstanceId.getInstance().getToken();
@@ -417,30 +418,17 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
             }
         } else {
-            // custom dialog
-            final Dialog dialog = new Dialog(MainActivity.this);
-            dialog.setContentView(R.layout.custom_dialog);
-            dialog.setTitle("Mất kết nối mạng ...");
-
-            // set the custom dialog components - text, image and button
-            TextView text = (TextView) dialog.findViewById(R.id.text);
-            text.setText("Kiểm tra mạng wifi hoặc 3g");
-            ImageView image = (ImageView) dialog.findViewById(R.id.image);
-            image.setImageResource(R.drawable.ic_icon_wifi);
-
-            Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-            // if button is clicked, close the custom dialog
-            dialogButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (Utility.isNetworkConnected(MainActivity.this)) {
-                        dialog.dismiss();
-                    }
-                }
-            });
-            dialog.show();
+            FragmentDisconnect disconnect = new FragmentDisconnect();
+            Bundle bundle = new Bundle();
+            bundle.putString("action", "MainContent");
+            disconnect.setArguments(bundle);
+            this.getFragmentManager().beginTransaction()
+                    .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
+    //===================================== ON RESUME() ======================================
 
     @Override
     protected void onResume() {
@@ -452,10 +440,14 @@ public class MainActivity extends AppCompatActivity
             String check = intent.getStringExtra("afterPay");
             String checkChangeCardName = intent.getStringExtra("action");
             String checkTopUp = intent.getStringExtra("topup");
-            String action = intent.getStringExtra("action");
             String checkUpdateBalance = intent.getStringExtra("notiUpdateCard");
 
-            if (check != null || checkChangeCardName != null || checkTopUp != null) {
+            if (checkChangeCardName != null) {
+                CreditCardDetails cardDetails = new CreditCardDetails();
+                FragmentManager manager = getFragmentManager();
+                cardDetails.show(manager, "CreditCardDetails");
+            }
+            if (check != null || checkTopUp != null) {
                 Fragment fragment = null;
                 Class fragmentClass = null;
                 fragmentClass = CreditCard.class;
@@ -533,6 +525,7 @@ public class MainActivity extends AppCompatActivity
                 Bundle bundle = new Bundle();
                 bundle.putString("notiBody", bodyNoLogin);
                 bundle.putString("notiTitle", titlteNoLogin);
+                bundle.putString("action", "transferMainContent");
                 try {
                     fragment = (Fragment) fragmentClass.newInstance();
                     fragment.setArguments(bundle);
@@ -622,28 +615,50 @@ public class MainActivity extends AppCompatActivity
             // Create a new fragment and specify the fragment to show based on nav item clicked
             Fragment fragment = new Fragment();
             Class fragmentClass = null;
+            Bundle bundle = new Bundle();
             switch (id) {
                 case R.id.nav_card:
                     toolbar.setTitle("THẺ CỦA TÔI");
-                    fragmentClass = CreditCard.class;
+                    if (Utility.isNetworkConnected(MainActivity.this)) {
+                        fragmentClass = CreditCard.class;
+                    } else {
+                        fragmentClass = FragmentDisconnect.class;
+                        bundle.putString("action", "transferCreditCard");
+                    }
                     break;
                 case R.id.nav_getReport:
                     toolbar.setTitle("BÁO CÁO CHI TIÊU");
-                    fragmentClass = GetReport.class;
+                    if (Utility.isNetworkConnected(MainActivity.this)) {
+                        fragmentClass = GetReport.class;
+                    } else {
+                        fragmentClass = FragmentDisconnect.class;
+                        bundle.putString("action", "transferGetReport");
+                    }
                     break;
                 case R.id.nav_profile:
                     toolbar.setTitle("TÀI KHOẢN CỦA TÔI");
-                    fragmentClass = Profile.class;
+                    if (Utility.isNetworkConnected(MainActivity.this)) {
+                        fragmentClass = Profile.class;
+                    } else {
+                        fragmentClass = FragmentDisconnect.class;
+                        bundle.putString("action", "transferProfile");
+                    }
                     break;
                 case R.id.nav_choose_card:
                     toolbar.setTitle("MUA VÉ BẰNG ĐIỆN THOẠI");
-                    fragmentClass = FragmentChooseCard.class;
+                    if (Utility.isNetworkConnected(MainActivity.this)) {
+                        fragmentClass = FragmentChooseCard.class;
+                    } else {
+                        fragmentClass = FragmentDisconnect.class;
+                        bundle.putString("action", "transferFragmentChooseCard");
+                    }
                     break;
                 default:
                     break;
             }
             try {
                 fragment = (Fragment) fragmentClass.newInstance();
+                fragment.setArguments(bundle);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -683,6 +698,7 @@ public class MainActivity extends AppCompatActivity
                             Bundle bundle = new Bundle();
                             bundle.putString("bodyMsg", body);
                             bundle.putString("titleMsg", title);
+                            bundle.putString("action", "transferMainContent");
                             Log.d("bodymess", body);
                             MainContent mainContent = new MainContent();
                             mainContent.setArguments(bundle);

@@ -47,6 +47,8 @@ public class FragmentChooseCard extends Fragment {
     private static final String TAG_REGISTRATION_DATE = "RegistrationDate";
     private static final String TAG_BALANCE = "Balance";
     private static final String TAG_CARD_STATUS = "Status";
+    private static final String TAG_FRAGMENT = "FragmentChooseCard";
+
     List<CardNFC> listCard = new ArrayList<>();
     ChooseCardNFCAdapter chooseCardNFCAdapter;
     JSONArray jsonArray = null;
@@ -58,29 +60,14 @@ public class FragmentChooseCard extends Fragment {
         if (Utility.isNetworkConnected(getActivity())) {
             new JSONParseCardNFC().execute();
         } else {
-            // custom dialog
-            final Dialog dialog = new Dialog(getActivity());
-            dialog.setContentView(R.layout.custom_dialog);
-            dialog.setTitle("Mất kết nối mạng ...");
-
-            // set the custom dialog components - text, image and button
-            TextView text = (TextView) dialog.findViewById(R.id.text);
-            text.setText("Kiểm tra mạng wifi hoặc 3g");
-            ImageView image = (ImageView) dialog.findViewById(R.id.image);
-            image.setImageResource(R.drawable.ic_icon_wifi);
-
-            Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-            // if button is clicked, close the custom dialog
-            dialogButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (Utility.isNetworkConnected(getActivity())) {
-                        dialog.dismiss();
-                        new JSONParseCardNFC().execute();
-                    }
-                }
-            });
-            dialog.show();
+            FragmentDisconnect disconnect = new FragmentDisconnect();
+            Bundle bundle = new Bundle();
+            bundle.putString("action", "transferFragmentChooseCard");
+            disconnect.setArguments(bundle);
+            getActivity().getFragmentManager().beginTransaction()
+                    .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
+                    .addToBackStack(null)
+                    .commit();
         }
 
 

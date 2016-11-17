@@ -45,6 +45,7 @@ import java.util.Locale;
 
 public class GetReport extends Fragment {
     final String TAG = "GetReport";
+    private static final String TAG_FRAGMENT = "MainContent";
     EditText edtDayStart, edtDayEnd;
     ImageView imgSeach;
     final Calendar myCalendar1 = Calendar.getInstance();//start
@@ -124,32 +125,18 @@ public class GetReport extends Fragment {
                     Log.d("SimpleDateFormat ", "invalid format datetime ");
                 }
 
+                //CALL METHOD
                 if (Utility.isNetworkConnected(getActivity())) {
                     new AsyncGetReport().execute(phone, beginDay, endDay);
                 } else {
-                    // custom dialog
-                    final Dialog dialog = new Dialog(getActivity());
-                    dialog.setContentView(R.layout.custom_dialog);
-                    dialog.setTitle("Mất kết nối mạng ...");
-
-                    // set the custom dialog components - text, image and button
-                    TextView text = (TextView) dialog.findViewById(R.id.text);
-                    text.setText("Kiểm tra mạng wifi hoặc 3g");
-                    ImageView image = (ImageView) dialog.findViewById(R.id.image);
-                    image.setImageResource(R.drawable.ic_icon_wifi);
-
-                    Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-                    // if button is clicked, close the custom dialog
-                    dialogButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (Utility.isNetworkConnected(getActivity())) {
-                                dialog.dismiss();
-                                new AsyncGetReport().execute(phone, beginDay, endDay);
-                            }
-                        }
-                    });
-                    dialog.show();
+                    FragmentDisconnect disconnect = new FragmentDisconnect();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("action", "transferGetReport");
+                    disconnect.setArguments(bundle);
+                    getActivity().getFragmentManager().beginTransaction()
+                            .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
+                            .addToBackStack(null)
+                            .commit();
                 }
             }
         });
