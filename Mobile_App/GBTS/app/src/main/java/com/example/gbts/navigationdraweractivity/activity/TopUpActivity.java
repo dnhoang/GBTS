@@ -13,6 +13,7 @@ import android.widget.EditText;
 
 import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
+import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 
 import org.json.JSONException;
@@ -20,13 +21,11 @@ import org.json.JSONObject;
 
 public class TopUpActivity extends AppCompatActivity {
     //final Animation animAlpha= AnimationUtils.loadAnimation(this,R.anim.anim_alpha);
-    String hostAddress = "https://grinbuz.net";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_top_up);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     public void clickToTopUpByCard(View view) {
@@ -65,7 +64,7 @@ public class TopUpActivity extends AppCompatActivity {
             cardId = params[0];
             couponCode = params[1];
             //thay hostAddress thanh grinbuz
-            String strURL = hostAddress + "/Api/Topup?key=gbts_2016_capstone&cardId=" + cardId + "&code=" + couponCode;
+            String strURL = Constance.API_TOPUP + "&cardId=" + cardId + "&code=" + couponCode;
 
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrlPOST(strURL);
@@ -87,6 +86,7 @@ public class TopUpActivity extends AppCompatActivity {
                 message = jsonObject.getString("message");
             } catch (JSONException e) {
                 e.printStackTrace();
+
             }
             if (success) {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(TopUpActivity.this);
@@ -114,7 +114,6 @@ public class TopUpActivity extends AppCompatActivity {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         dialog.cancel();
-
                                     }
                                 });
 
@@ -122,8 +121,6 @@ public class TopUpActivity extends AppCompatActivity {
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
             }
-
-
         }
     }
 }

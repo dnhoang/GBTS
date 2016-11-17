@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.R;
+import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 import com.example.gbts.navigationdraweractivity.utils.Utility;
 
@@ -71,7 +72,7 @@ public class ActivateCardActivity extends AppCompatActivity {
             cardId = params[0];
             phone = params[1];
             //thay hostAddress thanh grinbuz
-            String strURL = hostAddress + "/Api/ActivateAccountByApp?key=gbts_2016_capstone&cardId=" + cardId + "&phone=" + phone;
+            String strURL = Constance.API_ACTIVATE_ACCOUNT + "&cardId=" + cardId + "&phone=" + phone;
 
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrlPOST(strURL);

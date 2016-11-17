@@ -1,10 +1,10 @@
 package com.example.gbts.navigationdraweractivity.fragment;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,11 +19,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
-import com.example.gbts.navigationdraweractivity.activity.TopUpActivity;
 import com.example.gbts.navigationdraweractivity.adapter.ChooseCardNFCAdapter;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.enity.CardNFC;
@@ -57,6 +54,7 @@ public class FragmentChooseCard extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_choose_card, container, false);
         if (Utility.isNetworkConnected(getActivity())) {
             new JSONParseCardNFC().execute();
         } else {
@@ -86,24 +84,13 @@ public class FragmentChooseCard extends Fragment {
         }
 
 
-
-
-        View view = inflater.inflate(R.layout.fragment_choose_card, container, false);
-        String sCardName = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)
-                .getString("cCardName", "");
-        String sBalance = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)
-                .getString("cBalance", "");
-        String sStatus = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)
-                .getString("cStatus", "");
-        TextView textCardName = (TextView) view.findViewById(R.id.txtChooseCardName);
-        TextView textBalance = (TextView) view.findViewById(R.id.txtChooseCDBalance);
-        TextView textStatus = (TextView) view.findViewById(R.id.txtChooseStatus);
-
-        textCardName.setText(sCardName);
-        textBalance.setText(sBalance);
-        textStatus.setText(sStatus);
-
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     private class JSONParseCardNFC extends AsyncTask<String, String, JSONObject> {
@@ -122,8 +109,9 @@ public class FragmentChooseCard extends Fragment {
         protected JSONObject doInBackground(String... params) {
 
             JSONParser jParser = new JSONParser();
-            url = Constance.API_GETALLCARD + "&phone=" + phone;
+            url = Constance.API_GET_ALL_CARD + "&phone=" + phone;
             // Getting JSON from URL
+            Log.d("truongURL", "JSONParseCardNFC: " + url);
             JSONObject json = jParser.getJSONFromUrlPOST(url);
             return json;
         }
@@ -155,6 +143,7 @@ public class FragmentChooseCard extends Fragment {
                     cardNFC.setBalance(balance);
                     cardNFC.setStatus(status);
                     listCard.add(cardNFC);
+
                 }
                 chooseCardNFCAdapter = new ChooseCardNFCAdapter(getActivity(), listCard);
                 listView = (ListView) getView().findViewById(R.id.listViewChooseCard);
@@ -176,38 +165,10 @@ public class FragmentChooseCard extends Fragment {
                                             public void onClick(DialogInterface dialog, int id) {
                                                 String cardid = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)
                                                         .getString("NFCPayment", "");
+
                                                 Log.d("NFCPayment ", "NFCPayment " + cardid);
+                                                new AsyncGetCardInfo().execute(cardid);
 
-                                                double balance = card.getBalance();
-                                                int status = card.getStatus();
-                                                String strStatus = "";
-                                                String cardName = card.getCardName();
-                                                String strBalance = defaultFormat.format(balance);
-                                                if (status == 1) {
-                                                    strStatus = "Đã kích hoạt";
-                                                } else {
-                                                    strStatus = "Chưa kích hoạt";
-                                                }
-                                                if (cardid == card.getCardID()) {
-                                                    sharedPreferences.edit()
-                                                            .putString("cCardName", cardName)
-                                                            .putString("cBalance", strBalance)
-                                                            .putString("cStatus", strStatus)
-                                                            .commit();
-                                                }
-                                                String sCardName = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)
-                                                        .getString("cCardName", "");
-                                                String sBalance = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)
-                                                        .getString("cBalance", "");
-                                                String sStatus = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)
-                                                        .getString("cStatus", "");
-                                                TextView textCardName = (TextView) getView().findViewById(R.id.txtChooseCardName);
-                                                TextView textBalance = (TextView) getView().findViewById(R.id.txtChooseCDBalance);
-                                                TextView textStatus = (TextView) getView().findViewById(R.id.txtChooseStatus);
-
-                                                textCardName.setText(sCardName);
-                                                textBalance.setText(sBalance);
-                                                textStatus.setText(sStatus);
                                                 dialog.cancel();
                                             }
                                         }).setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -224,9 +185,82 @@ public class FragmentChooseCard extends Fragment {
                         return false;
                     }
                 });
+
+                final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE);
+                String checkCardID = sharedPreferences.getString("NFCPayment", "");
+                if (checkCardID == "") {
+                    TextView textCardName = (TextView) getView().findViewById(R.id.txtChooseCardName);
+                    TextView textBalance = (TextView) getView().findViewById(R.id.txtChooseCDBalance);
+                    TextView textStatus = (TextView) getView().findViewById(R.id.txtChooseStatus);
+                    textCardName.setText("");
+                    textBalance.setText("");
+                    textStatus.setText("");
+
+                    String choosenCardID = "";
+                    for (CardNFC card : listCard) {
+                        if (card.getStatus() == 1) {
+                            choosenCardID = card.getCardID();
+                            break;
+                        }
+                    }
+                    sharedPreferences.edit().putString("NFCPayment", choosenCardID);
+                    if (choosenCardID != null) {
+                        new AsyncGetCardInfo().execute(choosenCardID);
+                    }
+                } else {
+                    new AsyncGetCardInfo().execute(checkCardID);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private class AsyncGetCardInfo extends AsyncTask<String, Void, JSONObject> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            JSONParser jsonParser = new JSONParser();
+            String urlGetCardInfo = Constance.API_GET_CARD_INFO + "&cardId=" + params[0];
+            Log.d("truongURL", "AsyncGetCardInfo: " + urlGetCardInfo);
+            JSONObject json = jsonParser.getJSONFromUrlGET(urlGetCardInfo);
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            final NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
+            try {
+                JSONObject object = jsonObject.getJSONObject("data");
+                String cardID = object.getString("CardId");
+                String cardName = object.getString("CardName");
+                double balance = object.getDouble("Balance");
+                String registrationDate = object.getString("RegistrationDate");
+                int status = object.getInt("Status");
+                String strStatus = "";
+                String strBalance = defaultFormat.format(balance);
+                if (status == 1) {
+                    strStatus = "Đã kích hoạt";
+                } else {
+                    strStatus = "Chưa kích hoạt";
+                }
+
+                TextView textCardName = (TextView) getView().findViewById(R.id.txtChooseCardName);
+                TextView textBalance = (TextView) getView().findViewById(R.id.txtChooseCDBalance);
+                TextView textStatus = (TextView) getView().findViewById(R.id.txtChooseStatus);
+                textCardName.setText(cardName);
+                textBalance.setText(strBalance);
+                textStatus.setText(strStatus);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
     }
 }

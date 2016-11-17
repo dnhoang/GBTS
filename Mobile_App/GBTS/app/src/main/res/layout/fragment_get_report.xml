@@ -3,66 +3,97 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="5dp">
+    android:layout_marginTop="10dp"
+    android:padding="5dp"
+    android:orientation="vertical">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal">
+
+      <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <LinearLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+
+              <TextView
+                  android:id="@+id/textView"
+                  android:layout_width="120dp"
+                  android:layout_height="wrap_content"
+                  android:padding="5dp"
+                  android:layout_marginLeft="5dp"
+                  android:textStyle="bold"
+                  android:text="TỪ NGÀY"
+                  android:textSize="15dp" />
+
+              <EditText
+                  android:id="@+id/edtDayStart"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textColor="#fff"
+                  android:paddingLeft="10dp"
+                  android:padding="2dp"
+                  android:background="@drawable/background_button_date"
+                  android:ems="7" />
+
+          </LinearLayout>
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="5dp"
+              android:orientation="horizontal">
+
+              <TextView
+                  android:id="@+id/textView1"
+                  android:layout_width="120dp"
+                  android:layout_height="wrap_content"
+                  android:padding="5dp"
+                  android:text="ĐẾN NGÀY"
+                  android:layout_marginLeft="5dp"
+                  android:textStyle="bold"
+                  android:textSize="15dp" />
+
+              <EditText
+                  android:id="@+id/edtDayEnd"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textColor="#fff"
+                  android:padding="2dp"
+                  android:paddingLeft="10dp"
+                  android:background="@drawable/background_button_date"
+                  android:ems="7" />
+          </LinearLayout>
+      </LinearLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_gravity="center_vertical">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+          <ImageButton
+              android:id="@+id/imgSearchReport"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/background_table"
+              android:layout_marginLeft="5dp"
+              android:layout_marginRight="5dp"
+              android:src="@drawable/ic_search_day"/>
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="Từ ngày: "
-            android:textSize="15dp" />
-
-        <EditText
-            android:id="@+id/edtDayStart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/background_table"
-            android:ems="8" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="Đến ngày: "
-            android:textSize="15dp" />
-
-        <EditText
-            android:id="@+id/edtDayEnd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/background_table"
-            android:ems="8" />
-
-        <ImageView
-            android:id="@+id/imgSearchReport"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/ic_search_day" />
-    </LinearLayout>
+      </LinearLayout>
+  </LinearLayout>
 
 
     <ListView
         android:id="@+id/listView_GetReport"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_margin="5dp"
         android:paddingTop="10dp"></ListView>
 </LinearLayout>

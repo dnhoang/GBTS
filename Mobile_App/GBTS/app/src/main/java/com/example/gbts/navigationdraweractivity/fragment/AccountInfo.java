@@ -107,7 +107,7 @@ public class AccountInfo extends Fragment {
         protected JSONObject doInBackground(String... params) {
 
             JSONParser jParser = new JSONParser();
-            url = Constance.API_GETALLCARD + "&phone=" + phone;
+            url = Constance.API_GET_ALL_CARD + "&phone=" + phone;
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrlPOST(url);
             return json;

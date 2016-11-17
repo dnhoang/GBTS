@@ -53,7 +53,7 @@ public class AsyncCardNFCListViewLoader extends AsyncTask<String, Void, List<Car
         result = new ArrayList<>();
         jParser = new JSONParser();
 
-        strURL = Constance.API_GETALLCARD + "&phone=" + params[0];
+        strURL = Constance.API_GET_ALL_CARD + "&phone=" + params[0];
 
         // Getting JSON from URL
         JSONObject json = jParser.getJSONFromUrlPOST(strURL);

@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@drawable/background_table"
     android:gravity="center">
 
     <ImageView
@@ -29,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:textColor="#F44336"
+            android:textColor="#01579B"
             android:text="Giá tiền"/>
     </LinearLayout>
 </LinearLayout>

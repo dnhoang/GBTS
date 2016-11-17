@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_pay_pal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context="com.example.gbts.navigationdraweractivity.activity.CreditPlanActivity">
 
@@ -11,13 +11,18 @@
         android:id="@+id/listView_CreditPlan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:paddingTop="10dp" />
+        android:padding="5dp"
+        android:layout_margin="2dp" />
 
     <Button
-        android:text="Nạp bằng thẻ cào"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/btTopUpByCard"
-        android:onClick="clickToTopUp" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="7dp"
+        android:layout_marginTop="20dp"
+        android:onClick="clickToTopUp"
+        android:background="@drawable/btn_purchase"
+        android:textColor="#424242"
+        android:text="Nạp bằng thẻ cào" />
 </LinearLayout>

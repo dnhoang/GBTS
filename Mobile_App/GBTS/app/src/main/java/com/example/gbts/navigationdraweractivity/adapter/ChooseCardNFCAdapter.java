@@ -2,6 +2,7 @@ package com.example.gbts.navigationdraweractivity.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.example.gbts.navigationdraweractivity.enity.CardNFC;
 
 import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by truon on 10/5/2016.
@@ -66,7 +68,9 @@ public class ChooseCardNFCAdapter extends ArrayAdapter<CardNFC> {
         }
 
         //Format number
-        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
+        Locale locale = new Locale("vi_VN", "VN");
+        Log.d("locale ", locale + "");
+        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance(locale);
 
         CardNFC cardNFC = getItem(position);
 
@@ -74,9 +78,6 @@ public class ChooseCardNFCAdapter extends ArrayAdapter<CardNFC> {
         TextView textBalance = (TextView) convertView.findViewById(R.id.txtCDBalance);
         TextView textStatus = (TextView) convertView.findViewById(R.id.txtStatus);
 
-        Log.d("chooseCard ", "name " + cardNFC.getCardName());
-        Log.d("chooseCard ", "balance" + cardNFC.getBalance());
-        Log.d("chooseCard ", "status " + cardNFC.getStatus());
 
         double balance = cardNFC.getBalance();
 
@@ -84,9 +85,11 @@ public class ChooseCardNFCAdapter extends ArrayAdapter<CardNFC> {
         textBalance.setText(defaultFormat.format(balance));
         int status = cardNFC.getStatus();
         if (status == 1) {
-            textStatus.setText("Đã kích hoạt");
+//            textStatus.setText("Đã kích hoạt");
+            textStatus.setBackgroundResource(R.drawable.shap_circle_online);
         } else {
-            textStatus.setText("Chưa kích hoạt");
+            textStatus.setBackgroundResource(R.drawable.shap_circle_offline);
+//            textStatus.setText("Chưa kích hoạt");
         }
         return convertView;
     }

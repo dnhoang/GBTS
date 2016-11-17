@@ -46,7 +46,7 @@ public class GoStopAdapter extends ArrayAdapter<BusStop> {
         Log.d("GoStopAdapter", "busStop " + busStop.toString());
         Log.d("GoStopAdapter", "getStopId " + busStop.getStopId());
 //        txtBusStopName.setText("- " + fillterBusStopList.get(position));
-        txtBusStopName.setText("- " + busStop.getName());
+        txtBusStopName.setText(busStop.getName());
 
         Log.d("GoStopAdapter", "txtBusStopName " + "-" + busStop.getName());
 

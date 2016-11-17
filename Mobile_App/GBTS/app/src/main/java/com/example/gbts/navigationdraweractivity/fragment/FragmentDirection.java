@@ -10,6 +10,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.R;
@@ -54,6 +57,7 @@ import java.util.Locale;
 public class FragmentDirection extends DialogFragment {
 
     AutoCompleteTextView AutoOrigin, AutoDestination;
+    TextView txtClear1, txtClear2;
     Button btnFindPath;
 
 
@@ -77,6 +81,23 @@ public class FragmentDirection extends DialogFragment {
 
         //Get Control Widget
         AutoOrigin = (AutoCompleteTextView) view.findViewById(R.id.AutoOrigin);
+        AutoDestination = (AutoCompleteTextView) view.findViewById(R.id.AutoDestination);
+        txtClear1 = (TextView) view.findViewById(R.id.txtClear1);
+        txtClear2 = (TextView) view.findViewById(R.id.txtClear2);
+        txtClear1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AutoOrigin.setText("");
+            }
+        });
+        txtClear2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AutoDestination.setText("");
+            }
+        });
+
+
         AutoDestination = (AutoCompleteTextView) view.findViewById(R.id.AutoDestination);
         btnFindPath = (Button) view.findViewById(R.id.btnFind);
 
@@ -117,14 +138,13 @@ public class FragmentDirection extends DialogFragment {
                 String origin = AutoOrigin.getText().toString();
                 String destination = AutoDestination.getText().toString();
 
-                if(origin!=null&&destination!=null){
+                if (origin != null && destination != null) {
                     Intent intent = new Intent(getActivity(), ActivityGoogleFindPath.class);
                     intent.putExtra("origin", origin);
                     intent.putExtra("destination", destination);
-
                     startActivity(intent);
-                }else {
-                    Toast.makeText(getActivity(),"Vui lòng nhập điểm đi điểm đến!",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "Vui lòng nhập điểm đi điểm đến!", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -195,7 +215,7 @@ public class FragmentDirection extends DialogFragment {
             sb.append("&sensor=true&key=" + API_KEY);
 
             URL url = new URL(sb.toString());
-            System.out.println("truongtq url" + url.toString());
+            System.out.println("truongtq url " + url.toString());
             conn = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(conn.getInputStream());
 
@@ -277,7 +297,7 @@ public class FragmentDirection extends DialogFragment {
             System.out.println("jsonObj.toString() :::: " + jsonObj.toString());
             System.out.println("jsonObjLocation.toString() :::: " + jsonObjLocation.toString());
 
-            resultList = new ArrayList<Double>(2);
+            resultList = new ArrayList<>(2);
             resultList.add(jsonObjLocation.getDouble("lat"));
             resultList.add(jsonObjLocation.getDouble("lng"));
         } catch (JSONException e) {

@@ -3,8 +3,10 @@ package com.example.gbts.navigationdraweractivity.module.google.mapsAPI;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.activity.ActivityGoogleFindPath;
 import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
+import com.example.gbts.navigationdraweractivity.fragment.FragmentChooseCard;
 import com.example.gbts.navigationdraweractivity.fragment.FragmentDirection;
 import com.example.gbts.navigationdraweractivity.fragment.GetAllButRoute;
 import com.example.gbts.navigationdraweractivity.utils.Utility;
@@ -62,7 +65,7 @@ public class DirectionFinder {
 
     public void execute() throws UnsupportedEncodingException {
         listener.onDirectionFinderStart();
-            new DownloadRawData().execute(createUrl());
+        new DownloadRawData().execute(createUrl());
     }
 
     private String createUrl() throws UnsupportedEncodingException {
@@ -85,7 +88,7 @@ public class DirectionFinder {
                 urlConn.setReadTimeout(10000);
                 urlConn.setAllowUserInteraction(false);
                 urlConn.setDoOutput(true);
-
+                urlConn.connect();
                 InputStream is = urlConn.getInputStream();
                 StringBuffer buffer = new StringBuffer();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -130,73 +133,77 @@ public class DirectionFinder {
 
         JSONArray jsonRoutes = jsonData.getJSONArray("routes");
         //NOT routes
-        if (jsonRoutes.length() == 0) {
-            Log.d("anhtruong", "Route don't exist");
-            return;
-        }
-        /** Traversing all routes */
+        if (jsonRoutes.length() > 0) {
+//            Log.d("anhtruong", "Route don't exist");
+//            return;
+//        }
+            /** Traversing all routes */
 //        for (int i = 0; i < jsonRoutes.length(); i++) {
-        JSONObject jsonRoute = jsonRoutes.getJSONObject(0);
+            JSONObject jsonRoute = jsonRoutes.getJSONObject(0);
 
-        JSONObject overview_polylineJson = jsonRoute.getJSONObject("overview_polyline");
-        JSONArray jsonLegs = jsonRoute.getJSONArray("legs");
+            JSONObject overview_polylineJson = jsonRoute.getJSONObject("overview_polyline");
+            JSONArray jsonLegs = jsonRoute.getJSONArray("legs");
 //            Log.d("meoww", "jsonsLegsObject " + jsonLegs.toString());
-        /** Traversing all legs */
-        int min = 1000;
-        int index = 0;
-        if(jsonLegs.length() > 1){
-            for(int x = 0; x < jsonLegs.length(); x++){
-                JSONArray tmpSteps = jsonLegs.getJSONObject(x).getJSONArray("steps");
-                if(tmpSteps.length() < min){
-                    min = tmpSteps.length();
-                    index = x;
+            /** Traversing all legs */
+            int min = 1000;
+            int index = 0;
+            if (jsonLegs.length() > 1) {
+                for (int x = 0; x < jsonLegs.length(); x++) {
+                    JSONArray tmpSteps = jsonLegs.getJSONObject(x).getJSONArray("steps");
+                    if (tmpSteps.length() < min) {
+                        min = tmpSteps.length();
+                        index = x;
+                    }
+                }
+
+            }
+            JSONObject js = jsonLegs.getJSONObject(index);
+            JSONArray jsonSteps = js.getJSONArray("steps");
+
+            List<String> busList = new ArrayList<>();
+            for (int j = 0; j < jsonSteps.length(); j++) {
+                JSONObject singleStep = jsonSteps.getJSONObject(j);
+
+                if (singleStep.getString("travel_mode").equals("TRANSIT")) {
+//                JSONObject html_instructions = singleStep.getJSONObject("html_instructions");
+                    JSONObject transit_details = singleStep.getJSONObject("transit_details");
+                    JSONObject line = transit_details.getJSONObject("line");
+                    String busName = line.getString("name");
+                    busList.add(busName);
                 }
             }
 
-        }
-        JSONObject js = jsonLegs.getJSONObject(index);
-        JSONArray jsonSteps = js.getJSONArray("steps");
-
-        List<String> busList = new ArrayList<>();
-        for (int j = 0; j < jsonSteps.length(); j++) {
-            JSONObject singleStep = jsonSteps.getJSONObject(j);
-
-            if (singleStep.getString("travel_mode").equals("TRANSIT")) {
-//                JSONObject html_instructions = singleStep.getJSONObject("html_instructions");
-                JSONObject transit_details = singleStep.getJSONObject("transit_details");
-                JSONObject line = transit_details.getJSONObject("line");
-                String busName = line.getString("name");
-                busList.add(busName);
-            }
-        }
-
 //        results.add(busList);
-        JSONObject jsonLeg = jsonLegs.getJSONObject(0);
-        JSONObject jsonDistance = jsonLeg.getJSONObject("distance");
-        JSONObject jsonDuration = jsonLeg.getJSONObject("duration");
-        JSONObject jsonEndLocation = jsonLeg.getJSONObject("end_location");
-        JSONObject jsonStartLocation = jsonLeg.getJSONObject("start_location");
+            JSONObject jsonLeg = jsonLegs.getJSONObject(0);
+            JSONObject jsonDistance = jsonLeg.getJSONObject("distance");
+            JSONObject jsonDuration = jsonLeg.getJSONObject("duration");
+            JSONObject jsonEndLocation = jsonLeg.getJSONObject("end_location");
+            JSONObject jsonStartLocation = jsonLeg.getJSONObject("start_location");
 
 
-        route.distance = new Distance(jsonDistance.getString("text"), jsonDistance.getInt("value"));
-        route.duration = new Duration(jsonDuration.getString("text"), jsonDuration.getInt("value"));
-        route.endAddress = jsonLeg.getString("end_address");
-        route.startAddress = jsonLeg.getString("start_address");
-        route.startLocation = new LatLng(jsonStartLocation.getDouble("lat"), jsonStartLocation.getDouble("lng"));
-        route.endLocation = new LatLng(jsonEndLocation.getDouble("lat"), jsonEndLocation.getDouble("lng"));
-        route.points = decodePolyLine(overview_polylineJson.getString("points"));
+            route.distance = new Distance(jsonDistance.getString("text"), jsonDistance.getInt("value"));
+            route.duration = new Duration(jsonDuration.getString("text"), jsonDuration.getInt("value"));
+            route.endAddress = jsonLeg.getString("end_address");
+            route.startAddress = jsonLeg.getString("start_address");
+            route.startLocation = new LatLng(jsonStartLocation.getDouble("lat"), jsonStartLocation.getDouble("lng"));
+            route.endLocation = new LatLng(jsonEndLocation.getDouble("lat"), jsonEndLocation.getDouble("lng"));
+            route.points = decodePolyLine(overview_polylineJson.getString("points"));
 
-        String html = "";
-        String before = "<li><a href=\"#\"><img src=\"http://i.imgur.com/iSVvT7G.png\" /> ";
-        String after = "</a></li>";
-        for (String item : busList) {
-            html += before + item + after;
-        }
-        route.html_instructions = "<strong>Bạn cần đi qua " + busList.size() + " tuyến xe bus:</strong>  <br/><br/>" + html;
-        routes.add(route);
+            String html = "";
+            String before = "<li><a href=\"#\"><img src=\"http://i.imgur.com/iSVvT7G.png\" /> ";
+            String after = "</a></li>";
+            for (String item : busList) {
+                html += before + item + after;
+            }
+            route.html_instructions = "<strong>Bạn cần đi qua " + busList.size() + " tuyến xe bus:</strong>  <br/><br/>" + html;
+            routes.add(route);
 //        }
-        Log.d("meoww", "jsonsLresultst " + busList.toString());
-        listener.onDirectionFinderSuccess(routes);
+            Log.d("meoww", "jsonsLresultst " + busList.toString());
+            listener.onDirectionFinderSuccess(routes);
+        } else {
+            Log.d("meoww", "jsonsLresultst null");
+            listener.onDirectionFinderSuccess(null);
+        }
     }
 
 

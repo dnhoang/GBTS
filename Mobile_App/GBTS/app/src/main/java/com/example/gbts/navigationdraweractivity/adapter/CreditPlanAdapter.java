@@ -3,6 +3,7 @@ package com.example.gbts.navigationdraweractivity.adapter;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.example.gbts.navigationdraweractivity.enity.CreditPlan;
 import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by truon on 10/7/2016.
@@ -55,7 +57,9 @@ public class CreditPlanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // Get current position of item in recyclerview to bind data and assign values from list
-        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
+        Locale locale = new Locale("vi_VN","VN");
+        Log.d("locale ", locale + "");
+        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance(locale);
         MyHolder myHolder = (MyHolder) holder;
         current = creditPlen.get(position);
         myHolder.txtCreditPlanName.setText(current.creditplanName);

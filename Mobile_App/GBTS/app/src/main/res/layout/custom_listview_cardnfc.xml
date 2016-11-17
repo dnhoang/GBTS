@@ -3,16 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:padding="2dp"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="2dp">
 
     <ImageView
-        android:layout_width="120dp"
-        android:layout_height="90dp"
-        android:src="@drawable/ic_card1"
-        android:layout_marginLeft="15dp"
-        android:id="@+id/imgCardName" />
+        android:id="@+id/imgCardName"
+        android:layout_width="130dp"
+        android:layout_height="80dp"
+        android:padding="5dp"
+        android:src="@drawable/ic_card_gbts" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,27 +25,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Tên thẻ"
-            android:textColor="#424242"
             android:textSize="15dp" />
 
         <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal">
-          <TextView
-              android:id="@+id/txtCDBalance"
-              android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="2dp">
+
+            <TextView
+                android:id="@+id/txtCDBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Số dư: 50000"
+                android:textColor="#01579B" />
+
+          <LinearLayout
+              android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:textColor="#01579B"
-              android:text="Số dư: 50000"/>
-          <TextView
-              android:id="@+id/txtStatus"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:padding="2dp"
-              android:layout_marginLeft="10dp"
-              android:text="Trạng thái" />
-      </LinearLayout>
+              android:layout_marginRight="10dp"
+              android:orientation="vertical">
+              <TextView
+                  android:id="@+id/txtStatus"
+                  android:layout_width="15dp"
+                  android:layout_height="15dp"
+                  android:layout_gravity="right"
+                  android:background="@drawable/shap_circle_online"/>
+          </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

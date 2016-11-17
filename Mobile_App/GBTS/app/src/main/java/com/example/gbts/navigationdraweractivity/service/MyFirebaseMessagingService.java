@@ -4,19 +4,27 @@ package com.example.gbts.navigationdraweractivity.service;
  * Created by HoangDN on 10/3/2016.
  */
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
+import com.example.gbts.navigationdraweractivity.adapter.ChooseCardNFCAdapter;
+import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
+import com.example.gbts.navigationdraweractivity.fragment.FragmentChooseCard;
 import com.example.gbts.navigationdraweractivity.fragment.MainContent;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -45,20 +53,27 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            String body = remoteMessage.getData().get("body");
-            String title = remoteMessage.getData().get("title");
-            showNotification(remoteMessage.getData().get("body"), remoteMessage.getData().get("title"));
+            final String body = remoteMessage.getData().get("body");
+            final String title = remoteMessage.getData().get("title");
+
 //            Log.d("Truongtqmsg", "Message data payload: " + remoteMessage.getData());
             Log.d("Truongtqmsg", "sendBody");
-            MainContent mainContent = new MainContent();
-            Bundle bundle = new Bundle();
-            bundle.putString("notiBody", body);
-            bundle.putString("notiTitle", title);
-            mainContent.setArguments(bundle);
-
-
-            Log.d("Truongtqmsg1", "body: " + mainContent.getArguments().getString("notiBody"));
-            Log.d("Truongtqmsg1", "title " + mainContent.getArguments().getString("notiTitle"));
+            if (body.equals("PLEASEUPDATECARDLIST")) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("notiUpdateCard", body);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                Log.d("Truongtqmsgcard", "update card " + body);
+            } else {
+                showNotification(remoteMessage.getData().get("body"), remoteMessage.getData().get("title"));
+                MainContent mainContent = new MainContent();
+                Bundle bundle = new Bundle();
+                bundle.putString("notiBody", body);
+                bundle.putString("notiTitle", title);
+                mainContent.setArguments(bundle);
+                Log.d("Truongtqmsg1", "body: " + mainContent.getArguments().getString("notiBody"));
+                Log.d("Truongtqmsg1", "title " + mainContent.getArguments().getString("notiTitle"));
+            }
         }
 
 //         Check if message contains a notification payload.

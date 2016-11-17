@@ -13,7 +13,6 @@ import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
 import com.example.gbts.navigationdraweractivity.fragment.MainContent;
 
 public class ConfirmationActivity extends AppCompatActivity {
-    MainActivity mainActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

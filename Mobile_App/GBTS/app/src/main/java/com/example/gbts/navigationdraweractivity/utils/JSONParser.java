@@ -48,7 +48,6 @@ public class JSONParser {
 //
 //            }
 
-
             if (urlConnection != null) {
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
@@ -76,7 +75,7 @@ public class JSONParser {
         // try parse the string to a JSON object
         try {
             jObj = new JSONObject(json);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Log.e("JSON Parser", "Error parsing data " + e.toString());
         }
 

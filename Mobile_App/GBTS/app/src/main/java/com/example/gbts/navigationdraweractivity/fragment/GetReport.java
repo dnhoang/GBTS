@@ -62,6 +62,7 @@ public class GetReport extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_get_report, container, false);
 
+
         edtDayStart = (EditText) view.findViewById(R.id.edtDayStart);
         setCurrentDateStart(edtDayStart);
         final String edtdateStart = edtDayStart.getText().toString();
@@ -81,7 +82,7 @@ public class GetReport extends Fragment {
 
         edtDayEnd = (EditText) view.findViewById(R.id.edtDayEnd);
         final String edtdateEnd = edtDayEnd.getText().toString();
-        Log.d(TAG, "edtdateStart" + edtdateEnd);
+        Log.d(TAG, "edtdateEnd" + edtdateEnd);
         setCurrentDateEnd(edtDayEnd);
         edtDayEnd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,15 +113,11 @@ public class GetReport extends Fragment {
                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
                 try {
-
-
                     Date dateStart = formatter.parse(beginDay);
-
                     Date dateEnd = formatter.parse(endDay);
-
                     if (dateEnd.compareTo(dateStart) < 0) {
                         Log.d("SimpleDateFormat ", "dateStart is Greater than my dateEnd");
-                        Toast.makeText(getActivity(), "Ngày bắt đầu lớn hơn ngày hiên tại, vui long nhập lại", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Ngày kết thúc nhỏ hơn ngày hiên tại, vui lòng nhập lại", Toast.LENGTH_LONG).show();
                     }
 
                 } catch (ParseException e1) {
@@ -154,9 +151,6 @@ public class GetReport extends Fragment {
                     });
                     dialog.show();
                 }
-
-
-
             }
         });
 
@@ -189,35 +183,55 @@ public class GetReport extends Fragment {
             super.onPostExecute(jsonObject);
             //instance new Arraylist<ReportEntity>
             reportEntityList = new ArrayList<>();
-            Log.d("GetReport", "url " + url);
-            try {
-                JSONArray jsonArray = jsonObject.getJSONArray("data");
-                for (int i = 0; i < jsonArray.length(); i++) {
 
-                    JSONObject json = jsonArray.getJSONObject(i);
-                    reportEntity = new ReportEntity();
+            Log.d("GetReport1", "url " + url);
+            if (jsonObject != null) {
+                try {
+                    JSONArray jsonArray = jsonObject.getJSONArray("data");
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    reportEntity.setRpCardName(json.optString("CardName"));
-                    reportEntity.setRpTotal(json.optString("Total"));
-                    reportEntity.setRpBoughtDated(json.optString("BoughtDated"));
-                    reportEntity.setRpBusCode(json.optString("BusCode"));
+                        JSONObject json = jsonArray.getJSONObject(i);
+                        reportEntity = new ReportEntity();
+                        List<String> busFrequently = new ArrayList<>();
 
-                    Log.d("GetReport", "CardName  " + json.optString("CardName"));
-                    Log.d("GetReport", "Total  " + json.optString("Total"));
-                    Log.d("GetReport", "BoughtDated " + json.optString("BoughtDated"));
-                    Log.d("GetReport", "BusCode " + json.optString("BusCode"));
+                        reportEntity.setRpCardUID(json.optString("cardUID"));
+                        reportEntity.setRpCardName(json.optString("cardName"));
+                        reportEntity.setRpCount(json.optString("count"));
+                        reportEntity.setRpTotal(json.optString("total"));
 
-                    reportEntityList.add(reportEntity);
+                        JSONArray arrayBusNumber = json.getJSONArray("frequently");
+                        for (int j = 0; j < arrayBusNumber.length(); j++) {
+                            String busNumber = arrayBusNumber.getString(j);
+                            busFrequently.add(busNumber);
+                        }
+                        int check = 5;
+                        List<String> listBusNumber = new ArrayList<>();
+                        if (busFrequently.size() < check) {
+                            check = busFrequently.size();
+                        }
+                        for (int j = 0; j < check; j++) {
+                            String busName = busFrequently.get(j);
+                            listBusNumber.add(busName);
+                        }
+                        reportEntity.setRpFrequently(listBusNumber);
+
+                        Log.d("GetReport1", "cardUID  " + json.optString("cardUID"));
+                        Log.d("GetReport1", "cardName  " + json.optString("cardName"));
+                        Log.d("GetReport1", "count  " + json.optString("count"));
+                        Log.d("GetReport1", "json  " + busFrequently.toString());
+                        Log.d("GetReport1", "busFrequently  " + busFrequently.size());
+                        reportEntityList.add(reportEntity);
+                    }
+
+                    listView = (ListView) getView().findViewById(R.id.listView_GetReport);
+                    mReportAdapter = new ReportAdapter(getActivity(), reportEntityList);
+                    listView.setAdapter(mReportAdapter);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-
-                listView = (ListView) getView().findViewById(R.id.listView_GetReport);
-                mReportAdapter = new ReportAdapter(getActivity(), reportEntityList);
-                listView.setAdapter(mReportAdapter);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            } else {
+                Log.d("GetReport", "JSON OBJECT IS NULL  ");
             }
-
-
         }
     }
 
@@ -232,7 +246,7 @@ public class GetReport extends Fragment {
         mday = myCalendar1.get(Calendar.DAY_OF_MONTH);
         String checkMonth = "";
         String checkDay = "";
-        if (mday < 9) {
+        if (mday <= 9) {
             checkDay = "0" + mday;
         } else {
             checkDay = mday + "";
@@ -259,7 +273,7 @@ public class GetReport extends Fragment {
         mday = myCalendar2.get(Calendar.DAY_OF_MONTH);
         String checkMonth = "";
         String checkDay = "";
-        if (mday < 9) {
+        if (mday <= 9) {
             checkDay = "0" + mday;
         } else {
             checkDay = mday + "";

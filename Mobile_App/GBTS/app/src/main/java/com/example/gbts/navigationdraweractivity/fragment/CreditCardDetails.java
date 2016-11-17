@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
@@ -28,7 +30,9 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by truon on 9/29/2016.
@@ -47,7 +51,7 @@ public class CreditCardDetails extends DialogFragment
 
     HashMap<String, String> card = new HashMap<>();
 
-    TextView txtCardId, txtBalance, txtRegistration, txtStatus;
+    TextView txtCardId, txtBalance, txtRegistration, txtStatus, txtStatusName;
     EditText edtCardName;
     ImageView imgEditCardName;
     Button btnPurchase;
@@ -58,6 +62,10 @@ public class CreditCardDetails extends DialogFragment
 
         View view = inflater.inflate(R.layout.fragment_contain_details, container, false);
 
+        //Format number
+        Locale locale = new Locale("vi_VN", "VN");
+        Log.d("locale ", locale + "");
+        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance(locale);
         //Send data by intent
         //Get bundle
         Bundle bundle = getArguments();
@@ -72,25 +80,36 @@ public class CreditCardDetails extends DialogFragment
         txtBalance = (TextView) view.findViewById(R.id.txtBalanceDetails);
         txtRegistration = (TextView) view.findViewById(R.id.txtRegistrationDateDetails);
         txtStatus = (TextView) view.findViewById(R.id.txtStatusDetails);
+        txtStatusName = (TextView) view.findViewById(R.id.txtStatusName);
         edtCardName = (EditText) view.findViewById(R.id.edtCardNameDetails);
         imgEditCardName = (ImageView) view.findViewById(R.id.imgEditCardViewDetails);
+        btnPurchase = (Button) view.findViewById(R.id.btnPurchase);
+        btnPurchase.setOnClickListener(this);
 
         txtCardId.setText(card.get(TAG_CARD_ID));
+        edtCardName.setSingleLine(true);
+        edtCardName.setEllipsize(TextUtils.TruncateAt.END);
         edtCardName.setText(card.get(TAG_CARD_NAME));
         txtRegistration.setText(card.get(TAG_REGISTRATION_DATE));
-        txtBalance.setText(card.get(TAG_BALANCE));
-        txtStatus.setText(card.get(TAG_CARD_STATUS));
+
+        double balance = Double.parseDouble(card.get(TAG_BALANCE));
+
+        txtBalance.setText(defaultFormat.format(balance));
+        Log.d("testbunble", "status " + card.get(TAG_CARD_STATUS));
+        if (card.get(TAG_CARD_STATUS).equals("1")) {
+            txtStatus.setBackgroundResource(R.drawable.shap_circle_online);
+            txtStatusName.setText("Đã kích hoạt");
+
+        } else {
+            txtStatus.setBackgroundResource(R.drawable.shap_circle_offline);
+            txtStatusName.setText("Đã bị khoá");
+
+        }
 
         //EVENT CHANGE CARD NAME
         imgEditCardName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-            }
-        });
-        imgEditCardName.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
                 final String cardName = edtCardName.getText().toString().trim();
                 final String cardID = txtCardId.getText().toString();
                 Log.d("changeaname ", "cardName " + cardName);
@@ -123,30 +142,37 @@ public class CreditCardDetails extends DialogFragment
                     });
                     dialog.show();
                 }
-
-                return false;
             }
         });
 
-        btnPurchase = (Button) view.findViewById(R.id.btnPurchase);
-        btnPurchase.setOnClickListener(this);
+
+//        btnPurchase = (Button) view.findViewById(R.id.btnPurchase);
+//            btnPurchase.setOnClickListener(this);
+//        if (card.get(TAG_CARD_STATUS).equals("Thẻ khoá")) {
+//            Toast.makeText(getActivity(), "Thẻ của bạn đã bị khoá xin vui lòng liên hệ với nhà cung cấp dịch vụ", Toast.LENGTH_SHORT).show();
+//        } else {
+//        }
         return view;
     }
 
     @Override
     public void onClick(View v) {
-
         Bundle bundle = getArguments();
         String cardID = bundle.getString(TAG_CARD_ID);
 
-        if (R.id.btnPurchase == v.getId()) {
-            Intent intent = new Intent(getActivity(), CreditPlanActivity.class);
-            Bundle bundle1 = new Bundle();
-            bundle1.putString("cardIDForPayPal", cardID);
-            intent.putExtras(bundle1);
-            startActivity(intent);
+        if (card.get(TAG_CARD_STATUS).equals("1")) {
+            if (R.id.btnPurchase == v.getId()) {
+                Intent intent = new Intent(getActivity(), CreditPlanActivity.class);
+                Bundle bundle1 = new Bundle();
+                bundle1.putString("cardIDForPayPal", cardID);
+                intent.putExtras(bundle1);
+                startActivity(intent);
+            } else {
+                // do the same for signInButton
+            }
         } else {
-            // do the same for signInButton
+            Toast.makeText(getActivity(), "Thẻ của bạn đã bị khoá xin vui lòng liên hệ với nhà cung cấp dịch vụ", Toast.LENGTH_SHORT).show();
+//            btnPurchase.
         }
     }
 

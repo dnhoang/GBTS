@@ -3,7 +3,9 @@ package com.example.gbts.navigationdraweractivity.activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -18,7 +20,6 @@ import android.widget.TextView;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.adapter.GoStopAdapter;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
-import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
 import com.example.gbts.navigationdraweractivity.module.google.mapsAPI.BusStop;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 import com.example.gbts.navigationdraweractivity.utils.Utility;
@@ -26,8 +27,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -102,8 +103,6 @@ public class BusStopActivity extends FragmentActivity
             });
             dialog.show();
         }
-
-
     }
 
 
@@ -117,11 +116,10 @@ public class BusStopActivity extends FragmentActivity
             return;
         }
 
-
         PolylineOptions polylineOptions = new PolylineOptions().
                 geodesic(true).
-                color(Color.BLUE).
-                width(15);
+                color(Color.GRAY).
+                width(13);
 
         for (int i = 0; i < drawBusStop.size(); i++) {
             BusStop item = drawBusStop.get(i);
@@ -154,14 +152,25 @@ public class BusStopActivity extends FragmentActivity
             destinationName = words[2];
         }
 
+        int height = 100;
+        int width = 100;
+        BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_start_location);
+        BitmapDrawable bitmapdrawEnd = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_finish);
+        Bitmap b = bitmapdrawEnd.getBitmap();
+        Bitmap end = bitmapdraw.getBitmap();
+        Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+        Bitmap smallMarkerEnd = Bitmap.createScaledBitmap(end, width, height, false);
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 14));
         mMap.addMarker(new MarkerOptions()
                 .title(orginName)
+                .icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
                 .position(origin));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(destination, 14));
         mMap.addMarker(new MarkerOptions()
                 .title(destinationName)
+                .icon(BitmapDescriptorFactory.fromBitmap(smallMarkerEnd))
                 .position(destination));
 
         polylinePaths.add(mMap.addPolyline(polylineOptions));

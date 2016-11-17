@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
-import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 import com.example.gbts.navigationdraweractivity.utils.Utility;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
@@ -37,6 +36,7 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class PaypalActivity extends AppCompatActivity {
 
@@ -102,7 +102,9 @@ public class PaypalActivity extends AppCompatActivity {
         //Get getIntent from CreditPlanActivity
         Intent getIntent = getIntent();
         //Get bundle from Intent
-        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
+        Locale locale = new Locale("vi_VN", "VN");
+        Log.d("locale ", locale + "");
+        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance(locale);
         Bundle bundle = getIntent.getExtras();
         int id = bundle.getInt("creditPlanID");
         String name = bundle.getString("creditPlanName");
@@ -230,10 +232,10 @@ public class PaypalActivity extends AppCompatActivity {
                         startActivity(intent);
 
 
-                        Toast.makeText(
-                                getApplicationContext(),
-                                "PaymentConfirmation info received from PayPal", Toast.LENGTH_LONG)
-                                .show();
+//                        Toast.makeText(
+//                                getApplicationContext(),
+//                                "PaymentConfirmation info received from PayPal", Toast.LENGTH_LONG)
+//                                .show();
                     } catch (JSONException e) {
                         Log.e(TAG, "an extremely unlikely failure occurred: ", e);
                     }
@@ -273,7 +275,7 @@ public class PaypalActivity extends AppCompatActivity {
         @Override
         protected JSONObject doInBackground(String... params) {
             JSONParser jsonParser = new JSONParser();
-            url = Constance.API_GET_ADDCARDBALANCE +
+            url = Constance.API_GET_ADD_CARD_BALANCE +
                     "&cardId=" + params[0] +
                     "&creditPlanId=" + params[1] +
                     "&transactionId=" + params[2];
@@ -284,13 +286,17 @@ public class PaypalActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             super.onPostExecute(jsonObject);
-            Log.d(TAG + "tq", jsonObject.toString());
-            boolean message = jsonObject.optBoolean("success");
-            Log.d(TAG + "tq", "message " + message);
-            if (message) {
-                Toast.makeText(getApplicationContext(), jsonObject.optBoolean("success") + "", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(getApplicationContext(), jsonObject.optBoolean("message") + "", Toast.LENGTH_LONG).show();
+            if (jsonObject != null) {
+                Log.d(TAG + "tq", jsonObject.toString());
+                boolean message = jsonObject.optBoolean("success");
+                Log.d(TAG + "tq", "message " + message);
+                if (message) {
+                    Log.d(TAG + "tq", "message " + message);
+//                Toast.makeText(getApplicationContext(), jsonObject.optBoolean("success") + "", Toast.LENGTH_LONG).show();
+                } else {
+                    Log.d(TAG + "tq", "message " + message);
+//                Toast.makeText(getApplicationContext(), jsonObject.optBoolean("message") + "", Toast.LENGTH_LONG).show();
+                }
             }
         }
     }

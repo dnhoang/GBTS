@@ -18,8 +18,10 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.nfc.Tag;
+import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -42,6 +44,7 @@ import android.widget.Toast;
 import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
 import com.example.gbts.navigationdraweractivity.asyntask.FireBaseIDTask;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
+import com.example.gbts.navigationdraweractivity.fragment.CreditCardDetails;
 import com.example.gbts.navigationdraweractivity.fragment.FragmentChooseCard;
 import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
 import com.example.gbts.navigationdraweractivity.fragment.FragmentDirection;
@@ -78,8 +81,7 @@ public class MainActivity extends AppCompatActivity
     FloatingActionButton fab, fab_search, fab_direction;
     Animation FabOpen, FabClose, FabClockwise, FabantiClockwise;
     boolean isOpen = false;
-    //Duc
-    String hostAddress = "https://grinbuz.net";
+    boolean refreshCard = false;
 
     //NFC Duc
     NfcAdapter adapter;
@@ -112,8 +114,6 @@ public class MainActivity extends AppCompatActivity
 
 
     protected void onNewIntent(Intent intent) {
-
-
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
 
             if (Utility.isNetworkConnected(MainActivity.this)) {
@@ -152,11 +152,12 @@ public class MainActivity extends AppCompatActivity
             } else {
                 Toast.makeText(this, "Không thể kết nối với máy chủ!", Toast.LENGTH_SHORT).show();
             }
+
         }
     }
 
 
-    private String tokensv = "";
+    private String tokensv;
 
     public String getTokensv() {
         return tokensv;
@@ -166,12 +167,15 @@ public class MainActivity extends AppCompatActivity
         this.tokensv = tokensv;
     }
 
+
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
+
         new AsyncGetToken().execute();
+
         String tokenApi = getTokensv();
         Log.d("tokenApi ", "tokenApi: " + tokenApi.toString());
-        if (tokenApi != null) {
+        if (tokenApi != null && tokenApi != "") {
             SharedPreferences sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
             String message = sharedPreferences.getString("NFCPayment", "");
 
@@ -190,14 +194,12 @@ public class MainActivity extends AppCompatActivity
             }
             NdefMessage msg = new NdefMessage(records);
             Log.d("ndef1 ", "msg" + msg.toString());
-//            NdefMessage msg = new NdefMessage(new NdefRecord[]{
-//                    NdefRecord.createMime("truongtq", message.getBytes())
-//            });
-
+            getSharedPreferences("Info", MODE_PRIVATE).edit().putString("refresh", "successrefresh").commit();
             return msg;
         }
         return null;
     }
+
 
     private class ActivateNFCCard extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
@@ -222,7 +224,7 @@ public class MainActivity extends AppCompatActivity
             phone = params[1];
             //thay hostAddress thanh grinbuz
 
-            String strURL = hostAddress + "/Api/ActivateAccountByApp?key=gbts_2016_capstone&cardId=" + cardId + "&phone=" + phone;
+            String strURL = Constance.API_ACTIVATE_ACCOUNT + "&cardId=" + cardId + "&phone=" + phone;
 
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrlPOST(strURL);
@@ -289,9 +291,11 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
+        new AsyncGetToken().execute();
+
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Xe bus thông minh");
+        toolbar.setTitle("XE BUÝT THÔNG MINH");
         setSupportActionBar(toolbar);
 
         //NFC Duc
@@ -301,6 +305,20 @@ public class MainActivity extends AppCompatActivity
         IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
         tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
         writeTagFilters = new IntentFilter[]{tagDetected};
+
+        //CALL BACK NDEFMESSAGE
+        NfcAdapter mAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (mAdapter == null) {
+//            Toast.makeText(this, "Sorry this device does not have NFC", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (!mAdapter.isEnabled()) {
+//            Toast.makeText(this, "Please enable NFC via Settings.", Toast.LENGTH_LONG).show();
+        }
+
+        mAdapter.setNdefPushMessageCallback(this, this);
+
 
         //SHARED PREFERENCES PHONE NUMBER
         SharedPreferences preferences = getSharedPreferences("Info", MODE_PRIVATE);
@@ -387,7 +405,7 @@ public class MainActivity extends AppCompatActivity
         //CHECK INTERNET CONNECTION
         if (Utility.isNetworkConnected(MainActivity.this)) {
             //ASYNC GET TOKEN SERVER API
-            new AsyncGetToken().execute();
+//            new AsyncGetToken().execute();
 
             //NOTIFICATION FIRE BASE
             FirebaseMessaging.getInstance().subscribeToTopic("GBTS");
@@ -427,15 +445,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-
         Intent intent = getIntent();
         ReadModeOn();
 
-        if (intent.getExtras() != null) {
+        if (intent != null) {
             String check = intent.getStringExtra("afterPay");
             String checkChangeCardName = intent.getStringExtra("action");
             String checkTopUp = intent.getStringExtra("topup");
             String action = intent.getStringExtra("action");
+            String checkUpdateBalance = intent.getStringExtra("notiUpdateCard");
 
             if (check != null || checkChangeCardName != null || checkTopUp != null) {
                 Fragment fragment = null;
@@ -448,6 +466,37 @@ public class MainActivity extends AppCompatActivity
                 }
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+//                CreditCardDetails cardDetails = new CreditCardDetails();
+//                FragmentManager manager = getFragmentManager();
+//                cardDetails.show(manager, "CreditCardDetails");
+            }
+            if (checkUpdateBalance != null) {
+                Log.d("notiUpdateCard  ", " onResume not null");
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                alertDialogBuilder
+                        .setTitle("Mua vé thành công!")
+                        .setCancelable(false)
+                        .setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        Fragment fragment = null;
+                                        Class fragmentClass = null;
+                                        fragmentClass = FragmentChooseCard.class;
+
+                                        try {
+                                            fragment = (Fragment) fragmentClass.newInstance();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        FragmentManager fragmentManager = getFragmentManager();
+                                        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                                    }
+                                });
+
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+
             }
 
             //LOGIN GET INFO NOTIFICATION
@@ -493,11 +542,10 @@ public class MainActivity extends AppCompatActivity
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
             }
-
         }
 
-
     }
+
 
     @Override
     public void onBackPressed() {
@@ -576,20 +624,19 @@ public class MainActivity extends AppCompatActivity
             Class fragmentClass = null;
             switch (id) {
                 case R.id.nav_card:
-                    toolbar.setTitle("Thẻ của bạn");
+                    toolbar.setTitle("THẺ CỦA TÔI");
                     fragmentClass = CreditCard.class;
                     break;
                 case R.id.nav_getReport:
-                    toolbar.setTitle("Báo cáo chi tiêu");
+                    toolbar.setTitle("BÁO CÁO CHI TIÊU");
                     fragmentClass = GetReport.class;
-//                    fragmentClass = FragmentReport.class;
                     break;
                 case R.id.nav_profile:
-                    toolbar.setTitle("Thông tin cá nhân ");
+                    toolbar.setTitle("TÀI KHOẢN CỦA TÔI");
                     fragmentClass = Profile.class;
                     break;
                 case R.id.nav_choose_card:
-                    toolbar.setTitle("Thanh toán bằng điện thoại");
+                    toolbar.setTitle("MUA VÉ BẰNG ĐIỆN THOẠI");
                     fragmentClass = FragmentChooseCard.class;
                     break;
                 default:
@@ -680,22 +727,28 @@ public class MainActivity extends AppCompatActivity
             boolean success = false;
             String message = "";
             //check success
-            try {
-                success = jsonObject.getBoolean("success");
-                if (success) {
-//                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                    String token = jsonObject.getString("token");
-                    setTokensv(token);
-                    Log.d("gettoken ", token);
-                    getSharedPreferences("Info", MODE_PRIVATE).edit()
-                            .putString("token", token).commit();
-                    String token1 = getSharedPreferences("Info", MODE_PRIVATE).getString("token", "");
-                    Log.d("tokensv ", "token1" + token1);
-                } else {
-                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            if (jsonObject != null) {
+                try {
+                    success = jsonObject.getBoolean("success");
+                    if (success) {
+                        String token = jsonObject.getString("token");
+                        setTokensv(token);
+                        Log.d("gettoken ", token);
+                        getSharedPreferences("Info", MODE_PRIVATE).edit()
+                                .putString("token", token).commit();
+                        String token1 = getSharedPreferences("Info", MODE_PRIVATE).getString("token", "");
+                        Log.d("tokensv ", "token1" + token1);
+                    } else {
+                        message = jsonObject.getString("message");
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                    }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            } else {
+                Log.d("MainActivity ", "jsonObject get token is null ");
             }
         }
     }

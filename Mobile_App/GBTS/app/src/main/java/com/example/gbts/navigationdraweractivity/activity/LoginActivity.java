@@ -1,13 +1,16 @@
 package com.example.gbts.navigationdraweractivity.activity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +27,7 @@ import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 import com.example.gbts.navigationdraweractivity.utils.Utility;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "LoginActivity";
@@ -32,6 +36,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     EditText edtPhone, edtPass;
     CheckBox checkBox;
     Button btnLogin, btnActive;
+    ImageView imgLogin;
+    TextView txtActive;
     private final String PREFS_NAME = "mypre";
     private final String PREF_USERNAME = "username";
     private final String PREF_PASSWORD = "password";
@@ -56,9 +62,51 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         getSupportActionBar().hide();
 
+        Constance constance = new Constance();
+        constance.HostString(getApplicationContext());
+
+        //ICON NAVIGATION SET HOST NAME
+        final ImageView[] nav_icon = {(ImageView) findViewById(R.id.nav_icon)};
+        nav_icon[0].setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                final String[] m_Text = {""};
+                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                builder.setTitle("What do you want?");
+
+                // Set up the input
+                final EditText input = new EditText(LoginActivity.this);
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        m_Text[0] = input.getText().toString().trim();
+                        getSharedPreferences("Info", MODE_PRIVATE).edit().putString("HostName", m_Text[0]).commit();
+                        Constance constance = new Constance();
+                        constance.HostString(getApplicationContext());
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+
+                return false;
+            }
+        });
+
+
         //initalise controle
         btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnActive = (Button) findViewById(R.id.btnActive);
+        txtActive = (TextView) findViewById(R.id.btnActive);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,7 +147,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("truongtest", "onResume");
         edtPhone = (EditText) findViewById(R.id.edtPhone);
         edtPass = (EditText) findViewById(R.id.edtPassword);
         checkBox = (CheckBox) findViewById(R.id.saveLoginCheckBox);
@@ -117,8 +164,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Log.d("truongtest", "pass " + pass);
             String check = intent.getExtras().getString("rememberChecked");
             Log.d("truongtest", "check " + check);
-
-
             if (phone != null && pass != null && check != null) {
                 edtPhone.setText(phone);
                 edtPass.setText(pass);
@@ -178,7 +223,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             String strURL = Constance.API_LOGIN + "&phone=" + phone.trim() + "&password=" + pwd.trim();
 //            String strURL = Constance.API_LOGIN + "&phone=01212184802&password=123456";
-//            Log.d("meow", "url " + strURL);
+            Log.d("meow", "url " + strURL);
             // Getting JSON from URL
             if (Utility.isNetworkConnected(LoginActivity.this)) {
                 JSONObject json = jParser.getJSONFromUrlPOST(strURL);
@@ -239,6 +284,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(getBaseContext(), "Sai điện thoại hoặc mật khẩu!", Toast.LENGTH_LONG).show();
                 }
             } else {
+                Toast.makeText(getBaseContext(), "Server Does Not Exist", Toast.LENGTH_LONG).show();
                 Log.d("meow", "jsonObject null ");
             }
         }

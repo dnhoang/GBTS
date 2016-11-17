@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/background_table"
     tools:context="com.example.gbts.navigationdraweractivity.activity.PaypalActivity">
 
     <LinearLayout
@@ -46,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:text="Giá tiền"
-                android:textColor="#F44336" />
+                android:textColor="#01579B" />
         </LinearLayout>
     </LinearLayout>
 
@@ -54,6 +53,10 @@
         android:id="@+id/btnPayment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="@drawable/btn_purchase"
+        android:textColor="#424242"
         android:layout_gravity="center"
+        android:layout_marginTop="20dp"
         android:text="Thanh Toán" />
 </LinearLayout>

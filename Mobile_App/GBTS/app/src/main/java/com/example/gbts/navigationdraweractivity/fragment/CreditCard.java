@@ -1,5 +1,6 @@
 package com.example.gbts.navigationdraweractivity.fragment;
 
+import android.app.ActionBar;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -21,8 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.R;
-import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
+import com.example.gbts.navigationdraweractivity.adapter.ChooseCardNFCAdapter;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
+import com.example.gbts.navigationdraweractivity.enity.CardNFC;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 import com.example.gbts.navigationdraweractivity.utils.Utility;
 
@@ -33,6 +35,7 @@ import org.json.JSONObject;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 ;
 
@@ -50,12 +53,11 @@ public class CreditCard extends Fragment {
     private static final String TAG_CARD_STATUS = "Status";
     ArrayList<HashMap<String, String>> listCard = new ArrayList<>();
     JSONArray jsonArray = null;
-
+    List<CardNFC> listCardNFC = new ArrayList<>();
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_card, container, false);
-
         if (Utility.isNetworkConnected(getActivity())) {
             new JSONParseCardNFC().execute();
         } else {
@@ -104,7 +106,7 @@ public class CreditCard extends Fragment {
         protected JSONObject doInBackground(String... params) {
 
             JSONParser jParser = new JSONParser();
-            url = Constance.API_GETALLCARD + "&phone=" + phone;
+            url = Constance.API_GET_ALL_CARD + "&phone=" + phone;
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrlPOST(url);
             return json;
@@ -117,7 +119,6 @@ public class CreditCard extends Fragment {
                 // Getting JSON Array from URL
                 int checkPurchase;
                 jsonArray = jsonObject.getJSONArray("data");
-
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     JSONObject object = jsonArray.getJSONObject(i);
@@ -149,36 +150,40 @@ public class CreditCard extends Fragment {
                     map.put(TAG_BALANCE, strBalance);
                     map.put(TAG_CARD_STATUS, strStatus);
                     listCard.add(map);
+
+                    CardNFC cardNFC = new CardNFC();
+                    cardNFC.setCardID(cardID);
+                    cardNFC.setCardName(name);
+                    cardNFC.setRegistrationDate(registrationDate);
+                    cardNFC.setBalance(balance);
+                    cardNFC.setStatus(status);
+                    listCardNFC.add(cardNFC);
                 }
                 ListAdapter adapter = new SimpleAdapter(getActivity(), listCard,
                         R.layout.custom_listview_cardnfc,
                         new String[]{TAG_CARD_NAME, TAG_BALANCE, TAG_CARD_STATUS}, new int[]{R.id.txtCardName, R.id.txtCDBalance, R.id.txtStatus});
+
+                ChooseCardNFCAdapter chooseCardNFCAdapter = new ChooseCardNFCAdapter(getActivity(), listCardNFC);
                 listView = (ListView) getView().findViewById(R.id.listViewCard);
-                listView.setAdapter(adapter);
+                listView.setAdapter(chooseCardNFCAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                         HashMap<String, String> card = listCard.get(position);
-
-//                        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE);
-//                        sharedPreferences.edit().putString("NFCPayment", card.get(TAG_CARD_ID)).commit();
-
+                        CardNFC cardNFC = listCardNFC.get(position);
                         Bundle bundle = new Bundle();
-                        bundle.putString(TAG_CARD_ID, card.get(TAG_CARD_ID));
-                        bundle.putString(TAG_CARD_NAME, card.get(TAG_CARD_NAME));
-                        bundle.putString(TAG_REGISTRATION_DATE, card.get(TAG_REGISTRATION_DATE));
-                        bundle.putString(TAG_BALANCE, card.get(TAG_BALANCE));
-                        bundle.putString(TAG_CARD_STATUS, card.get(TAG_CARD_STATUS));
+                        bundle.putString(TAG_CARD_ID, cardNFC.getCardID());
+                        bundle.putString(TAG_CARD_NAME, cardNFC.getCardName());
+                        bundle.putString(TAG_REGISTRATION_DATE, cardNFC.getRegistrationDate());
+                        bundle.putString(TAG_BALANCE, cardNFC.getBalance() + "");
+                        bundle.putString(TAG_CARD_STATUS, cardNFC.getStatus() + "");
 
                         CreditCardDetails creditCardDetails = new CreditCardDetails();
                         creditCardDetails.setArguments(bundle);
-                        if (card.get(TAG_CARD_STATUS).equals("Thẻ khoá")) {
-                            Toast.makeText(getActivity(), "Thẻ của bạn đã bị khoá xin vui lòng liên nhân viên ", Toast.LENGTH_SHORT).show();
-                        } else {
+
                             final FragmentManager manager = getFragmentManager();
                             creditCardDetails.show(manager, "Details Account");
-                        }
                     }
                 });
 

@@ -1,6 +1,7 @@
 package com.example.gbts.navigationdraweractivity.activity;
 
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +24,7 @@ import com.example.gbts.navigationdraweractivity.adapter.CreditPlanAdapter;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.enity.CreditPlan;
 import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
+import com.example.gbts.navigationdraweractivity.fragment.FragmentTopUp;
 import com.example.gbts.navigationdraweractivity.listener.RecyclerTouchListener;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 import com.example.gbts.navigationdraweractivity.utils.Utility;
@@ -91,13 +93,19 @@ public class CreditPlanActivity extends AppCompatActivity {
     }
 
     public void clickToTopUp(View v) {
-        Intent intent = new Intent(this, TopUpActivity.class);
+
+        //ANH TRUONG
         Intent intentGetCardID = getIntent();
-        Bundle bundle = intentGetCardID.getExtras();
-        //get cardid
-        String cardId = bundle.getString("cardIDForPayPal");
-        intent.putExtra("cardId", cardId);
-        startActivity(intent);
+        String cardID = intentGetCardID.getStringExtra("cardIDForPayPal").toString();
+//        Log.d("truongne", "getintent " + cardID);
+        Bundle bundle = new Bundle();
+        bundle.putString("cardId", cardID);
+        FragmentTopUp fragmentTopUp = new FragmentTopUp();
+        fragmentTopUp.setArguments(bundle);
+        FragmentManager manager = getFragmentManager();
+        if (bundle != null) {
+            fragmentTopUp.show(manager, "TOPUP");
+        }
     }
 
     @Override
@@ -184,6 +192,7 @@ public class CreditPlanActivity extends AppCompatActivity {
 
                                 Log.d(TAG + "id", creditPlanID + "");
                                 Log.d(TAG + "price", creditPlanPrice + "");
+                                Log.d(TAG + "desc", creditPlanDescription.toString() + "");
                                 Log.d(TAG + "name", creditPlanName + "");
 
                                 //Get Intent contain bundle cardID
@@ -213,7 +222,7 @@ public class CreditPlanActivity extends AppCompatActivity {
 
 
 //                                onBuyPress(creditPlan);
-                                Toast.makeText(getApplicationContext(), creditPlan.getCreditplanName() + " is selected!", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getApplicationContext(), creditPlan.getCreditplanName() + " is selected!", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
@@ -224,7 +233,7 @@ public class CreditPlanActivity extends AppCompatActivity {
 
                 Log.d(TAG, listCreditPlan.size() + "");
             } catch (JSONException e) {
-                Toast.makeText(CreditPlanActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(CreditPlanActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
 

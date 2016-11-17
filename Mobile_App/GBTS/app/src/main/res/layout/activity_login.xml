@@ -5,22 +5,22 @@
     android:id="@+id/linearLayout_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:orientation="vertical"
     tools:context="com.example.gbts.navigationdraweractivity.activity.LoginActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="190dp"
-        android:background="#9BCC5F"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_login_activity"
         android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
         <ImageView
             android:id="@+id/nav_icon"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/bus_logo"
-            android:layout_centerVertical="true"
+            android:layout_width="250dp"
+            android:layout_height="200dp"
+            android:src="@drawable/ic_icon_white_bus"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />
 
 
@@ -30,15 +30,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="#9BCC5F"
         android:layout_weight="6"
+        android:background="@drawable/bg_login_activity"
         android:orientation="vertical">
 
         <TableLayout
             android:id="@+id/table_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="10dp"
             android:gravity="top|center">
 
             <TableRow
@@ -51,20 +51,20 @@
 
                 <EditText
                     android:id="@+id/edtPhone"
-                    android:ellipsize="start"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
-                    android:padding="3dp"
-                    android:background="@drawable/edittextflat"
-                    android:layout_marginTop="5dp"
                     android:layout_marginBottom="10dp"
-                    android:hint="Số điện thoại"
-                    android:textColorHint="@color/colorWhite90"
-                    android:inputType="phone"
-                    android:textSize="16sp"
-                    android:textAlignment="center"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/edittextflat"
+                    android:ellipsize="start"
                     android:fontFamily="sans-serif"
-                    android:textColor="@android:color/white">
+                    android:hint="Số điện thoại"
+                    android:inputType="phone"
+                    android:padding="3dp"
+                    android:textAlignment="center"
+                    android:textColor="#fff"
+                    android:textColorHint="#fff"
+                    android:textSize="16sp">
 
                     <requestFocus />
                 </EditText>
@@ -81,17 +81,17 @@
 
                 <EditText
                     android:id="@+id/edtPassword"
-                    android:layout_width="wrap_content"
+                    android:layout_width="250dp"
                     android:layout_height="35dp"
-                    android:textColorHint="@color/colorWhite90"
-                    android:padding="3dp"
                     android:background="@drawable/edittextflat"
+                    android:fontFamily="sans-serif"
                     android:hint="Mật khẩu"
                     android:inputType="textPassword"
-                    android:fontFamily="sans-serif"
-                    android:textSize="16sp"
+                    android:padding="3dp"
                     android:textAlignment="center"
-                    android:textColor="@android:color/white" />
+                    android:textColor="#fff"
+                    android:textColorHint="#fff"
+                    android:textSize="16sp" />
             </TableRow>
 
             <TableRow
@@ -100,15 +100,16 @@
                 android:layout_height="match_parent"
                 android:gravity="center">
 
+
                 <CheckBox
                     android:id="@+id/saveLoginCheckBox"
+                    style="@android:style/Widget.DeviceDefault.Light.CompoundButton.CheckBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:buttonTint="#fff"
                     android:padding="10dp"
                     android:text="Lưu tài khoản"
-                    android:textColor="@color/colorWhite90"
-                    style="@android:style/Widget.DeviceDefault.Light.CompoundButton.CheckBox"
-                    app:buttonTint="@color/colorWhite90" />
+                    android:textColor="#fff" />
 
             </TableRow>
 
@@ -119,19 +120,21 @@
                 android:layout_marginTop="10dp"
                 android:gravity="center">
 
+
                 <Button
                     android:id="@+id/btnLogin"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="5dp"
                     android:background="@drawable/buttonshape"
                     android:onClick="clickToLogin"
                     android:text="Đăng nhập"
-                    android:textColor="@color/colorWhite90"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="10dp"
+                    android:textAllCaps="true"
                     android:textAppearance="@style/TextAppearance.AppCompat"
-                    android:textSize="16sp"
-                    android:textAllCaps="true" />
+                    android:textColor="#fff"
+                    android:textSize="16sp" />
+
 
             </TableRow>
 
@@ -148,12 +151,11 @@
                     android:layout_height="35dp"
                     android:background="@drawable/buttonshape"
                     android:onClick="clickToActivateCard"
-
                     android:text="Kích hoạt"
+                    android:textAllCaps="true"
                     android:textAppearance="@style/TextAppearance.AppCompat"
-                    android:textColor="@color/colorWhite90"
-                    android:textSize="16sp"
-                    android:textAllCaps="true" />
+                    android:textColor="#fff"
+                    android:textSize="16sp" />
             </TableRow>
         </TableLayout>
     </LinearLayout>
