@@ -191,8 +191,14 @@ namespace Green_Bus_Ticket_System.Controllers
                     success = true;
                     message = "Thành công.";
 
+                    int userMinbalance = minBalance;
+                    if(card.User.MinBalance != null)
+                    {
+                        userMinbalance = card.User.MinBalance.Value;
+                    }
+
                     //Check balance is running out & if user have installed mobile app
-                    if (card.Balance > 0 && card.Balance <= minBalance && card.User != null && card.User.NotificationCode != null)
+                    if (card.Balance > 0 && card.Balance <= userMinbalance && card.User != null && card.User.NotificationCode != null)
                     {
                         string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
                         if (card.Balance < _ticketTypeService.GetMinPrice())
@@ -617,6 +623,48 @@ namespace Green_Bus_Ticket_System.Controllers
 
         //GET: GetUserInfo
 
+        public JsonResult GetProfile(string key, string phone)
+        {
+            string message = "";
+            bool success = false;
+            Object result = new { };
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            if (_userService.IsUserExist(phone))
+            {
+                User user = _userService.GetUserByPhone(phone);
+
+                if (user.Status == (int)StatusReference.UserStatus.DEACTIVATED)
+                {
+                    success = false;
+                    message = "Tài khoản đang bị khóa.";
+                }
+                else
+                {
+                    result = new
+                    {
+                        UserId = user.UserId,
+                        PhoneNumber = user.PhoneNumber,
+                        Fullname = user.Fullname,
+                        MinBalance = (user.MinBalance == null)?10000:user.MinBalance
+                    };
+                    success = true;
+                }
+            }
+            else
+            {
+                success = false;
+                message = "Số điện thoại không tồn tại.";
+            }
+
+            return Json(new { success = success, message = message, data = result }, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult GetStaffInfo(string key, string phone)
         {
             string message = "";
@@ -940,8 +988,14 @@ namespace Green_Bus_Ticket_System.Controllers
                             amount = newPrice;
                             version = card.DataVersion;
 
+                            int userMinbalance = minBalance;
+                            if (card.User.MinBalance != null)
+                            {
+                                userMinbalance = card.User.MinBalance.Value;
+                            }
+
                             //Check balance is running out & if user have installed mobile app
-                            if (card.Balance > 0 && card.Balance <= minBalance && card.User != null && card.User.NotificationCode != null)
+                            if (card.Balance > 0 && card.Balance <= userMinbalance && card.User != null && card.User.NotificationCode != null)
                             {
                                 string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
                                 if (card.Balance < _ticketTypeService.GetMinPrice())
@@ -1002,8 +1056,14 @@ namespace Green_Bus_Ticket_System.Controllers
                             balance = card.Balance;
                             amount = newPrice;
                             version = dataVersion;
+
+                            int userMinbalance = minBalance;
+                            if (card.User.MinBalance != null)
+                            {
+                                userMinbalance = card.User.MinBalance.Value;
+                            }
                             //Check balance is running out & if user have installed mobile app
-                            if (card.Balance > 0 && card.Balance <= minBalance && card.User != null && card.User.NotificationCode != null)
+                            if (card.Balance > 0 && card.Balance <= userMinbalance && card.User != null && card.User.NotificationCode != null)
                             {
                                 string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
                                 if (card.Balance < _ticketTypeService.GetMinPrice())
@@ -1204,8 +1264,13 @@ namespace Green_Bus_Ticket_System.Controllers
                             amount = newPrice;
                             version = card.DataVersion;
 
+                            int userMinbalance = minBalance;
+                            if (card.User.MinBalance != null)
+                            {
+                                userMinbalance = card.User.MinBalance.Value;
+                            }
                             //Check balance is running out & if user have installed mobile app
-                            if (card.Balance > 0 && card.Balance <= minBalance && card.User != null && card.User.NotificationCode != null)
+                            if (card.Balance > 0 && card.Balance <= userMinbalance && card.User != null && card.User.NotificationCode != null)
                             {
                                 string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
                                 if (card.Balance < _ticketTypeService.GetMinPrice())
@@ -1273,8 +1338,14 @@ namespace Green_Bus_Ticket_System.Controllers
                             balance = card.Balance;
                             amount = newPrice;
                             version = dataVersion;
+
+                            int userMinbalance = minBalance;
+                            if (card.User.MinBalance != null)
+                            {
+                                userMinbalance = card.User.MinBalance.Value;
+                            }
                             //Check balance is running out & if user have installed mobile app
-                            if (card.Balance > 0 && card.Balance <= minBalance && card.User != null && card.User.NotificationCode != null)
+                            if (card.Balance > 0 && card.Balance <= userMinbalance && card.User != null && card.User.NotificationCode != null)
                             {
                                 string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
                                 if (card.Balance < _ticketTypeService.GetMinPrice())
@@ -1531,7 +1602,7 @@ namespace Green_Bus_Ticket_System.Controllers
 
         //POST: UpdateProfile
         [HttpPost]
-        public JsonResult UpdateProfile(string key, string phone, string fullname, string password)
+        public JsonResult UpdateProfile(string key, string phone, string fullname, string password, int minBalance)
         {
             string message = "";
             bool success = false;
@@ -1553,6 +1624,10 @@ namespace Green_Bus_Ticket_System.Controllers
                 if (password.Trim().Length > 0)
                 {
                     user.Password = CommonUtils.HashPassword(password);
+                }
+                if(user.MinBalance > 0)
+                {
+                    user.MinBalance = minBalance;
                 }
 
                 _userService.Update(user);
@@ -1683,6 +1758,60 @@ namespace Green_Bus_Ticket_System.Controllers
         {
             string message = "";
             bool success = false;
+            List<object> report = new List<object>();
+
+            if (!apiKey.Equals(key))
+            {
+                message = "Sai api key.";
+                success = false;
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                String current = DateTime.Now.ToString("hh:mm:ss tt");
+
+                DateTime begin = DateTime.ParseExact(beginDate + " 00:00:00 AM", "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
+                DateTime end = DateTime.ParseExact(endDate + " " + current, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
+
+                User user = _userService.GetUserByPhone(phone);
+                if (user != null)
+                {
+                    foreach(Card card in user.Cards)
+                    {
+                        List<Ticket> tickets = _ticketService.GetTicketByDateRangeAndCard(card.UniqueIdentifier, begin, end);
+                        var result = new
+                        {
+                            cardUID = card.UniqueIdentifier,
+                            cardName = card.CardName,
+                            count = tickets.Count,
+                            total = tickets.Sum(t => t.Total).ToString("#,##0") + " đ",
+                            frequently = tickets.OrderByDescending(t => t.BoughtDated)
+                                                .Select(t => t.BusRoute.Code).Distinct()
+                        };
+                        report.Add(result);
+                    }
+
+                    success = true;
+                }
+
+            }
+            catch (FormatException e)
+            {
+                log.Error("GetReport input date with wrong format");
+                success = false;
+                message = "Ngày tháng sai định dạng dd/MM/yyyy";
+            }
+
+            return Json(new { success = success, message = message, data = report }, JsonRequestBehavior.AllowGet);
+
+        }
+
+        //GET; GetReportInDetails
+        public JsonResult GetReportInDetails(string key, string phone, string beginDate, string endDate)
+        {
+            string message = "";
+            bool success = false;
             IEnumerable<Object> report = new List<Object>();
             if (!apiKey.Equals(key))
             {
@@ -1727,6 +1856,7 @@ namespace Green_Bus_Ticket_System.Controllers
             return Json(new { success = success, message = message, data = report }, JsonRequestBehavior.AllowGet);
 
         }
+
 
         //GET: RegisterNotificationToken
         public JsonResult RegisterNotificationToken(string key, string phone, string token)

@@ -136,6 +136,7 @@
           <Property Name="Status" Type="int" Nullable="false" />
           <Property Name="RoleId" Type="int" Nullable="false" />
           <Property Name="NotificationCode" Type="nvarchar(max)" />
+          <Property Name="MinBalance" Type="int" />
         </EntityType>
         <EntityType Name="UserSubscription">
           <Key>
@@ -350,41 +351,17 @@
           <Property Name="Status" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Tickets" Relationship="GreenBusModel.FK_Ticket_TicketType" FromRole="TicketType" ToRole="Ticket" />
         </EntityType>
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="UserId" />
-          </Key>
-          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PhoneNumber" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Fullname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
-          <Property Name="RoleId" Type="Int32" Nullable="false" />
-          <Property Name="NotificationCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Role" Relationship="GreenBusModel.FK_User_Role" FromRole="User" ToRole="Role" />
-          <NavigationProperty Name="Cards" Relationship="GreenBusModel.FK_Card_User" FromRole="User" ToRole="Card" />
-          <NavigationProperty Name="UserSubscriptions" Relationship="GreenBusModel.FK_UserSubscription_User" FromRole="User" ToRole="UserSubscription" />
-        </EntityType>
         <EntityContainer Name="GreenBusEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="BusRoutes" EntityType="Self.BusRoute" />
           <EntitySet Name="Roles" EntityType="Self.Role" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="TicketTypes" EntityType="Self.TicketType" />
-          <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="PaymentTransactions" EntityType="GreenBusModel.PaymentTransaction" />
-          <AssociationSet Name="FK_User_Role" Association="GreenBusModel.FK_User_Role">
-            <End Role="Role" EntitySet="Roles" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
           <EntitySet Name="Cards" EntityType="GreenBusModel.Card" />
           <EntitySet Name="Tickets" EntityType="GreenBusModel.Ticket" />
           <AssociationSet Name="FK_Ticket_BusRoute" Association="GreenBusModel.FK_Ticket_BusRoute">
             <End Role="BusRoute" EntitySet="BusRoutes" />
             <End Role="Ticket" EntitySet="Tickets" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Card_User" Association="GreenBusModel.FK_Card_User">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Card" EntitySet="Cards" />
           </AssociationSet>
           <AssociationSet Name="FK_PaymentTransaction_Card" Association="GreenBusModel.FK_PaymentTransaction_Card">
             <End Role="Card" EntitySet="Cards" />
@@ -404,10 +381,6 @@
             <End Role="PaymentTransaction" EntitySet="PaymentTransactions" />
           </AssociationSet>
           <EntitySet Name="UserSubscriptions" EntityType="GreenBusModel.UserSubscription" />
-          <AssociationSet Name="FK_UserSubscription_User" Association="GreenBusModel.FK_UserSubscription_User">
-            <End Role="User" EntitySet="Users" />
-            <End Role="UserSubscription" EntitySet="UserSubscriptions" />
-          </AssociationSet>
           <EntitySet Name="Tokens" EntityType="GreenBusModel.Token" />
           <EntitySet Name="Promotions" EntityType="GreenBusModel.Promotion" />
           <EntitySet Name="OfferSubscriptions" EntityType="GreenBusModel.OfferSubscription" />
@@ -416,6 +389,19 @@
             <End Role="UserSubscription" EntitySet="UserSubscriptions" />
           </AssociationSet>
           <EntitySet Name="ScratchCards" EntityType="GreenBusModel.ScratchCard" />
+          <EntitySet Name="Users" EntityType="GreenBusModel.User" />
+          <AssociationSet Name="FK_Card_User" Association="GreenBusModel.FK_Card_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Card" EntitySet="Cards" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Role" Association="GreenBusModel.FK_User_Role">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserSubscription_User" Association="GreenBusModel.FK_UserSubscription_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UserSubscription" EntitySet="UserSubscriptions" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="PaymentTransaction">
           <Key>
@@ -430,18 +416,6 @@
           <NavigationProperty Name="Card" Relationship="GreenBusModel.FK_PaymentTransaction_Card" FromRole="PaymentTransaction" ToRole="Card" />
           <NavigationProperty Name="CreditPlan" Relationship="GreenBusModel.FK_PaymentTransaction_CreditPlan" FromRole="PaymentTransaction" ToRole="CreditPlan" />
         </EntityType>
-        <Association Name="FK_User_Role">
-          <End Type="GreenBusModel.Role" Role="Role" Multiplicity="1" />
-          <End Type="GreenBusModel.User" Role="User" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Role">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="User">
-              <PropertyRef Name="RoleId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Card">
           <Key>
             <PropertyRef Name="Id" />
@@ -454,9 +428,9 @@
           <Property Name="Status" Type="Int32" Nullable="false" />
           <Property Name="UserId" Type="Int32" />
           <Property Name="DataVersion" Type="Int64" />
-          <NavigationProperty Name="User" Relationship="GreenBusModel.FK_Card_User" FromRole="Card" ToRole="User" />
           <NavigationProperty Name="PaymentTransactions" Relationship="GreenBusModel.FK_PaymentTransaction_Card" FromRole="Card" ToRole="PaymentTransaction" />
           <NavigationProperty Name="Tickets" Relationship="GreenBusModel.FK_Ticket_Card" FromRole="Card" ToRole="Ticket" />
+          <NavigationProperty Name="User" Relationship="GreenBusModel.FK_Card_User" FromRole="Card" ToRole="User" />
         </EntityType>
         <EntityType Name="Ticket">
           <Key>
@@ -482,18 +456,6 @@
             </Principal>
             <Dependent Role="Ticket">
               <PropertyRef Name="BusRouteId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Card_User">
-          <End Type="GreenBusModel.User" Role="User" Multiplicity="0..1" />
-          <End Type="GreenBusModel.Card" Role="Card" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Card">
-              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -565,21 +527,9 @@
           <Property Name="ExpiredDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="TicketRemaining" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="User" Relationship="GreenBusModel.FK_UserSubscription_User" FromRole="UserSubscription" ToRole="User" />
           <NavigationProperty Name="OfferSubscription" Relationship="GreenBusModel.FK_UserSubscription_OfferSubscription" FromRole="UserSubscription" ToRole="OfferSubscription" />
+          <NavigationProperty Name="User" Relationship="GreenBusModel.FK_UserSubscription_User" FromRole="UserSubscription" ToRole="User" />
         </EntityType>
-        <Association Name="FK_UserSubscription_User">
-          <End Type="GreenBusModel.User" Role="User" Multiplicity="1" />
-          <End Type="GreenBusModel.UserSubscription" Role="UserSubscription" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="UserSubscription">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Token">
           <Key>
             <PropertyRef Name="TheKey" />
@@ -633,6 +583,58 @@
           <Property Name="Status" Type="Int32" Nullable="false" />
           <Property Name="ExpiredDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PhoneNumber" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Fullname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="RoleId" Type="Int32" Nullable="false" />
+          <Property Name="NotificationCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MinBalance" Type="Int32" />
+          <NavigationProperty Name="Cards" Relationship="GreenBusModel.FK_Card_User" FromRole="User" ToRole="Card" />
+          <NavigationProperty Name="Role" Relationship="GreenBusModel.FK_User_Role" FromRole="User" ToRole="Role" />
+          <NavigationProperty Name="UserSubscriptions" Relationship="GreenBusModel.FK_UserSubscription_User" FromRole="User" ToRole="UserSubscription" />
+        </EntityType>
+        <Association Name="FK_Card_User">
+          <End Type="GreenBusModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="GreenBusModel.Card" Role="Card" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Card">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Role">
+          <End Type="GreenBusModel.Role" Role="Role" Multiplicity="1" />
+          <End Type="GreenBusModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserSubscription_User">
+          <End Type="GreenBusModel.User" Role="User" Multiplicity="1" />
+          <End Type="GreenBusModel.UserSubscription" Role="UserSubscription" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserSubscription">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -675,19 +677,6 @@
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Price" ColumnName="Price" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="GreenBusModel.User">
-              <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="NotificationCode" ColumnName="NotificationCode" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="Fullname" ColumnName="Fullname" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -793,6 +782,20 @@
                 <ScalarProperty Name="Price" ColumnName="Price" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="GreenBusModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="MinBalance" ColumnName="MinBalance" />
+                <ScalarProperty Name="NotificationCode" ColumnName="NotificationCode" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Fullname" ColumnName="Fullname" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
