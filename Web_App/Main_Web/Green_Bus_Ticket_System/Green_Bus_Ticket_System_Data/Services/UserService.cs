@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Configuration;
 
 namespace Green_Bus_Ticket_System_Data.Services
 {
@@ -53,7 +54,7 @@ namespace Green_Bus_Ticket_System_Data.Services
             user.Status = (int)StatusReference.UserStatus.ACTIVATED;
             user.RoleId = roleId;
             user.Password = CommonUtils.HashPassword(password);
-
+            user.MinBalance = Int32.Parse(ConfigurationManager.AppSettings["AlertBalance"]);
             _repository.Add(user);
             return user;
         }

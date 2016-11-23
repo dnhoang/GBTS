@@ -4,6 +4,7 @@ using Green_Bus_Ticket_System_Utils;
 using log4net;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -111,14 +112,13 @@ namespace Green_Bus_Ticket_System.Areas.Admin.Controllers
                 if(roleSv != null)
                 {
                     User user = new User();
-
                     user.Fullname = roleSv.Name;
                     user.RoleId = role;
                     user.PhoneNumber = phone;
                     user.Status = (int)StatusReference.UserStatus.ACTIVATED;
                     string password = "G" + CommonUtils.GeneratePassword(5);
                     user.Password = CommonUtils.HashPassword(password);
-
+                    user.MinBalance = Int32.Parse(ConfigurationManager.AppSettings["AlertBalance"]);
                     _userService.Create(user);
 
                     string responseMessage = "Tai khoan: " + phone + ". Mat khau: " + password;

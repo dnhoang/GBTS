@@ -30,10 +30,10 @@ namespace Green_Bus_Ticket_System_Data
         public Nullable<int> UserId { get; set; }
         public Nullable<long> DataVersion { get; set; }
     
-        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PaymentTransaction> PaymentTransactions { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Ticket> Tickets { get; set; }
+        public virtual User User { get; set; }
     }
 }

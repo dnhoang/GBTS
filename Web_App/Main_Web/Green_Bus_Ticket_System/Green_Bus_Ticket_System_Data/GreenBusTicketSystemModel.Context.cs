@@ -29,7 +29,6 @@ namespace Green_Bus_Ticket_System_Data
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<TicketType> TicketTypes { get; set; }
-        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<PaymentTransaction> PaymentTransactions { get; set; }
         public virtual DbSet<Card> Cards { get; set; }
         public virtual DbSet<Ticket> Tickets { get; set; }
@@ -39,5 +38,6 @@ namespace Green_Bus_Ticket_System_Data
         public virtual DbSet<Promotion> Promotions { get; set; }
         public virtual DbSet<OfferSubscription> OfferSubscriptions { get; set; }
         public virtual DbSet<ScratchCard> ScratchCards { get; set; }
+        public virtual DbSet<User> Users { get; set; }
     }
 }
