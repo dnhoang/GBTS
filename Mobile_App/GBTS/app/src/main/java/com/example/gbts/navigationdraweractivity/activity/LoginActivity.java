@@ -79,6 +79,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 // Set up the input
                 final EditText input = new EditText(LoginActivity.this);
+                String textValue = getSharedPreferences("Info", MODE_PRIVATE).getString("HostName", "https://ginbuz.netx");
+                if (textValue != null && textValue != "") {
+                    input.setText(textValue);
+                }
                 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
                 builder.setView(input);

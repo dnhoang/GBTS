@@ -27,10 +27,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -59,6 +56,9 @@
 
         <activity android:name=".activity.CreditPlanActivity" />
         <activity android:name=".activity.PaypalActivity" />
+        <activity android:name=".activity.BusStopActivity" />
+        <activity android:name=".activity.ActivityGoogleFindPath" />
+        <activity android:name=".tabhost.TabHostPurchase" />
         <activity
             android:name=".activity.ActivateCardActivity"
             android:label="Kích hoạt thẻ">
@@ -69,22 +69,12 @@
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech" />
         </activity>
-        <activity android:name=".activity.BusStopActivity" />
-        <activity android:name=".activity.ActivityGoogleFindPath">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
         <activity android:name=".activity.TopUpActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.gbts.navigationdraweractivity.MainActivity" />
-
         </activity>
+        <activity android:name=".tabhost.TabhostActivity"></activity>
     </application>
 
 </manifest>

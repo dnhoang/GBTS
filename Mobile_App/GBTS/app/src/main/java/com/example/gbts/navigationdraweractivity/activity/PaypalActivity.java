@@ -82,6 +82,7 @@ public class PaypalActivity extends AppCompatActivity {
         //Display Home As Up Enabled
         actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("BẠN ĐÃ CHỌN GÓI");
 
         getSetData();
 
@@ -116,9 +117,6 @@ public class PaypalActivity extends AppCompatActivity {
             //Get and Set Text Control
             txtName = (TextView) findViewById(R.id.txtCreditPlanName);
             txtName.setText(name);
-
-            txtCreditDescription = (TextView) findViewById(R.id.txtCreditDescription);
-            txtCreditDescription.setText(description);
 
             txtCreditPlanPrice = (TextView) findViewById(R.id.txtCreditPlanPrice);
             txtCreditPlanPrice.setText(strPrice);
@@ -218,14 +216,14 @@ public class PaypalActivity extends AppCompatActivity {
                         //Get bundle from Intent
                         Bundle bundle = getIntent().getExtras();
                         if (bundle != null) {
-                            final String cardId = bundle.getString("cardIDForPayPal1");
+                            final String cardId = bundle.getString("cardID");
                             Log.d(TAG, "cardID" + cardId);
 
                             final String creditPlanId = bundle.getInt("creditPlanID") + "";
                             Log.d(TAG, "creditPlanId " + creditPlanId);
-
-                            String creditPlanPrice = bundle.getInt("creditPlanPrice") + "";
-                            Log.d(TAG, "creditPlanPrice " + creditPlanPrice);
+//
+//                            String creditPlanPrice = bundle.getInt("creditPlanPrice") + "";
+//                            Log.d(TAG, "creditPlanPrice " + creditPlanPrice);
 
                             JSONObject jsonObj = new JSONObject(confirm.toJSONObject().toString());
                             final String transactionId = jsonObj.getJSONObject("response").getString("id");

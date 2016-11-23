@@ -19,21 +19,25 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        android:gravity="center"
+        android:layout_margin="5dp"
+        android:layout_gravity="center"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="2dp"
+            android:layout_marginLeft="10dp"
             android:text="Tìm nhanh: " />
 
         <EditText
             android:id="@+id/edtFilterBusStop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10" />
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:padding="2dp"
+            android:background="@drawable/edittext_profile"
+            android:ems="11" />
     </LinearLayout>
 
     <ListView

@@ -2,12 +2,13 @@ package com.example.gbts.navigationdraweractivity.fragment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -133,13 +134,18 @@ public class GetReport extends Fragment {
                     Bundle bundle = new Bundle();
                     bundle.putString("action", "transferGetReport");
                     disconnect.setArguments(bundle);
-                    getActivity().getFragmentManager().beginTransaction()
+                    getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
                             .addToBackStack(null)
                             .commit();
                 }
             }
         });
+
+        Bundle bundleSend = new Bundle();
+        bundleSend.putString("currentContext", "GetReport");
+        Intent intent = getActivity().getIntent();
+        intent.putExtras(bundleSend);
 
         return view;
     }

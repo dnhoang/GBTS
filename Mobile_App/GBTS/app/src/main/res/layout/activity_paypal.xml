@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_paypal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context="com.example.gbts.navigationdraweractivity.activity.PaypalActivity">
 
@@ -11,39 +11,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="5dp">
+        android:padding="10dp">
 
         <ImageView
             android:id="@+id/ic_credit_Plan"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
             android:padding="5dp"
             android:src="@drawable/ic_gift_creditplan" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/txtCreditPlanName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
                 android:text="Gói tiền phù hợp" />
-
-            <TextView
-                android:id="@+id/txtCreditDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:text="Vừa phải" />
 
             <TextView
                 android:id="@+id/txtCreditPlanPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
                 android:text="Giá tiền"
                 android:textColor="#01579B" />
         </LinearLayout>

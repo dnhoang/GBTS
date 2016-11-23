@@ -1,26 +1,9 @@
 package com.example.gbts.navigationdraweractivity.module.google.mapsAPI;
 
-import android.app.Dialog;
-import android.app.FragmentManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.gbts.navigationdraweractivity.R;
-import com.example.gbts.navigationdraweractivity.activity.ActivityGoogleFindPath;
-import com.example.gbts.navigationdraweractivity.fragment.CreditCard;
-import com.example.gbts.navigationdraweractivity.fragment.FragmentChooseCard;
-import com.example.gbts.navigationdraweractivity.fragment.FragmentDirection;
-import com.example.gbts.navigationdraweractivity.fragment.GetAllButRoute;
-import com.example.gbts.navigationdraweractivity.utils.Utility;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;

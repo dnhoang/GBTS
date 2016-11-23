@@ -1,13 +1,14 @@
 package com.example.gbts.navigationdraweractivity.fragment;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,6 +27,9 @@ import com.example.gbts.navigationdraweractivity.activity.CreditPlanActivity;
 import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
 import com.example.gbts.navigationdraweractivity.enity.CardNFC;
+import com.example.gbts.navigationdraweractivity.tabhost.TabHostCreditPlan;
+import com.example.gbts.navigationdraweractivity.tabhost.TabHostFragment;
+import com.example.gbts.navigationdraweractivity.tabhost.TabhostActivity;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 import com.example.gbts.navigationdraweractivity.utils.Utility;
 
@@ -51,7 +55,7 @@ public class CreditCardDetails extends DialogFragment
     private static final String TAG_REGISTRATION_DATE = "RegistrationDate";
     private static final String TAG_BALANCE = "Balance";
     private static final String TAG_CARD_STATUS = "Status";
-
+    private static final String TAG_FRAGMENT = "CreditCardDetails";
 
     HashMap<String, String> card = new HashMap<>();
 
@@ -111,6 +115,11 @@ public class CreditCardDetails extends DialogFragment
                 final String cardID = txtCardId.getText().toString();
                 final String cardName = edtCardName.getText().toString().trim();
 
+                Bundle bundleSend = new Bundle();
+                bundleSend.putString("changeCardNameCallCreditCard", "changeCardNameCallCreditCard");
+                Intent intent = getActivity().getIntent();
+                intent.putExtras(bundleSend);
+
                 if (Utility.isNetworkConnected(getActivity())) {
                     new AsyncChangeCardName().execute(cardID, cardName);
                 } else {
@@ -149,20 +158,51 @@ public class CreditCardDetails extends DialogFragment
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("CREDITDETAILS ", "onDestroy " + "onDestroy");
+        CreditCard creditCard = new CreditCard();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.flContent, creditCard, TAG)
+                .addToBackStack(null)
+                .commit();
+
+    }
+
+    @Override
     public void onClick(View v) {
-        txtStatusName = (TextView) getView().findViewById(R.id.txtStatusName);
+        txtStatusName = (TextView) getView().findViewById(R.id.txtDetailsStatusName);
         txtCardId = (TextView) getView().findViewById(R.id.txtCardIDDetails);
         String status = txtStatusName.getText().toString();
         final String cardID = txtCardId.getText().toString();
 
         if (status.equals("Đã kích hoạt")) {
             if (R.id.btnPurchase == v.getId()) {
-                final Intent intent = new Intent(getActivity(), CreditPlanActivity.class);
+//                final Intent intent = new Intent(getActivity(), CreditPlanActivity.class);
+//                Bundle bundleCreditPlanActivity = new Bundle();
+//                bundleCreditPlanActivity.putString("cardIDCreditDetails", cardID);
+//                intent.putExtras(bundleCreditPlanActivity);
+                Log.d("haizzz", "cardID " + cardID);
                 Bundle bundle1 = new Bundle();
-                bundle1.putString("cardIDForPayPal", cardID);
-                intent.putExtras(bundle1);
+                bundle1.putString("cardIDCreditDetails", cardID);
+//                TabHostCreditPlan tabHostCreditPlan = new TabHostCreditPlan();
+//                tabHostCreditPlan.setArguments(bundle1);
+//                Intent intent = getActivity().getIntent();
+//                intent.putExtras(bundle1);
+//                TabHostCreditPlan tabHostCreditPlan = new TabHostCreditPlan();
+//                tabHostCreditPlan.setArguments(bundle1);
+
+                final Intent intentTanhost = new Intent(getActivity(), TabhostActivity.class);
+                intentTanhost.putExtras(bundle1);
+//                final TabHostFragment tabHostFragment = new TabHostFragment();
+
                 if (Utility.isNetworkConnected(getActivity())) {
-                    startActivity(intent);
+//                    startActivity(intent);
+                    startActivity(intentTanhost);
+//                    getDialog().dismiss();
+//                    getActivity().getSupportFragmentManager().beginTransaction()
+//                            .replace(R.id.flContent, tabHostFragment, TAG_FRAGMENT)
+//                            .addToBackStack(null)
+//                            .commit();
                 } else {
                     // custom dialog
                     final Dialog dialog = new Dialog(getActivity());
@@ -176,7 +216,13 @@ public class CreditCardDetails extends DialogFragment
                         public void onClick(View v) {
                             if (Utility.isNetworkConnected(getActivity())) {
                                 dialog.dismiss();
-                                startActivity(intent);
+//                                startActivity(intent);
+                                startActivity(intentTanhost);
+//                                getDialog().dismiss();
+//                                getActivity().getSupportFragmentManager().beginTransaction()
+//                                        .replace(R.id.flContent, tabHostFragment, TAG_FRAGMENT)
+//                                        .addToBackStack(null)
+//                                        .commit();
                             }
                         }
                     });
@@ -202,7 +248,6 @@ public class CreditCardDetails extends DialogFragment
     }
 
     private class AsyncGetCardInfo extends AsyncTask<String, Void, JSONObject> {
-        String url, cardId;
 
         @Override
         protected void onPreExecute() {
@@ -213,7 +258,8 @@ public class CreditCardDetails extends DialogFragment
         @Override
         protected JSONObject doInBackground(String... params) {
             JSONParser jsonParser = new JSONParser();
-            url = Constance.API_GET_CARD_INFO + "&cardId=" + params[0];
+            String url = Constance.API_GET_CARD_INFO + "&cardId=" + params[0];
+            Log.d("CREDITDETAILS ", "url " + url);
             JSONObject json = jsonParser.getJSONFromUrlGET(url);
             return json;
         }
@@ -222,9 +268,6 @@ public class CreditCardDetails extends DialogFragment
         protected void onPostExecute(JSONObject jsonObject) {
             super.onPostExecute(jsonObject);
             if (jsonObject != null) {
-
-                Log.d("CREDITDETAILS ", "cardId " + cardId);
-                Log.d("CREDITDETAILS ", "url " + url);
                 boolean success = jsonObject.optBoolean("success");
                 if (success) {
                     try {
@@ -244,7 +287,7 @@ public class CreditCardDetails extends DialogFragment
                         txtBalance = (TextView) getView().findViewById(R.id.txtBalanceDetails);
                         txtRegistration = (TextView) getView().findViewById(R.id.txtRegistrationDateDetails);
                         txtStatus = (TextView) getView().findViewById(R.id.txtStatusDetails);
-                        txtStatusName = (TextView) getView().findViewById(R.id.txtStatusName);
+                        txtStatusName = (TextView) getView().findViewById(R.id.txtDetailsStatusName);
                         edtCardName = (EditText) getView().findViewById(R.id.edtCardNameDetails);
                         imgEditCardName = (ImageView) getView().findViewById(R.id.imgEditCardViewDetails);
 
@@ -320,6 +363,7 @@ public class CreditCardDetails extends DialogFragment
                                             if (bundle != null) {
                                                 String cardId = bundle.getString(TAG_CARD_ID);
                                                 new AsyncGetCardInfo().execute(cardId);
+
                                             } else {
                                                 Log.d("AsyncGetCardInfo", "cardId is null");
                                             }

@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+    <item
+        android:id="@+id/action_creditCard"
         android:orderInCategory="100"
+        android:title="Thẻ của tôi"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_Report"
+        android:orderInCategory="100"
+        android:title="Báo cáo chi tiêu"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_Profile"
+        android:orderInCategory="100"
+        android:title="Tài khoản"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_Logout"
+        android:orderInCategory="100"
+        android:title="Đăng xuất"
         app:showAsAction="never" />
 </menu>

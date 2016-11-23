@@ -1,8 +1,8 @@
 package com.example.gbts.navigationdraweractivity.fragment;
 
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -150,11 +150,11 @@ public class AccountInfo extends Fragment {
                     listCard.add(map);
                     Log.d("CreditCardtq listCard2", listCard.size() + "");
                 }
-                ListAdapter adapter = new SimpleAdapter(getActivity(), listCard,
-                        R.layout.custom_listview_cardnfc,
-                        new String[]{TAG_CARD_NAME, TAG_CARD_STATUS}, new int[]{R.id.txtCardName, R.id.txtStatus});
+//                ListAdapter adapter = new SimpleAdapter(getActivity(), listCard,
+//                        R.layout.custom_listview_cardnfc,
+//                        new String[]{TAG_CARD_NAME, TAG_CARD_STATUS}, new int[]{R.id.txtCardName, R.id.txtStatus});
                 listView = (ListView) getView().findViewById(R.id.listViewCard);
-                listView.setAdapter(adapter);
+//                listView.setAdapter(adapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

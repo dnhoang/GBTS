@@ -11,19 +11,29 @@
             android:icon="@drawable/ic_action_report"
             android:title="BÁO CÁO CHI TIÊU" />
         <item
-            android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_action_user"
-            android:title="TÀI KHOẢN CỦA TÔI" />
-        <item
             android:id="@+id/nav_choose_card"
             android:icon="@drawable/ic_action_credit_card_plus"
-            android:title="MUA VÉ BẰNG ĐIỆN THOẠI"
-            />
+            android:title="MUA VÉ BẰNG ĐIỆN THOẠI" />
+        <item
+            android:id="@+id/nav_search_routes"
+            android:icon="@drawable/ic_search"
+            android:title="TRA CỨU TUYẾN" />
+        <item
+            android:id="@+id/nav_find_direction"
+            android:icon="@drawable/ic_bus"
+            android:title="TÌM XE BUÝT" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_action_user"
+            android:title="TÀI KHOẢN" />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_phone"
+            android:title="LIÊN HỆ" />
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_action_logout"
-            android:title="ĐĂNG XUẤT"
-            />
+            android:title="ĐĂNG XUẤT" />
     </group>
 
 

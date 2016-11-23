@@ -28,9 +28,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize">
-        <!--<include-->
-        <!--layout="@layout/content_main"/>-->
+
     </FrameLayout>
+    <!--<FrameLayout-->
+        <!--android:id="@+id/flContent1"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_marginTop="?attr/actionBarSize">-->
+
+    <!--</FrameLayout>-->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_direction"
@@ -40,11 +46,12 @@
         android:layout_marginBottom="140dp"
         android:layout_marginRight="@dimen/fab_margin"
         android:elevation="5dp"
-        android:visibility="invisible"
-        android:src="@drawable/ic_action_location"
-        app:backgroundTint="@color/fab2_color"
         android:onClick="clickToDirection"
+        android:src="@drawable/ic_action_location"
+        android:visibility="invisible"
+        app:backgroundTint="@color/fab2_color"
         app:pressedTranslationZ="10dp" />
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_search"
@@ -53,9 +60,9 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="80dp"
         android:layout_marginRight="@dimen/fab_margin"
-        android:visibility="invisible"
         android:elevation="5dp"
         android:src="@drawable/ic_action_information"
+        android:visibility="invisible"
         app:backgroundTint="@color/fab1_color"
         app:pressedTranslationZ="10dp" />
 

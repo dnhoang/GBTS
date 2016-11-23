@@ -1,7 +1,11 @@
 package com.example.gbts.navigationdraweractivity.fragment;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.app.FragmentHostCallback;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,13 +44,13 @@ import java.util.List;
  * Created by truon on 10/9/2016.
  */
 
-public class GetAllButRoute extends DialogFragment {
+public class GetAllBusRoute extends DialogFragment {
     ListView listView;
     List<AllBusroutes> busroutesList;
     AllBusroutes busroutes;
     AllBusroutesAdapter allBusroutesAdapter;
     EditText edtFillterBusStop;
-
+    Context context;
 
     @Nullable
     @Override
@@ -153,34 +157,39 @@ public class GetAllButRoute extends DialogFragment {
 
                         busroutesList.add(busroutes);
                     }
-
-                    allBusroutesAdapter = new AllBusroutesAdapter(getActivity(), busroutesList);
-
-                    listView = (ListView) getView().findViewById(R.id.listView_getBusroute);
                     if (busroutesList != null) {
+                        allBusroutesAdapter = new AllBusroutesAdapter(getActivity(), busroutesList);
 
-                        listView.setTextFilterEnabled(true);
-                        listView.setAdapter(allBusroutesAdapter);
-                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                busroutes = busroutesList.get(position);
-                                // ID is tuyen duong
-                                String routeCode = busroutes.getBusCode();
-                                String routeName = busroutes.getBusName();
-                                if (routeCode != "" && routeName != "") {
-                                    Intent intent = new Intent(getActivity(), BusStopActivity.class);
-                                    intent.putExtra("routeCode", routeCode);
-                                    intent.putExtra("routeName", routeName);
-                                    startActivity(intent);
-                                } else {
+                        listView = (ListView) getView().findViewById(R.id.listView_getBusroute);
+                        if (busroutesList != null) {
 
+                            listView.setTextFilterEnabled(true);
+                            listView.setAdapter(allBusroutesAdapter);
+                            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    busroutes = busroutesList.get(position);
+                                    // ID is tuyen duong
+                                    String routeCode = busroutes.getBusCode();
+                                    String routeName = busroutes.getBusName();
+                                    if (routeCode != "" && routeName != "") {
+                                        Intent intent = new Intent(getActivity(), BusStopActivity.class);
+                                        intent.putExtra("routeCode", routeCode);
+                                        intent.putExtra("routeName", routeName);
+                                        startActivity(intent);
+                                    } else {
+
+                                    }
                                 }
-                            }
-                        });
-                    } else {
-                        listView.setAdapter(null);
+                            });
+                        } else {
+                            listView.setAdapter(null);
+                        }
+                    }else {
+                        // set ko co du
+
                     }
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();

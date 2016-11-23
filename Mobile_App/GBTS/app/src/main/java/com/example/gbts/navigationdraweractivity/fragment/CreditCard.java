@@ -2,13 +2,15 @@ package com.example.gbts.navigationdraweractivity.fragment;
 
 import android.app.ActionBar;
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.adapter.ChooseCardNFCAdapter;
 import com.example.gbts.navigationdraweractivity.adapter.CreditCardAdapter;
@@ -54,7 +57,6 @@ public class CreditCard extends Fragment {
     private static final String TAG_BALANCE = "Balance";
     private static final String TAG_CARD_STATUS = "Status";
     private static final String TAG_FRAGMENT = "CreditCard";
-    ArrayList<HashMap<String, String>> listCard = new ArrayList<>();
     JSONArray jsonArray = null;
     List<CardNFC> listCardNFC = new ArrayList<>();
 
@@ -69,13 +71,48 @@ public class CreditCard extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putString("action", "transferCreditCardDetails");
             disconnect.setArguments(bundle);
-            getActivity().getFragmentManager().beginTransaction()
+            getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
                     .addToBackStack(null)
                     .commit();
         }
 
+        Bundle bundleSend = new Bundle();
+        bundleSend.putString("currentContext", "CreditCard");
+        Intent intent = getActivity().getIntent();
+        intent.putExtras(bundleSend);
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("truongneee", "onResume");
+        Bundle bundleResume = getArguments();
+        if (bundleResume != null) {
+            String checkBundle = bundleResume.getString("onResumeCreditCard");
+            if (checkBundle != null && checkBundle != "") {
+                if (checkBundle.equals("CreditCard")) {
+                    if (Utility.isNetworkConnected(getActivity())) {
+                        new JSONParseCardNFC().execute();
+                    } else {
+                        FragmentDisconnect disconnect = new FragmentDisconnect();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("action", "transferCreditCardDetails");
+                        disconnect.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                }
+            } else {
+                //
+                Log.d("bunble", "not existed");
+            }
+        }
+
     }
 
     private class JSONParseCardNFC extends AsyncTask<String, String, JSONObject> {
@@ -138,25 +175,39 @@ public class CreditCard extends Fragment {
                     cardNFC.setStatus(status);
                     listCardNFC.add(cardNFC);
                 }
+                if (getActivity() != null) {
+                    CreditCardAdapter creditCardAdapter = new CreditCardAdapter(getActivity(), listCardNFC);
+                    listView = (ListView) getView().findViewById(R.id.listViewCard);
+                    listView.setAdapter(creditCardAdapter);
 
-                CreditCardAdapter creditCardAdapter = new CreditCardAdapter(getActivity(), listCardNFC);
-                listView = (ListView) getView().findViewById(R.id.listViewCard);
-                listView.setAdapter(creditCardAdapter);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                        CardNFC cardNFC = listCardNFC.get(position);
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TAG_CARD_ID, cardNFC.getCardID());
+                            CardNFC cardNFC = listCardNFC.get(position);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(TAG_CARD_ID, cardNFC.getCardID());
+                            Intent intent = getActivity().getIntent();
+                            intent.putExtras(bundle);
 
-                        CreditCardDetails creditCardDetails = new CreditCardDetails();
-                        creditCardDetails.setArguments(bundle);
 
-                        final FragmentManager manager = getFragmentManager();
-                        creditCardDetails.show(manager, "Details Account");
-                    }
-                });
+                            CreditCardDetails creditCardDetails = new CreditCardDetails();
+                            creditCardDetails.setArguments(bundle);
+
+                            final FragmentManager manager = getFragmentManager();
+                            creditCardDetails.show(manager, "Details Account");
+                        }
+                    });
+                }
+
+//                    listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//                        @Override
+//                        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                            Toast.makeText(getActivity(), "Long Touch item", Toast.LENGTH_LONG).show();
+//                            return false;
+//                        }
+//                    });
+
 
             } catch (JSONException e) {
                 e.printStackTrace();

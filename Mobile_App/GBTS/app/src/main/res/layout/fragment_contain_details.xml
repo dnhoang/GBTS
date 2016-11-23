@@ -19,7 +19,7 @@
             android:background="@color/colorPrimary"
             android:gravity="center"
             android:padding="10dp"
-            android:text="Thông tin tài khoản"
+            android:text="Thông tin thẻ"
             android:textColor="#fff"
             android:textSize="25dp" />
 
@@ -30,7 +30,7 @@
 
             <TextView
                 android:id="@+id/textView0"
-                android:layout_width="100dp"
+                android:layout_width="115dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:paddingLeft="10dp"
@@ -38,10 +38,10 @@
 
             <EditText
                 android:id="@+id/edtCardNameDetails"
-                android:layout_width="120dp"
+                android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="10dp"
                 android:text="Thẻ đi học"
                 android:textSize="15dp" />
 
@@ -62,7 +62,7 @@
 
             <TextView
                 android:id="@+id/textView1"
-                android:layout_width="100dp"
+                android:layout_width="110dp"
                 android:layout_height="30dp"
                 android:gravity="center|left"
                 android:paddingLeft="10dp"
@@ -76,26 +76,7 @@
                 android:text="01212184802" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="100dp"
-                android:layout_height="30dp"
-                android:gravity="center|left"
-                android:paddingLeft="10dp"
-                android:text="Ngày Đăng Ký " />
-
-            <TextView
-                android:id="@+id/txtRegistrationDateDetails"
-                android:layout_width="110dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:text="20/12/2016" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -104,7 +85,7 @@
 
             <TextView
                 android:id="@+id/textView7"
-                android:layout_width="100dp"
+                android:layout_width="110dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
                 android:gravity="center|left"
@@ -129,7 +110,7 @@
 
             <TextView
                 android:id="@+id/textView5"
-                android:layout_width="100dp"
+                android:layout_width="110dp"
                 android:layout_height="30dp"
                 android:gravity="center|left"
                 android:paddingLeft="10dp"
@@ -146,14 +127,33 @@
                 android:text="" />
 
             <TextView
-                android:id="@+id/txtStatusName"
+                android:id="@+id/txtDetailsStatusName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="20dp"
                 android:text="Kich hoat" />
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="110dp"
+                android:layout_height="30dp"
+                android:gravity="center|left"
+                android:paddingLeft="10dp"
+                android:text="Ngày kích hoạt" />
+
+            <TextView
+                android:id="@+id/txtRegistrationDateDetails"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="20/12/2016" />
+        </LinearLayout>
         <Button
             android:id="@+id/btnPurchase"
             android:layout_width="90dp"

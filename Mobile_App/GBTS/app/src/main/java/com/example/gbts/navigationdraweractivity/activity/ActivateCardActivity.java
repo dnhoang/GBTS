@@ -28,10 +28,6 @@ public class ActivateCardActivity extends AppCompatActivity {
     IntentFilter writeTagFilters[];
     boolean writeMode;
     Tag tag;
-    String setting = "Info";
-
-    String hostAddress = "https://grinbuz.net";
-//    String hostAddress = "http://172.20.10.3:11856";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

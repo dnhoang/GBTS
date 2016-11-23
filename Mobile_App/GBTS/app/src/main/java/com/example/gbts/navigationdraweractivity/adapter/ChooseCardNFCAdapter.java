@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.gbts.navigationdraweractivity.R;
@@ -65,6 +67,8 @@ public class ChooseCardNFCAdapter extends ArrayAdapter<CardNFC> {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.custom_listview_choose_card, null);
+            convertView.setLayoutParams(new ListView.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 250));
+            convertView.setBackgroundResource(R.drawable.card_bg);
         }
 
         CardNFC cardNFC = getItem(position);

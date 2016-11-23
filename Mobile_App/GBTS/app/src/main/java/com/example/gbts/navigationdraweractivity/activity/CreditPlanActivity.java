@@ -139,6 +139,7 @@ public class CreditPlanActivity extends AppCompatActivity {
         protected JSONObject doInBackground(String... params) {
             JSONParser jParser = new JSONParser();
             url = Constance.API_GET_CREDIT_PLAN + "&phone=" + phone;
+            Log.d("hoangga ", "url " + url);
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrlPOST(url);
             return json;

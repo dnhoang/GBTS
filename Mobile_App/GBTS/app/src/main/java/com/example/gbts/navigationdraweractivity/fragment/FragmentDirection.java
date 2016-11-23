@@ -1,8 +1,10 @@
 package com.example.gbts.navigationdraweractivity.fragment;
 
+
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -107,7 +109,7 @@ public class FragmentDirection extends DialogFragment {
         btnFindPath = (Button) view.findViewById(R.id.btnFind);
 
         //Event onclick
-        AutoOrigin.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.list_item));
+        AutoOrigin.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.list_item_auto_text_view));
         AutoOrigin.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -122,7 +124,7 @@ public class FragmentDirection extends DialogFragment {
             }
         });
 
-        AutoDestination.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.list_item));
+        AutoDestination.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.list_item_auto_text_view));
         AutoDestination.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {

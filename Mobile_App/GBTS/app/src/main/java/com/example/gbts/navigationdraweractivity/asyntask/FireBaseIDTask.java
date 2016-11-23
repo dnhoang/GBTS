@@ -41,16 +41,21 @@ public class FireBaseIDTask extends AsyncTask<String, Void, JSONObject> {
         boolean success = false;
         String message = null;
         //check success
-        try {
-            success = jsonObject.optBoolean(TAG_SUCCESS);
-            message = jsonObject.optString(TAG_MASSAGE);
-            if (success) {
-                Log.i("FireBaseIDTask", message);
-            } else {
-                Log.i("FireBaseIDTask", message);
+        if (jsonObject != null) {
+            try {
+                success = jsonObject.optBoolean(TAG_SUCCESS);
+                message = jsonObject.optString(TAG_MASSAGE);
+                if (success) {
+                    Log.i("FireBaseIDTask", message);
+                } else {
+                    Log.i("FireBaseIDTask", message);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            //
+            Log.i("FireBaseIDTask", "jsonObject null");
         }
     }
 }

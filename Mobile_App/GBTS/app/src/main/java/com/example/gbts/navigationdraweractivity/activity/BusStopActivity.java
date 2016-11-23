@@ -168,13 +168,13 @@ public class BusStopActivity extends FragmentActivity
         Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
         Bitmap smallMarkerEnd = Bitmap.createScaledBitmap(end, width, height, false);
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 14));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 12));
         mMap.addMarker(new MarkerOptions()
                 .title(orginName)
                 .icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
                 .position(origin));
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(destination, 14));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(destination, 12));
         mMap.addMarker(new MarkerOptions()
                 .title(destinationName)
                 .icon(BitmapDescriptorFactory.fromBitmap(smallMarkerEnd))

@@ -2,7 +2,8 @@ package com.example.gbts.navigationdraweractivity.activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -194,7 +195,7 @@ public class ActivityGoogleFindPath extends AppCompatActivity
 
         if (routes != null) {
             for (Route route : routes) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 12));
                 ((TextView) findViewById(R.id.tvDuration)).setText(route.duration.text);
                 ((TextView) findViewById(R.id.tvDistance)).setText(route.distance.text);
 
@@ -238,7 +239,7 @@ public class ActivityGoogleFindPath extends AppCompatActivity
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     FragmentDirection direction = new FragmentDirection();
-                                    FragmentManager manager = getFragmentManager();
+                                    FragmentManager manager = getSupportFragmentManager();
                                     direction.show(manager, "FragmentDirection");
                                     finish();
                                     dialog.cancel();

@@ -1,12 +1,13 @@
 package com.example.gbts.navigationdraweractivity.fragment;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +47,7 @@ public class MainContent extends Fragment {
     WebView webViewPromotion;
     private static final String TAG_FRAGMENT = "MainContent";
     private String tokensv = "";
-
+    Context context;
 
     public void setTokensv(String tokensv) {
         this.tokensv = tokensv;
@@ -56,6 +57,7 @@ public class MainContent extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_content, container, false);
+        webViewPromotion = (WebView) view.findViewById(R.id.webViewPromotion);
         if (Utility.isNetworkConnected(getActivity())) {
             new AsyncPromotion().execute();
         } else {
@@ -63,11 +65,16 @@ public class MainContent extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putString("action", "transferMainContent");
             disconnect.setArguments(bundle);
-            getActivity().getFragmentManager().beginTransaction()
+            getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
                     .addToBackStack(null)
                     .commit();
         }
+
+        Bundle bundleSend = new Bundle();
+        bundleSend.putString("currentContext", "MainContent");
+        Intent intent = getActivity().getIntent();
+        intent.putExtras(bundleSend);
 
         return view;
     }
@@ -89,7 +96,7 @@ public class MainContent extends Fragment {
                     public void onClick(View v) {
                         CreditCard creditCard = new CreditCard();
                         getFragmentManager().beginTransaction()
-                                .replace(R.id.flContent, creditCard, null)
+                                .replace(R.id.flContent, creditCard, TAG_FRAGMENT)
                                 .addToBackStack(null)
                                 .commit();
                     }
@@ -163,7 +170,7 @@ public class MainContent extends Fragment {
                         if (hasPromotion) {
                             String html = jsonObject.getString("html");
                             Log.d("meow1", "html " + html);
-                            webViewPromotion = (WebView) getView().findViewById(R.id.webViewPromotion);
+
                             WebSettings settings = webViewPromotion.getSettings();
                             settings.setDefaultTextEncodingName("UTF-8");
 

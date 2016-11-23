@@ -1,14 +1,15 @@
 package com.example.gbts.navigationdraweractivity.fragment;
 
 import android.app.Dialog;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,11 +42,22 @@ public class Profile extends Fragment {
     String hostAddress = "https://grinbuz.com";
     Button btUpdate;
 
+    EditText edtFullName,edtNewPassword,edtOldPassword,edtConfirmPassword,edtMinBalance;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup
             container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        //GET preference info
+        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences(preference, Context.MODE_PRIVATE);
+        edtFullName = (EditText) view.findViewById(R.id.edtFullName);
+        edtNewPassword = (EditText) view.findViewById(R.id.edtNewPassword);
+        edtOldPassword = (EditText) view.findViewById(R.id.edtOldPassword);
+        edtConfirmPassword = (EditText) view.findViewById(R.id.edtConfirmPassword);
+        edtMinBalance = (EditText) view.findViewById(R.id.edtGetNotification);
+
         if (Utility.isNetworkConnected(getActivity())) {
             new GetProfile().execute();
         } else {
@@ -53,48 +65,68 @@ public class Profile extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putString("action", "transferProfile");
             disconnect.setArguments(bundle);
-            getActivity().getFragmentManager().beginTransaction()
+            getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
                     .addToBackStack(null)
                     .commit();
         }
-        //GET preference info
-        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences(preference, Context.MODE_PRIVATE);
-        final EditText edtFullName = (EditText) view.findViewById(R.id.edtFullName);
-        final EditText edtNewPassword = (EditText) view.findViewById(R.id.edtNewPassword);
-        final EditText edtOldPassword = (EditText) view.findViewById(R.id.edtOldPassword);
-        final EditText edtConfirmPassword = (EditText) view.findViewById(R.id.edtConfirmPassword);
-        final EditText edtMinBalance = (EditText) view.findViewById(R.id.edtGetNotification);
+
         btUpdate = (Button) view.findViewById(R.id.btnUpdateProfile);
 
 
         btUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (Utility.isNetworkConnected(getActivity())) {
                     String oldPassword = edtOldPassword.getText().toString().trim();
                     String newPassword = edtNewPassword.getText().toString().trim();
                     String confirmPassword = edtConfirmPassword.getText().toString().trim();
-                    String minBalance = edtMinBalance.getText().toString().trim();
-                    if (minBalance == "") {
+                    String Balance = edtMinBalance.getText().toString();
+                    if (Balance == "" || Balance == null) {
                         edtMinBalance.setText("10000");
                     }
                     if (oldPassword.equals("") && newPassword.equals("") && confirmPassword.equals("")) {
                         String password = sharedPreferences.getString("Password", "");
-                        if (minBalance != null) {
-                            String[] params = {password, minBalance};
-                            Log.d("truongprofile 1 ", "password " + password + "minBalance" + minBalance);
-                            new UpdateProfile().execute(params);
+                        String checkBalance = edtMinBalance.getText().toString();
+                        if (checkBalance == "") {
+                            Toast.makeText(getActivity(), "Vui lòng không để trống..!", Toast.LENGTH_LONG).show();
+                        }
+                        try {
+                            int check = Integer.parseInt(checkBalance);
+                            if (check < 100000) {
+                                String[] params = {password, checkBalance};
+                                Log.d("truongprofile 1 ", "password " + password + "minBalance" + checkBalance);
+                                new UpdateProfile().execute(params);
+                            } else {
+                                Toast.makeText(getActivity(), "Hạn mức thông báo phải nhỏ hơn 100000 đ", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(getActivity(), "Vui lòng không để trống..!", Toast.LENGTH_LONG).show();
                         }
                     } else if (checkPassword(oldPassword, newPassword, confirmPassword)) {
                         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(preference, Context.MODE_PRIVATE);
-                        if (oldPassword.equals(sharedPreferences.getString("Password", ""))) {
-                            if (minBalance != null) {
-                                String[] params = {newPassword, minBalance};
-                                Log.d("truongprofile 2 ", "newPassword " + newPassword + "minBalance" + minBalance);
-                                new UpdateProfile().execute(params);
+                        if (sharedPreferences.getString("Password", "").length() < 6 || oldPassword.length() < 6 || confirmPassword.length() < 6) {
+                            Toast.makeText(getActivity(), "Mật khẩu yêu cầu lớn hơn 6 ký tự", Toast.LENGTH_LONG).show();
+                        } else if (oldPassword.equals(sharedPreferences.getString("Password", ""))) {
+                            String checkBalance = edtMinBalance.getText().toString();
+                            if (checkBalance == "") {
+                                Toast.makeText(getActivity(), "Vui lòng không để trống..!", Toast.LENGTH_LONG).show();
                             }
+                            try {
+                                int check = Integer.parseInt(checkBalance);
+                                if (check < 100000) {
+                                    String[] params = {newPassword, Balance};
+                                    Log.d("truongprofile 2 ", "newPassword " + newPassword + "minBalance" + Balance);
+                                    new UpdateProfile().execute(params);
+                                } else {
+                                    Toast.makeText(getActivity(), "Hạn mức thông báo phải nhỏ hơn 100000 đ", Toast.LENGTH_LONG).show();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(getActivity(), "Vui lòng không để trống..!", Toast.LENGTH_LONG).show();
+                            }
+
                         }
                     }
 
@@ -103,14 +135,19 @@ public class Profile extends Fragment {
                     Bundle bundle = new Bundle();
                     bundle.putString("action", "transferProfile");
                     disconnect.setArguments(bundle);
-                    getActivity().getFragmentManager().beginTransaction()
+                    getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
                             .addToBackStack(null)
                             .commit();
-                }
-
+                }//END IF CHECK CONNECT INTERNET
             }
         });
+
+
+        Bundle bundleSend = new Bundle();
+        bundleSend.putString("currentContext", "Profile");
+        Intent intent = getActivity().getIntent();
+        intent.putExtras(bundleSend);
 
         return view;
     }
@@ -138,7 +175,7 @@ public class Profile extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             EditText edtFullname = (EditText) getView().findViewById(R.id.edtFullName);
-            TextInputEditText edtBalance = (TextInputEditText) getView().findViewById(R.id.edtGetNotification);
+            EditText edtBalance = (EditText) getView().findViewById(R.id.edtGetNotification);
 
             phone = sharedPreferences.getString("Phonenumber", "");
             fullname = edtFullname.getText().toString().trim();
@@ -206,11 +243,13 @@ public class Profile extends Fragment {
         private ProgressDialog pDialog;
         String phone;
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(preference, Context.MODE_PRIVATE);
-        TextInputEditText edtFullName, edtNewPassword, edtOldPassword, edtConfirmPassword, edtMinBalance;
+//        EditText edtFullName, edtNewPassword, edtOldPassword, edtConfirmPassword, edtMinBalance;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
+
             pDialog = new ProgressDialog(getActivity());
             pDialog.setMessage("Cập nhật thông tin ...");
             pDialog.setIndeterminate(false);
@@ -239,11 +278,7 @@ public class Profile extends Fragment {
             pDialog.dismiss();
 
 
-            edtFullName = (TextInputEditText) getView().findViewById(R.id.edtFullName);
-            edtNewPassword = (TextInputEditText) getView().findViewById(R.id.edtNewPassword);
-            edtOldPassword = (TextInputEditText) getView().findViewById(R.id.edtOldPassword);
-            edtConfirmPassword = (TextInputEditText) getView().findViewById(R.id.edtConfirmPassword);
-            edtMinBalance = (TextInputEditText) getView().findViewById(R.id.edtGetNotification);
+
 
             boolean success = false;
             String message = "";

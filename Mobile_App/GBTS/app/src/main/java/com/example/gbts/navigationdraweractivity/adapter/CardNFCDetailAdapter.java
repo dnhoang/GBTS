@@ -74,11 +74,11 @@ public class CardNFCDetailAdapter extends BaseAdapter {
         CardNFC cardNFC = getItem(position);
 
         TextView txtCardID = (TextView) convertView.findViewById(R.id.txtCardIDDetails);
-        TextView textCardName = (TextView) convertView.findViewById(R.id.txtCardName);
+        TextView textCardName = (TextView) convertView.findViewById(R.id.edtCardNameDetails);
         TextView txtRegistrationDate = (TextView) convertView.findViewById(R.id.txtRegistrationDateDetails);
         TextView txtBalance = (TextView) convertView.findViewById(R.id.txtBalanceDetails);
-        TextView textStatus = (TextView) convertView.findViewById(R.id.txtStatus);
-        Button btnPurcharse = (Button) convertView.findViewById(R.id.btnPurchase);
+        TextView textStatus = (TextView) convertView.findViewById(R.id.txtDetailsStatusName);
+        TextView textStatusName = (TextView) convertView.findViewById(R.id.txtDetailsStatusName);
 
 
         txtCardID.setText(cardNFC.getCardID());
@@ -88,9 +88,11 @@ public class CardNFCDetailAdapter extends BaseAdapter {
 
         int status = cardNFC.getStatus();
         if (status == 1) {
-            textStatus.setText("Đã kích hoạt");
+            textStatusName.setText("Đã kích hoạt");
+            textStatus.setBackgroundResource(R.drawable.shap_circle_online);
         } else {
-            textStatus.setText("Chưa kích hoạt");
+            textStatusName.setText("Chưa kích hoạt");
+            textStatus.setBackgroundResource(R.drawable.shap_circle_offline);
         }
         return convertView;
     }

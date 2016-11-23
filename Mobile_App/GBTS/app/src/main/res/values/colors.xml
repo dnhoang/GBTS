@@ -8,4 +8,5 @@
     <color name="colorGrey">#555555</color>
     <color name="colorBlack">#424242</color>
     <color name="colorWhite90">#8CFFFFFF</color>
+    <color name="colorTabHost">#FF1744</color>
 </resources>
