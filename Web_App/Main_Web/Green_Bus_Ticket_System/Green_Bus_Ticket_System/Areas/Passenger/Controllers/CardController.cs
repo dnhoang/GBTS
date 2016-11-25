@@ -63,7 +63,7 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
                         PaymentTransaction payment = new PaymentTransaction();
                         payment.CardId = card.Id;
                         payment.CreditPlanId = item_number;
-                        payment.TransactionId = txn_id;
+                        payment.TransactionCode = txn_id;
                         payment.Total = creditPlan.Price;
                         payment.PaymentDate = DateTime.Now;
 
@@ -150,7 +150,7 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
                     payment.CreditPlanId = plan.Id;
                     payment.PaymentDate = DateTime.Now;
                     payment.Total = plan.Price;
-                    payment.TransactionId = transactionId;
+                    payment.TransactionCode = transactionId;
                     _paymentService.Create(payment);
 
                     Session["CurrentCardId"] = null;

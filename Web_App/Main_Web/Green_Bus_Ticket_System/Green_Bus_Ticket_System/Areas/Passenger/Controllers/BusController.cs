@@ -5,6 +5,7 @@ using log4net;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -17,6 +18,7 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
         IUserService _userService;
 
         private static readonly ILog log = LogManager.GetLogger("WebLog");
+        static string apiServer = ConfigurationManager.AppSettings["CrawlServerAPI"];
         public BusController(IBusRouteService busRouteService, IUserService userService)
         {
             _busRouteService = busRouteService;
@@ -64,7 +66,7 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
             List<StopObject> backStops = new List<StopObject>();
             List<StopInfo> result = new List<StopInfo>();
 
-            string endPoint = @"http://apicms.ebms.vn/businfo/getallroute";
+            string endPoint = apiServer + "/businfo/getallroute";
             var client = new RestClient(endPoint);
             var json = client.MakeRequest();
             if (json != null)
@@ -76,20 +78,20 @@ namespace Green_Bus_Ticket_System.Areas.Passenger.Controllers
                     RouteObject targetRoute = routes.Where(r => r.RouteNo.Equals(routeCode)).FirstOrDefault();
                     if (targetRoute != null)
                     {
-                        endPoint = @"http://apicms.ebms.vn/businfo/getvarsbyroute/" + targetRoute.RouteId;
+                        endPoint = apiServer + "/businfo/getvarsbyroute/" + targetRoute.RouteId;
                         client = new RestClient(endPoint);
                         json = client.MakeRequest();
                         List<PointObject> points = (List<PointObject>)
                         JsonConvert.DeserializeObject(json, typeof(List<PointObject>));
                         if (points.Count > 0)
                         {
-                            endPoint = @"http://apicms.ebms.vn/businfo/getstopsbyvar/" + targetRoute.RouteId + "/" + points[0].RouteVarId;
+                            endPoint = apiServer + "/businfo/getstopsbyvar/" + targetRoute.RouteId + "/" + points[0].RouteVarId;
                             client = new RestClient(endPoint);
                             json = client.MakeRequest();
                             goStops = (List<StopObject>)
                             JsonConvert.DeserializeObject(json, typeof(List<StopObject>));
 
-                            endPoint = @"http://apicms.ebms.vn/businfo/getstopsbyvar/" + targetRoute.RouteId + "/" + points[1].RouteVarId;
+                            endPoint = apiServer + "/businfo/getstopsbyvar/" + targetRoute.RouteId + "/" + points[1].RouteVarId;
                             client = new RestClient(endPoint);
                             json = client.MakeRequest();
                             backStops = (List<StopObject>)

@@ -14,8 +14,8 @@ namespace Green_Bus_Ticket_System.Areas.Manager.Controllers
     {
         private static readonly ILog log = LogManager.GetLogger("WebLog");
         IUserService _userService;
-        IOfferSubscriptionService _subscriptionService;
-        public SubscriptionController(IUserService userService, IOfferSubscriptionService subscriptionService)
+        ISubscriptionService _subscriptionService;
+        public SubscriptionController(IUserService userService, ISubscriptionService subscriptionService)
         {
             _subscriptionService = subscriptionService;
             _userService = userService;
@@ -55,7 +55,7 @@ namespace Green_Bus_Ticket_System.Areas.Manager.Controllers
                 return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
             }
 
-            OfferSubscription sub = _subscriptionService.GetOfferSubscription(id);
+            Subscription sub = _subscriptionService.GetOfferSubscription(id);
             if (sub != null)
             {
                 sub.Code = "";
@@ -80,7 +80,7 @@ namespace Green_Bus_Ticket_System.Areas.Manager.Controllers
                 return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
             }
 
-            OfferSubscription sub = _subscriptionService.GetOfferSubscription(id);
+            Subscription sub = _subscriptionService.GetOfferSubscription(id);
             if (sub != null)
             {
                 sub.Name = name;
@@ -110,10 +110,10 @@ namespace Green_Bus_Ticket_System.Areas.Manager.Controllers
                 return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
             }
 
-            OfferSubscription sub = _subscriptionService.GetOfferSubscriptionByCode(code);
+            Subscription sub = _subscriptionService.GetOfferSubscriptionByCode(code);
             if (sub == null)
             {
-                sub = new OfferSubscription();
+                sub = new Subscription();
                 sub.Name = name;
                 sub.Price = price;
                 sub.TicketNumber = num;

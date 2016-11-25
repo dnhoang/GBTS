@@ -12,10 +12,10 @@ namespace Green_Bus_Ticket_System_Data
     using System;
     using System.Collections.Generic;
     
-    public partial class OfferSubscription
+    public partial class Subscription
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public OfferSubscription()
+        public Subscription()
         {
             this.UserSubscriptions = new HashSet<UserSubscription>();
         }

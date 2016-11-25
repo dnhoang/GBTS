@@ -21,7 +21,7 @@ namespace Green_Bus_Ticket_System_Data
         public bool IsActive { get; set; }
         public int TicketRemaining { get; set; }
     
-        public virtual OfferSubscription OfferSubscription { get; set; }
+        public virtual Subscription Subscription { get; set; }
         public virtual User User { get; set; }
     }
 }

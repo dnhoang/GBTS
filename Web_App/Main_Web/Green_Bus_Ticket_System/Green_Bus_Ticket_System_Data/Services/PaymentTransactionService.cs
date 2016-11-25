@@ -35,18 +35,18 @@ namespace Green_Bus_Ticket_System_Data.Services
 
         public List<PaymentTransaction> GetByDefault()
         {
-            return _repository.FindBy(p => !p.TransactionId.Substring(0, 4).Equals("CASH")
-            && !p.TransactionId.Substring(0, 4).Equals("TOPU")).ToList();
+            return _repository.FindBy(p => !p.TransactionCode.Substring(0, 4).Equals("CASH")
+            && !p.TransactionCode.Substring(0, 4).Equals("TOPU")).ToList();
         }
 
         public List<PaymentTransaction> GetByCash()
         {
-            return _repository.FindBy(p => p.TransactionId.Substring(0, 4).Equals("CASH")).ToList();
+            return _repository.FindBy(p => p.TransactionCode.Substring(0, 4).Equals("CASH")).ToList();
         }
 
         public List<PaymentTransaction> GetByTopup()
         {
-            return _repository.FindBy(p => p.TransactionId.Substring(0, 4).Equals("TOPU")).ToList();
+            return _repository.FindBy(p => p.TransactionCode.Substring(0, 4).Equals("TOPU")).ToList();
         }
     }
 }
