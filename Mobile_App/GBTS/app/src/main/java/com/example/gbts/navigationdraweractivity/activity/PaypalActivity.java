@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
 import com.example.gbts.navigationdraweractivity.constance.Constance;
+import com.example.gbts.navigationdraweractivity.tabhost.TabhostActivity;
 import com.example.gbts.navigationdraweractivity.utils.JSONParser;
 import com.example.gbts.navigationdraweractivity.utils.Utility;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
@@ -77,34 +78,35 @@ public class PaypalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_paypal);
+//        setContentView(R.layout.activity_paypal);
+//
+//        //Display Home As Up Enabled
+//        actionBar = getSupportActionBar();
+//        actionBar.setDisplayHomeAsUpEnabled(true);
+//        actionBar.setTitle("BẠN ĐÃ CHỌN GÓI");
 
-        //Display Home As Up Enabled
-        actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("BẠN ĐÃ CHỌN GÓI");
-
-        getSetData();
+//        getSetData();
 
         //Paypal serivce
         Intent intent = new Intent(this, PayPalService.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
         startService(intent);
-
-        Button btnPayment = (Button) findViewById(R.id.btnPayment);
-        btnPayment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBuyPress();
-            }
-        });
+        onBuyPress();
+        Log.d("xemthenao ", "onCreate");
+//        Button btnPayment = (Button) findViewById(R.id.btnPayment);
+//        btnPayment.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onBuyPress();
+//            }
+//        });
     }
 
     public void getSetData() {
         //Get getIntent from CreditPlanActivity
         //Get bundle from Intent
         Locale locale = new Locale("vi_VN", "VN");
-        Log.d("locale ", locale + "");
+//        Log.d("locale ", locale + "");
         NumberFormat defaultFormat = NumberFormat.getCurrencyInstance(locale);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -115,6 +117,18 @@ public class PaypalActivity extends AppCompatActivity {
             double price = bundle.getDouble("creditPlanPrice");
             String strPrice = defaultFormat.format(price);
             //Get and Set Text Control
+            ImageView imageView = (ImageView) findViewById(R.id.ic_credit_Plan);
+            if (price == 30000) {
+                imageView.setBackgroundResource(R.drawable.ic_package_normal);
+            } else if (price == 500000) {
+                imageView.setBackgroundResource(R.drawable.ic_special);
+            } else if (price == 100000) {
+                imageView.setBackgroundResource(R.drawable.ic_package_long);
+            } else {
+                imageView.setBackgroundResource(R.drawable.ic_tien_spec);
+            }
+
+
             txtName = (TextView) findViewById(R.id.txtCreditPlanName);
             txtName.setText(name);
 
@@ -124,6 +138,39 @@ public class PaypalActivity extends AppCompatActivity {
             Log.d(TAG, "bunle is null ");
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Bundle bundleCheckResume = getIntent().getExtras();
+        if (bundleCheckResume != null) {
+            String check = bundleCheckResume.getString("checkResumePaypal");
+            if (check != null) {
+                if (check.equals("checkResumePaypal")) {
+//                    startActivity(new Intent(PaypalActivity.this, TabhostActivity.class));
+                    finish();
+                    Log.d("xemthenao ", "onResume2");
+                }
+            }
+        }
+        Log.d("xemthenao ", "onResume1");
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+//        startActivity(new Intent(PaypalActivity.this, TabhostActivity.class));
+//            finish();
+        Log.d("xemthenao ", "onBackPressed");
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("xemthenao ", "onDestroy");
+//        startActivity(new Intent(PaypalActivity.this, TabhostActivity.class));
     }
 
     // IMPLEMENTATION PAYMENT
@@ -159,8 +206,10 @@ public class PaypalActivity extends AppCompatActivity {
             intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
             intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
 
+
             if (Utility.isNetworkConnected(PaypalActivity.this)) {
                 startActivityForResult(intent, REQUEST_CODE_PAYMENT);
+
             } else {
                 // custom dialog
                 final Dialog dialog = new Dialog(PaypalActivity.this);
@@ -197,10 +246,15 @@ public class PaypalActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_PAYMENT) {
+            final Bundle checkResumePaypal = new Bundle();
+            final Intent intentSend = getIntent();
+            checkResumePaypal.putString("checkResumePaypal", "checkResumePaypal");
+            intentSend.putExtras(checkResumePaypal);
             if (resultCode == Activity.RESULT_OK) {
                 PaymentConfirmation confirm = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
                 if (confirm != null) {
                     try {
+
                         /**
                          *  TODO: send 'confirm' (and possibly confirm.getPayment() to your server for verification
                          * or consent completion.
@@ -267,7 +321,8 @@ public class PaypalActivity extends AppCompatActivity {
                         //Starting a new activity for the payment details and also putting the payment details with intent
 //                        Intent intent = new Intent(this, ConfirmationActivity.class);
                         final Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putExtra("afterPay", "1");
+                        intent.putExtra("afterPay", "afterPay");
+                        intent.putExtra("cardIDPaypal", bundle.getString("cardID"));
                         if (Utility.isNetworkConnected(PaypalActivity.this)) {
                             startActivity(intent);
                         } else {
@@ -313,6 +368,7 @@ public class PaypalActivity extends AppCompatActivity {
             }
         }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

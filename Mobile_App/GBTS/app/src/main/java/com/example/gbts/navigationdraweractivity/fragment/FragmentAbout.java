@@ -6,12 +6,14 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.gbts.navigationdraweractivity.R;
+import com.example.gbts.navigationdraweractivity.utils.Utility;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,7 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class FragmentAbout extends Fragment
         implements OnMapReadyCallback {
-
+    private final String TAG_FRAGMENT="FragmentAbout";
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,6 +48,43 @@ public class FragmentAbout extends Fragment
         super.onViewCreated(view, savedInstanceState);
         SupportMapFragment fragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapAddress);
         fragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (Utility.isNetworkConnected(getActivity())) {
+            //ASYNC GET TOKEN SERVER API
+            //START FRAGMENT MAIN && INTEGRATION FB, PROMOTION
+            Fragment fragment = null;
+            Class fragmentClass = null;
+            fragmentClass = MainContent.class;
+            try {
+                fragment = (Fragment) fragmentClass.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putString("action", "transferMainContent");
+                fragment.setArguments(bundle);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            try {
+                FragmentDisconnect disconnect = new FragmentDisconnect();
+                Bundle bundle = new Bundle();
+                bundle.putString("action", "MainContent");
+                disconnect.setArguments(bundle);
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
+                        .addToBackStack(null)
+                        .commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

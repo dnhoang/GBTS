@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -150,6 +151,39 @@ public class Profile extends Fragment {
         intent.putExtras(bundleSend);
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (Utility.isNetworkConnected(getActivity())) {
+            //ASYNC GET TOKEN SERVER API
+            //START FRAGMENT MAIN && INTEGRATION FB, PROMOTION
+            Fragment fragment = null;
+            Class fragmentClass = null;
+            fragmentClass = MainContent.class;
+            try {
+                fragment = (Fragment) fragmentClass.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putString("action", "transferMainContent");
+                fragment.setArguments(bundle);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            FragmentDisconnect disconnect = new FragmentDisconnect();
+            Bundle bundle = new Bundle();
+            bundle.putString("action", "MainContent");
+            disconnect.setArguments(bundle);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     private boolean checkPassword(String oldPassword, String newPassword, String confirmPassword) {

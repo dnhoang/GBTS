@@ -57,7 +57,7 @@ public class Constance {
     }
 
     public void HostString(Context context) {
-        SERVER_API = context.getSharedPreferences("Info", Context.MODE_PRIVATE).getString("HostName", "https://grinbuz.netx/");
+        SERVER_API = context.getSharedPreferences("Info", Context.MODE_PRIVATE).getString("HostName", "https://grinbuz.net/");
 //        Toast.makeText(context.getApplicationContext(), "SERVER_API " + SERVER_API, Toast.LENGTH_LONG).show();
         Log.d("SERVER_API: ", SERVER_API);
 

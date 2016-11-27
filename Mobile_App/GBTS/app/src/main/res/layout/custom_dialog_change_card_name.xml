@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:background="@drawable/btn_background_login"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:padding="5dp"
+        android:gravity="center"
+        android:textColor="#fff"
+        android:textSize="20dp"
+        android:background="@color/colorPrimary"
+        android:text="Bạn muốn đổi tên thẻ?"/>
+
+
+
+    <TextView
+        android:id="@+id/txtdialog_CardName"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:padding="5dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="#006064"
+        android:text="Thẻ ABC1234"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:weightSum="10"
+        android:background="#8BC34A"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/dl_btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:textColor="#fff"
+            android:background="@drawable/btn_connect"
+            android:text=" Huỷ bỏ" />
+
+        <View android:layout_height="match_parent"
+            android:layout_width="2px"
+            android:background="#fff"/>
+
+        <Button
+            android:id="@+id/dl_btn_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:textColor="#fff"
+            android:background="@drawable/btn_connect"
+            android:text=" Đồng ý" />
+    </LinearLayout>
+
+</LinearLayout>

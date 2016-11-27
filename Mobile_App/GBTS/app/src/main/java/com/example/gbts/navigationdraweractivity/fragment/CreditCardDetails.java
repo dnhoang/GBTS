@@ -69,38 +69,52 @@ public class CreditCardDetails extends DialogFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_contain_details, container, false);
-        Bundle bundle = getArguments();
+        Bundle bundle = getActivity().getIntent().getExtras();
         if (bundle != null) {
             final String cardId = bundle.getString(TAG_CARD_ID);
-            if (Utility.isNetworkConnected(getActivity())) {
-                new AsyncGetCardInfo().execute(cardId);
-            } else {
-                // custom dialog
-                final Dialog dialog = new Dialog(getActivity());
-                dialog.setContentView(R.layout.custom_dialog_login);
-                dialog.setTitle("Mất kết nối mạng ...");
+            final String cardIdDetails = bundle.getString("cardIDDetails");
+            if (cardId != null || cardIdDetails != null) {
+                Log.d("truongtqqqqq ", "cardId " + cardId);
+                Log.d("truongtqqqqq ", "cardIdDetails " + cardIdDetails);
+                if (Utility.isNetworkConnected(getActivity())) {
+                    if (cardId != null) {
 
-                Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
-                // if button is clicked, close the custom dialog
-                dialogButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (Utility.isNetworkConnected(getActivity())) {
-                            dialog.dismiss();
-                            new AsyncGetCardInfo().execute(cardId);
+                        new AsyncGetCardInfo().execute(cardId);
+                    } else {
+                        new AsyncGetCardInfo().execute(cardIdDetails);
+                    }
+                } else {
+                    // custom dialog
+                    final Dialog dialog = new Dialog(getActivity());
+                    dialog.setContentView(R.layout.custom_dialog_login);
+                    dialog.setTitle("Mất kết nối mạng ...");
+
+                    Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
+                    // if button is clicked, close the custom dialog
+                    dialogButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (Utility.isNetworkConnected(getActivity())) {
+                                dialog.dismiss();
+                                if (cardId != null) {
+                                    new AsyncGetCardInfo().execute(cardId);
+                                } else {
+                                    new AsyncGetCardInfo().execute(cardIdDetails);
+                                }
+                            }
                         }
-                    }
-                });
+                    });
 
-                Button dialogCancel = (Button) dialog.findViewById(R.id.dialogBtnCancel);
-                // if button is clicked, close the custom dialog
-                dialogCancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                    }
-                });
-                dialog.show();
+                    Button dialogCancel = (Button) dialog.findViewById(R.id.dialogBtnCancel);
+                    // if button is clicked, close the custom dialog
+                    dialogCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                        }
+                    });
+                    dialog.show();
+                }
             }
         }
 
@@ -115,13 +129,42 @@ public class CreditCardDetails extends DialogFragment
                 final String cardID = txtCardId.getText().toString();
                 final String cardName = edtCardName.getText().toString().trim();
 
-                Bundle bundleSend = new Bundle();
-                bundleSend.putString("changeCardNameCallCreditCard", "changeCardNameCallCreditCard");
-                Intent intent = getActivity().getIntent();
-                intent.putExtras(bundleSend);
 
                 if (Utility.isNetworkConnected(getActivity())) {
-                    new AsyncChangeCardName().execute(cardID, cardName);
+                    Log.d("CREDITDETAILS ", "onDestroy " + "onDestroy");
+                    // custom dialog
+                    final Dialog dialog = new Dialog(getActivity());
+                    dialog.setContentView(R.layout.custom_dialog_change_card_name);
+                    dialog.setTitle("Mất kết nối mạng ...");
+
+                    TextView txtCardName = (TextView) dialog.findViewById(R.id.txtdialog_CardName);
+                    txtCardName.setText("Tên thẻ: " + cardName);
+
+                    Button dialogOK = (Button) dialog.findViewById(R.id.dl_btn_ok);
+                    // if button is clicked, close the custom dialog
+                    dialogOK.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (Utility.isNetworkConnected(getActivity())) {
+                                dialog.dismiss();
+                                CreditCard creditCard = new CreditCard();
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.flContent, creditCard, TAG)
+                                        .addToBackStack(null)
+                                        .commit();
+                                new AsyncChangeCardName().execute(cardID, cardName);
+                            }
+                        }
+                    });
+
+                    Button dialogCancel = (Button) dialog.findViewById(R.id.dl_btn_cancel);
+                    // if button is clicked, close the custom dialog
+                    dialogCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.show();
                 } else {
                     // custom dialog
                     final Dialog dialog = new Dialog(getActivity());
@@ -135,6 +178,11 @@ public class CreditCardDetails extends DialogFragment
                         public void onClick(View v) {
                             if (Utility.isNetworkConnected(getActivity())) {
                                 dialog.dismiss();
+                                Log.d("CREDITDETAILS ", "onDestroy " + "onDestroy");
+                                CreditCard creditCard = new CreditCard();
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.flContent, creditCard, TAG)
+                                        .addToBackStack(null)
+                                        .commit();
                                 new AsyncChangeCardName().execute(cardID, cardName);
                             }
                         }
@@ -160,12 +208,6 @@ public class CreditCardDetails extends DialogFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("CREDITDETAILS ", "onDestroy " + "onDestroy");
-        CreditCard creditCard = new CreditCard();
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.flContent, creditCard, TAG)
-                .addToBackStack(null)
-                .commit();
-
     }
 
     @Override
@@ -177,32 +219,16 @@ public class CreditCardDetails extends DialogFragment
 
         if (status.equals("Đã kích hoạt")) {
             if (R.id.btnPurchase == v.getId()) {
-//                final Intent intent = new Intent(getActivity(), CreditPlanActivity.class);
-//                Bundle bundleCreditPlanActivity = new Bundle();
-//                bundleCreditPlanActivity.putString("cardIDCreditDetails", cardID);
-//                intent.putExtras(bundleCreditPlanActivity);
+//
                 Log.d("haizzz", "cardID " + cardID);
                 Bundle bundle1 = new Bundle();
                 bundle1.putString("cardIDCreditDetails", cardID);
-//                TabHostCreditPlan tabHostCreditPlan = new TabHostCreditPlan();
-//                tabHostCreditPlan.setArguments(bundle1);
-//                Intent intent = getActivity().getIntent();
-//                intent.putExtras(bundle1);
-//                TabHostCreditPlan tabHostCreditPlan = new TabHostCreditPlan();
-//                tabHostCreditPlan.setArguments(bundle1);
 
                 final Intent intentTanhost = new Intent(getActivity(), TabhostActivity.class);
                 intentTanhost.putExtras(bundle1);
-//                final TabHostFragment tabHostFragment = new TabHostFragment();
 
                 if (Utility.isNetworkConnected(getActivity())) {
-//                    startActivity(intent);
                     startActivity(intentTanhost);
-//                    getDialog().dismiss();
-//                    getActivity().getSupportFragmentManager().beginTransaction()
-//                            .replace(R.id.flContent, tabHostFragment, TAG_FRAGMENT)
-//                            .addToBackStack(null)
-//                            .commit();
                 } else {
                     // custom dialog
                     final Dialog dialog = new Dialog(getActivity());
@@ -216,13 +242,7 @@ public class CreditCardDetails extends DialogFragment
                         public void onClick(View v) {
                             if (Utility.isNetworkConnected(getActivity())) {
                                 dialog.dismiss();
-//                                startActivity(intent);
                                 startActivity(intentTanhost);
-//                                getDialog().dismiss();
-//                                getActivity().getSupportFragmentManager().beginTransaction()
-//                                        .replace(R.id.flContent, tabHostFragment, TAG_FRAGMENT)
-//                                        .addToBackStack(null)
-//                                        .commit();
                             }
                         }
                     });
@@ -352,26 +372,10 @@ public class CreditCardDetails extends DialogFragment
                 String message = jsonObject.optString("message");
                 Log.d("changeaname ", "changeaname " + message);
                 if (success == true) {
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                    alertDialogBuilder
-                            .setTitle(message + "\n" + cardName)
-                            .setCancelable(false)
-                            .setPositiveButton("OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            Bundle bundle = getArguments();
-                                            if (bundle != null) {
-                                                String cardId = bundle.getString(TAG_CARD_ID);
-                                                new AsyncGetCardInfo().execute(cardId);
-
-                                            } else {
-                                                Log.d("AsyncGetCardInfo", "cardId is null");
-                                            }
-                                        }
-                                    });
-                    // create alert dialog
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
+                    Bundle bundleSend = new Bundle();
+                    bundleSend.putString("changeCardNameCallCreditCard", "changeCardNameCallCreditCard");
+                    Intent intent = getActivity().getIntent();
+                    intent.putExtras(bundleSend);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 // Set up the input
                 final EditText input = new EditText(LoginActivity.this);
-                String textValue = getSharedPreferences("Info", MODE_PRIVATE).getString("HostName", "https://ginbuz.netx");
+                String textValue = getSharedPreferences("Info", MODE_PRIVATE).getString("HostName", "https://grinbuz.net/");
                 if (textValue != null && textValue != "") {
                     input.setText(textValue);
                 }

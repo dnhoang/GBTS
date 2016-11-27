@@ -11,10 +11,6 @@
             android:icon="@drawable/ic_action_report"
             android:title="BÁO CÁO CHI TIÊU" />
         <item
-            android:id="@+id/nav_choose_card"
-            android:icon="@drawable/ic_action_credit_card_plus"
-            android:title="MUA VÉ BẰNG ĐIỆN THOẠI" />
-        <item
             android:id="@+id/nav_search_routes"
             android:icon="@drawable/ic_search"
             android:title="TRA CỨU TUYẾN" />

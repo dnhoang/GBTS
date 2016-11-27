@@ -30,41 +30,76 @@
         android:layout_marginTop="?attr/actionBarSize">
 
     </FrameLayout>
-    <!--<FrameLayout-->
-        <!--android:id="@+id/flContent1"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_marginTop="?attr/actionBarSize">-->
 
-    <!--</FrameLayout>-->
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_direction"
-        android:layout_width="wrap_content"
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="140dp"
-        android:layout_marginRight="@dimen/fab_margin"
-        android:elevation="5dp"
-        android:onClick="clickToDirection"
-        android:src="@drawable/ic_action_location"
-        android:visibility="invisible"
-        app:backgroundTint="@color/fab2_color"
-        app:pressedTranslationZ="10dp" />
+        android:layout_marginBottom="140dp">
 
+        <android.widget.TextView
+            android:layout_width="140dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:visibility="invisible"
+            android:layout_gravity="center|right"
+            android:layout_marginRight="70dp"
+            android:background="@drawable/bg_fab"
+            android:padding="2dp"
+            android:id="@+id/txtDirection"
+            android:text="Tìm đường"
+            android:textColor="#fff" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_search"
-        android:layout_width="wrap_content"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_direction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:visibility="invisible"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:elevation="5dp"
+            android:onClick="clickToDirection"
+            android:src="@drawable/ic_action_location"
+            app:backgroundTint="@color/fab2_color"
+            app:pressedTranslationZ="10dp" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="80dp"
-        android:layout_marginRight="@dimen/fab_margin"
-        android:elevation="5dp"
-        android:src="@drawable/ic_action_information"
-        android:visibility="invisible"
-        app:backgroundTint="@color/fab1_color"
-        app:pressedTranslationZ="10dp" />
+        android:layout_marginBottom="80dp">
+
+        <android.widget.TextView
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:layout_gravity="center|right"
+            android:layout_marginRight="70dp"
+            android:background="@drawable/bg_fab"
+            android:padding="2dp"
+            android:visibility="invisible"
+            android:id="@+id/txtSearchRoutes"
+            android:text="Tra tuyến"
+            android:textColor="#fff" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:elevation="5dp"
+            android:visibility="invisible"
+            android:src="@drawable/ic_action_information"
+            app:backgroundTint="@color/fab1_color"
+            app:pressedTranslationZ="10dp" />
+    </android.support.design.widget.CoordinatorLayout>
+    <!--app:srcCompat="@android:drawable/ic_dialog_dialer"-->
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -75,5 +110,4 @@
         android:elevation="5dp"
         android:src="@drawable/ic_action_plus"
         app:pressedTranslationZ="10dp" />
-    <!--app:srcCompat="@android:drawable/ic_dialog_dialer"-->
 </android.support.design.widget.CoordinatorLayout>

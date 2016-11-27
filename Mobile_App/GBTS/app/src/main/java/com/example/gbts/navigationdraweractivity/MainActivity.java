@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.nfc.NdefMessage;
@@ -28,7 +29,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +40,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.activity.LoginActivity;
@@ -62,6 +66,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, NfcAdapter.CreateNdefMessageCallback {
@@ -291,7 +296,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
 //        new AsyncGetToken().execute();
@@ -332,9 +336,13 @@ public class MainActivity extends AppCompatActivity
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab_search = (FloatingActionButton) findViewById(R.id.fab_search);
         fab_direction = (FloatingActionButton) findViewById(R.id.fab_direction);
+        final TextView txtDirection = (TextView) findViewById(R.id.txtDirection);
+        final TextView txtSearchRoutes = (TextView) findViewById(R.id.txtSearchRoutes);
+
 
         FabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         FabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+
         FabClockwise = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_clock);
         FabantiClockwise = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_anticlock);
 
@@ -348,14 +356,21 @@ public class MainActivity extends AppCompatActivity
                     fab.startAnimation(FabantiClockwise);
                     fab_search.setClickable(false);
                     fab_direction.setClickable(false);
+                    txtDirection.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close));
+                    txtSearchRoutes.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close));
+                    txtDirection.setVisibility(View.GONE);
+                    txtSearchRoutes.setVisibility(View.GONE);
                     isOpen = false;
-
                 } else {
                     fab_search.startAnimation(FabOpen);
                     fab_direction.startAnimation(FabOpen);
                     fab.startAnimation(FabClockwise);
                     fab_search.setClickable(true);
                     fab_direction.setClickable(true);
+                    txtDirection.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open));
+                    txtSearchRoutes.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open));
+                    txtDirection.setVisibility(View.VISIBLE);
+                    txtSearchRoutes.setVisibility(View.VISIBLE);
                     isOpen = true;
                 }
             }
@@ -470,17 +485,19 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         Intent intent = getIntent();
+        Bundle clearParameter = new Bundle();
         ReadModeOn();
-
+        Log.d("truongtqqq ", "onResume");
         if (intent != null) {
             String check = intent.getStringExtra("afterPay");
             String checkChangeCardName = intent.getStringExtra("action");
             String checkTopUp = intent.getStringExtra("TabHostTopUP");
             String checkUpdateBalance = intent.getStringExtra("notiUpdateCard");
             String checkChangeNameCreditDetails = intent.getStringExtra("changeCardNameCallCreditCard");
-
+            String cardIDPaypal = intent.getStringExtra("cardIDPaypal");
             if (checkChangeNameCreditDetails != null) {
                 if (checkChangeNameCreditDetails.equals("checkChangeNameCreditDetails")) {
+                    Log.d("haizzzz ", "call Back changeCardNameCallCreditCard");
                     Fragment fragment = null;
                     Class fragmentClass = null;
                     fragmentClass = CreditCard.class;
@@ -494,16 +511,38 @@ public class MainActivity extends AppCompatActivity
                             .addToBackStack(null)
                             .commit();
                 }
-            }
-
-            if (checkChangeCardName != null) {
+            } else if (checkChangeCardName != null) {
                 CreditCardDetails cardDetails = new CreditCardDetails();
                 FragmentManager manager = getSupportFragmentManager();
                 cardDetails.show(manager, "CreditCardDetails");
-            }
-            if (check != null || checkTopUp != null) {
-                if (check.equals("1") || checkTopUp.equals("TabHostTopUP")) {
-
+            } else if (check != null || cardIDPaypal != null) {
+                if (check.equals("afterPay")) {
+                    Log.d("truongtqqqq ", "check " + check);
+                    Log.d("truongtqqqq ", "cardIDPaypal " + cardIDPaypal);
+                    Log.d("haizzzz ", "call Back afterPay");
+                    Fragment fragment = null;
+                    Class fragmentClass = null;
+                    fragmentClass = CreditCard.class;
+                    try {
+                        fragment = (Fragment) fragmentClass.newInstance();
+                        fragment.setArguments(clearParameter);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
+                            .addToBackStack(null)
+                            .commit();
+                    CreditCardDetails cardDetails = new CreditCardDetails();
+                    Intent intent1 = getIntent();
+                    intent1.putExtra("cardIDDetails", cardIDPaypal);
+                    FragmentManager manager = getSupportFragmentManager();
+                    cardDetails.show(manager, "CreditCardDetails");
+                }
+            } else if (checkTopUp != null) {
+                if (checkTopUp.equals("TabHostTopUP")) {
+                    clearParameter.putString("TabHostTopUP", "");
+                    Log.d("haizzzz ", "call Back TabHostTopUP");
                     Fragment fragment = null;
                     Class fragmentClass = null;
                     fragmentClass = CreditCard.class;
@@ -517,9 +556,7 @@ public class MainActivity extends AppCompatActivity
                             .addToBackStack(null)
                             .commit();
                 }
-
-            }
-            if (checkUpdateBalance != null) {
+            } else if (checkUpdateBalance != null) {
                 Log.d("notiUpdateCard  ", " onResume not null");
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
                 alertDialogBuilder
@@ -528,19 +565,23 @@ public class MainActivity extends AppCompatActivity
                         .setPositiveButton("OK",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        Fragment fragment = null;
-                                        Class fragmentClass = null;
-                                        fragmentClass = FragmentChooseCard.class;
-
-                                        try {
-                                            fragment = (Fragment) fragmentClass.newInstance();
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
+                                        Bundle bundleCreditCard = getIntent().getExtras();
+                                        if (bundleCreditCard != null) {
+                                            if (bundleCreditCard.getString("action").equals("transferCreditCard")) {
+                                                Fragment fragment = null;
+                                                Class fragmentClass = null;
+                                                fragmentClass = CreditCard.class;
+                                                try {
+                                                    fragment = (Fragment) fragmentClass.newInstance();
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                                FragmentManager fragmentManager = getSupportFragmentManager();
+                                                fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
+                                                        .addToBackStack(null)
+                                                        .commit();
+                                            }
                                         }
-                                        FragmentManager fragmentManager = getSupportFragmentManager();
-                                        fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
-                                                .addToBackStack(null)
-                                                .commit();
                                     }
                                 });
 
@@ -601,7 +642,6 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
-
 
     @Override
     public void onBackPressed() {
@@ -788,16 +828,16 @@ public class MainActivity extends AppCompatActivity
                         bundle.putString("action", "transferProfile");
                     }
                     break;
-                case R.id.nav_choose_card:
-                    toolbar.setTitle("MUA VÉ BẰNG ĐIỆN THOẠI");
-                    if (Utility.isNetworkConnected(MainActivity.this)) {
-                        fragmentClass = FragmentChooseCard.class;
-                        bundle.putString("fragment", "FragmentChooseCard");
-                    } else {
-                        fragmentClass = FragmentDisconnect.class;
-                        bundle.putString("action", "transferFragmentChooseCard");
-                    }
-                    break;
+//                case R.id.nav_choose_card:
+//                    toolbar.setTitle("MUA VÉ BẰNG ĐIỆN THOẠI");
+//                    if (Utility.isNetworkConnected(MainActivity.this)) {
+//                        fragmentClass = FragmentChooseCard.class;
+//                        bundle.putString("fragment", "FragmentChooseCard");
+//                    } else {
+//                        fragmentClass = FragmentDisconnect.class;
+//                        bundle.putString("action", "transferFragmentChooseCard");
+//                    }
+//                    break;
                 case R.id.nav_search_routes:
                     final GetAllBusRoute busRoute = new GetAllBusRoute();
                     if (Utility.isNetworkConnected(MainActivity.this)) {
@@ -812,9 +852,7 @@ public class MainActivity extends AppCompatActivity
                                 fragmentClass = GetReport.class;
                             } else if (checkContext.getString("currentContext").equals("Profile")) {
                                 fragmentClass = Profile.class;
-                            } else if (checkContext.getString("currentContext").equals("FragmentChooseCard")) {
-                                fragmentClass = FragmentChooseCard.class;
-                            } else if (checkContext.getString("currentContext").equals("FragmentAbout")) {
+                            }else if (checkContext.getString("currentContext").equals("FragmentAbout")) {
                                 fragmentClass = FragmentAbout.class;
                             }
                         }
@@ -863,8 +901,6 @@ public class MainActivity extends AppCompatActivity
                                 fragmentClass = GetReport.class;
                             } else if (checkContext.getString("currentContext").equals("Profile")) {
                                 fragmentClass = Profile.class;
-                            } else if (checkContext.getString("currentContext").equals("FragmentChooseCard")) {
-                                fragmentClass = FragmentChooseCard.class;
                             } else if (checkContext.getString("currentContext").equals("FragmentAbout")) {
                                 fragmentClass = FragmentAbout.class;
                             }
@@ -919,8 +955,6 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.flContent, fragment)
                     .addToBackStack(null)
                     .commit();
-
-
         }
 
 

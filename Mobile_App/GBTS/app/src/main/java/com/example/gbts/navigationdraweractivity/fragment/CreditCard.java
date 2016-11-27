@@ -3,6 +3,7 @@ package com.example.gbts.navigationdraweractivity.fragment;
 import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -11,7 +12,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,34 +89,43 @@ public class CreditCard extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Log.d("truongneee", "onResume");
-        Bundle bundleResume = getArguments();
-        if (bundleResume != null) {
-            String checkBundle = bundleResume.getString("onResumeCreditCard");
-            if (checkBundle != null && checkBundle != "") {
-                if (checkBundle.equals("CreditCard")) {
-                    if (Utility.isNetworkConnected(getActivity())) {
-                        new JSONParseCardNFC().execute();
-                    } else {
-                        FragmentDisconnect disconnect = new FragmentDisconnect();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("action", "transferCreditCardDetails");
-                        disconnect.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
-                                .addToBackStack(null)
-                                .commit();
-                    }
-                }
-            } else {
-                //
-                Log.d("bunble", "not existed");
+    public void onDestroy() {
+        super.onDestroy();
+        if (Utility.isNetworkConnected(getActivity())) {
+            //ASYNC GET TOKEN SERVER API
+            //START FRAGMENT MAIN && INTEGRATION FB, PROMOTION
+            Fragment fragment = null;
+            Class fragmentClass = null;
+            fragmentClass = MainContent.class;
+            try {
+                fragment = (Fragment) fragmentClass.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putString("action", "transferMainContent");
+                fragment.setArguments(bundle);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            try {
+                FragmentDisconnect disconnect = new FragmentDisconnect();
+                Bundle bundle = new Bundle();
+                bundle.putString("action", "MainContent");
+                disconnect.setArguments(bundle);
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
+                        .addToBackStack(null)
+                        .commit();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-
     }
+
 
     private class JSONParseCardNFC extends AsyncTask<String, String, JSONObject> {
         String phone;
@@ -140,76 +152,195 @@ public class CreditCard extends Fragment {
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             super.onPostExecute(jsonObject);
-            try {
-                // Getting JSON Array from URL
-                int checkPurchase;
-                jsonArray = jsonObject.getJSONArray("data");
-                for (int i = 0; i < jsonArray.length(); i++) {
+            if (jsonObject != null) {
+                try {
+                    // Getting JSON Array from URL
+                    int checkPurchase;
+                    jsonArray = jsonObject.getJSONArray("data");
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    JSONObject object = jsonArray.getJSONObject(i);
-                    // Storing JSON item in a Variable
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        // Storing JSON item in a Variable
 
-                    NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
+                        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
 
-                    String cardID = object.optString(TAG_CARD_ID);
-                    String name = object.optString(TAG_CARD_NAME);
-                    String registrationDate = object.optString(TAG_REGISTRATION_DATE);
-                    double balance = object.optDouble(TAG_BALANCE);
-                    String strBalance = defaultFormat.format(balance);
-                    int status = object.optInt(TAG_CARD_STATUS);
+                        String cardID = object.optString(TAG_CARD_ID);
+                        String name = object.optString(TAG_CARD_NAME);
+                        String registrationDate = object.optString(TAG_REGISTRATION_DATE);
+                        double balance = object.optDouble(TAG_BALANCE);
+                        String strBalance = defaultFormat.format(balance);
+                        int status = object.optInt(TAG_CARD_STATUS);
 
-                    String strStatus = "";
-                    if (status == 0) {
-                        strStatus = "Chưa kích hoạt";
-                    } else if (status == 1) {
-                        strStatus = "Ðã kích hoạt";
+                        String strStatus = "";
+                        if (status == 0) {
+                            strStatus = "Chưa kích hoạt";
+                        } else if (status == 1) {
+                            strStatus = "Ðã kích hoạt";
+                        } else {
+                            strStatus = "Thẻ khoá";
+                        }
+
+                        CardNFC cardNFC = new CardNFC();
+                        cardNFC.setCardID(cardID);
+                        cardNFC.setCardName(name);
+                        cardNFC.setRegistrationDate(registrationDate);
+                        cardNFC.setBalance(balance);
+                        cardNFC.setStatus(status);
+                        listCardNFC.add(cardNFC);
+                    }
+                    if (getActivity() != null) {
+                        CreditCardAdapter creditCardAdapter = new CreditCardAdapter(getActivity(), listCardNFC);
+                        Log.d("getviewne", "view " + getView().toString());
+                        Log.d("getviewne", "getActivity " + getActivity().toString());
+                        if (getView() == null) {
+                            return;
+                        }
+                        listView = (ListView) getView().findViewById(R.id.listViewCard);
+                        listView.setAdapter(creditCardAdapter);
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                CardNFC cardNFC = listCardNFC.get(position);
+                                Bundle bundle = new Bundle();
+                                bundle.putString(TAG_CARD_ID, cardNFC.getCardID());
+                                Intent intent = getActivity().getIntent();
+                                intent.putExtras(bundle);
+
+
+                                CreditCardDetails creditCardDetails = new CreditCardDetails();
+                                creditCardDetails.setArguments(bundle);
+
+                                final FragmentManager manager = getFragmentManager();
+                                creditCardDetails.show(manager, "Details Account");
+                            }
+                        });
+
+                        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                            @Override
+                            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                                final CardNFC card = listCardNFC.get(position);
+                                //Format number
+                                final NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
+                                final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE);
+                                sharedPreferences.edit().putString("NFCPayment", card.getCardID()).commit();
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                                alertDialogBuilder
+                                        .setTitle("Bạn chọn thẻ " + card.getCardName())
+                                        .setCancelable(false)
+                                        .setPositiveButton("OK",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        String cardid = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE)
+                                                                .getString("NFCPayment", "");
+
+                                                        Log.d("NFCPayment ", "NFCPayment " + cardid);
+                                                        new AsyncGetCardInfo().execute(cardid);
+
+                                                        dialog.cancel();
+                                                    }
+                                                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // if this button is clicked, just close
+                                        // the dialog box and do nothing
+                                        dialog.cancel();
+                                    }
+                                });
+
+                                // create alert dialog
+                                AlertDialog alertDialog = alertDialogBuilder.create();
+                                alertDialog.show();
+                                return true;
+                            }
+                        });
                     } else {
-                        strStatus = "Thẻ khoá";
+                        //Thich thi anh chieu
+                        Log.d("checkAll ", "Listview Credit Cardis null");
+//                        FragmentDelay delay = new FragmentDelay();
+//                        getActivity().getSupportFragmentManager().beginTransaction()
+//                                .replace(R.id.flContent, delay, TAG_FRAGMENT)
+//                                .addToBackStack(null)
+//                                .commit();
                     }
 
-                    CardNFC cardNFC = new CardNFC();
-                    cardNFC.setCardID(cardID);
-                    cardNFC.setCardName(name);
-                    cardNFC.setRegistrationDate(registrationDate);
-                    cardNFC.setBalance(balance);
-                    cardNFC.setStatus(status);
-                    listCardNFC.add(cardNFC);
-                }
-                if (getActivity() != null) {
-                    CreditCardAdapter creditCardAdapter = new CreditCardAdapter(getActivity(), listCardNFC);
-                    listView = (ListView) getView().findViewById(R.id.listViewCard);
-                    listView.setAdapter(creditCardAdapter);
 
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    //Set card Default for Payment by Mobile
+                    final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Info", Context.MODE_PRIVATE);
+                    String checkCardID = sharedPreferences.getString("NFCPayment", "");
+                    if (checkCardID == "") {
+                        TextView textCardName = (TextView) getView().findViewById(R.id.txtLongCardName);
+                        TextView textStatus = (TextView) getView().findViewById(R.id.txtLongStatus);
+                        textCardName.setText("");
+                        textStatus.setText("");
 
-                            CardNFC cardNFC = listCardNFC.get(position);
-                            Bundle bundle = new Bundle();
-                            bundle.putString(TAG_CARD_ID, cardNFC.getCardID());
-                            Intent intent = getActivity().getIntent();
-                            intent.putExtras(bundle);
-
-
-                            CreditCardDetails creditCardDetails = new CreditCardDetails();
-                            creditCardDetails.setArguments(bundle);
-
-                            final FragmentManager manager = getFragmentManager();
-                            creditCardDetails.show(manager, "Details Account");
+                        String choosenCardID = "";
+                        for (CardNFC card : listCardNFC) {
+                            if (card.getStatus() == 1) {
+                                choosenCardID = card.getCardID();
+                                break;
+                            }
                         }
-                    });
+                        sharedPreferences.edit().putString("NFCPayment", choosenCardID);
+                        if (choosenCardID != null) {
+                            new AsyncGetCardInfo().execute(choosenCardID);
+                        }
+                    } else {
+                        new AsyncGetCardInfo().execute(checkCardID);
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+            } else {
+                //Thich thi anh chieu
 
-//                    listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//                        @Override
-//                        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//                            Toast.makeText(getActivity(), "Long Touch item", Toast.LENGTH_LONG).show();
-//                            return false;
-//                        }
-//                    });
+            }
 
+        }
+    }
 
-            } catch (JSONException e) {
+    private class AsyncGetCardInfo extends AsyncTask<String, Void, JSONObject> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            JSONParser jsonParser = new JSONParser();
+            String urlGetCardInfo = Constance.API_GET_CARD_INFO + "&cardId=" + params[0];
+            Log.d("truongURL", "AsyncGetCardInfo: " + urlGetCardInfo);
+            JSONObject json = jsonParser.getJSONFromUrlGET(urlGetCardInfo);
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            final NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
+            try {
+                JSONObject object = jsonObject.getJSONObject("data");
+                String cardID = object.getString("CardId");
+                String cardName = object.getString("CardName");
+                double balance = object.getDouble("Balance");
+                String registrationDate = object.getString("RegistrationDate");
+                int status = object.getInt("Status");
+                TextView textCardName = (TextView) getView().findViewById(R.id.txtLongCardName);
+                TextView textStatus = (TextView) getView().findViewById(R.id.txtLongStatus);
+                TextView textStatusName = (TextView) getView().findViewById(R.id.txtLongStatusName);
+
+                if (status == 1) {
+                    textStatusName.setText("Đã kích hoạt");
+                    textStatus.setBackgroundResource(R.drawable.shap_circle_online);
+
+                } else {
+                    textStatusName.setText("Chưa kích hoạt");
+                    textStatus.setBackgroundResource(R.drawable.shap_circle_offline);
+                }
+                textCardName.setText(cardName);
+
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

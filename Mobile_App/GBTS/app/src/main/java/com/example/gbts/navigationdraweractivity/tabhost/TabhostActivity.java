@@ -62,4 +62,25 @@ public class TabhostActivity extends AppCompatActivity {
             }
         });
     }
+
+    //test even onBack Press key
+//    @Override
+//    public void onBackPressed() {
+//        if (getFragmentManager().getBackStackEntryCount() > 0)
+//            getFragmentManager().popBackStack();
+//        else
+//            super.onBackPressed();
+//    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; goto parent activity.
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

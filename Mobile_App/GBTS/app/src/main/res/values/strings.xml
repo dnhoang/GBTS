@@ -11,4 +11,8 @@
         <item>Password</item>
     </string-array>
 
+
+    <!--LANGUAGE-->
+    <string name="language_en">English</string>
+    <string name="language_vn">VietName</string>
 </resources>

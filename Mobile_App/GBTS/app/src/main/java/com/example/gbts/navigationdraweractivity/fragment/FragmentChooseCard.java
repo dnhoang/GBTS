@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -84,6 +85,39 @@ public class FragmentChooseCard extends Fragment {
     public void onResume() {
         super.onResume();
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (Utility.isNetworkConnected(getActivity())) {
+            //ASYNC GET TOKEN SERVER API
+            //START FRAGMENT MAIN && INTEGRATION FB, PROMOTION
+            Fragment fragment = null;
+            Class fragmentClass = null;
+            fragmentClass = MainContent.class;
+            try {
+                fragment = (Fragment) fragmentClass.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putString("action", "transferMainContent");
+                fragment.setArguments(bundle);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            FragmentDisconnect disconnect = new FragmentDisconnect();
+            Bundle bundle = new Bundle();
+            bundle.putString("action", "MainContent");
+            disconnect.setArguments(bundle);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.flContent, disconnect, TAG_FRAGMENT)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     private class JSONParseCardNFC extends AsyncTask<String, String, JSONObject> {

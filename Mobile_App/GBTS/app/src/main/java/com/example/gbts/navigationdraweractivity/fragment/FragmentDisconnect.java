@@ -53,12 +53,6 @@ public class FragmentDisconnect extends Fragment {
                                 .replace(R.id.flContent, profile, TAG_FRAGMENT)
                                 .addToBackStack(null)
                                 .commit();
-                    } else if (bundle.getString("action").equals("transferFragmentChooseCard")) {
-                        FragmentChooseCard chooseCard = new FragmentChooseCard();
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.flContent, chooseCard, TAG_FRAGMENT)
-                                .addToBackStack(null)
-                                .commit();
                     }
 //                    else if (bundle.getString("action").equals("GetAllBusRoute")) {
 //                        GetAllBusRoute getAllBusRoute = new GetAllBusRoute();

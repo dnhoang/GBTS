@@ -80,6 +80,12 @@ public class MainContent extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().finish();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         txtNoti = (TextView) getView().findViewById(R.id.txtNotification);
@@ -159,10 +165,10 @@ public class MainContent extends Fragment {
 
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
-            // Hide dialog
-            pDialog.dismiss();
             Log.d("meow1", "url " + url);
             if (jsonObject != null) {
+                // Hide dialog
+                pDialog.dismiss();
                 try {
                     boolean success = jsonObject.getBoolean("success");
                     if (success) {

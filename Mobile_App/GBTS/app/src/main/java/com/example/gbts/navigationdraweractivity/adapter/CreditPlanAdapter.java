@@ -57,13 +57,23 @@ public class CreditPlanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // Get current position of item in recyclerview to bind data and assign values from list
-        Locale locale = new Locale("vi_VN","VN");
+        Locale locale = new Locale("vi_VN", "VN");
         Log.d("locale ", locale + "");
         NumberFormat defaultFormat = NumberFormat.getCurrencyInstance(locale);
         MyHolder myHolder = (MyHolder) holder;
         current = creditPlen.get(position);
+//        myHolder.imgIcon.setBackgroundResource(R.drawable.ic_normal);
         myHolder.txtCreditPlanName.setText(current.creditplanName);
         myHolder.txtPrice.setText("Gói: " + defaultFormat.format(current.creditplanPrice));
+        if (current.creditplanPrice == 30000) {
+            myHolder.imgIcon.setBackgroundResource(R.drawable.ic_package_normal);
+        } else if (current.creditplanPrice == 500000) {
+            myHolder.imgIcon.setBackgroundResource(R.drawable.ic_tien_spec);
+        } else if (current.creditplanPrice == 100000) {
+            myHolder.imgIcon.setBackgroundResource(R.drawable.ic_package_long);
+        } else {
+            myHolder.imgIcon.setBackgroundResource(R.drawable.ic_special);
+        }
         myHolder.txtPrice.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
 
         // load image into imageview using glide
@@ -92,9 +102,9 @@ public class CreditPlanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         // create constructor to get widget reference
         public MyHolder(View itemView) {
             super(itemView);
-            imgIcon = (ImageView) itemView.findViewById(R.id.ic_credit_Plan);
-            txtCreditPlanName = (TextView) itemView.findViewById(R.id.txtCreditPlanName);
-            txtPrice = (TextView) itemView.findViewById(R.id.txtcdlPrice);
+            imgIcon = (ImageView) itemView.findViewById(R.id.ic_ct_credit_Plan);
+            txtCreditPlanName = (TextView) itemView.findViewById(R.id.txt_ct_CreditPlanName);
+            txtPrice = (TextView) itemView.findViewById(R.id.txt_ct_cdlPrice);
             // bind the listener
             itemView.setOnClickListener(this);
         }

@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.gbts.navigationdraweractivity.MainActivity;
 import com.example.gbts.navigationdraweractivity.R;
@@ -40,57 +42,78 @@ public class TabHostTopup extends Fragment {
         Log.d("tabvoichahost", "onCreateView " + "TabHostTopup");
         Bundle bundle = getActivity().getIntent().getExtras();
 //        Bundle bundle = getArguments();
+        final int[] clickcount = {0};
         if (bundle != null) {
             final String cardId = bundle.getString("cardIDCreditDetails", "null");
             Log.d("truongne", "cardId  " + cardId);
-
             btn_topup = (Button) view.findViewById(R.id.btn_tab_TopUp);
             btn_topup.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    EditText edtCoupon = (EditText) getView().findViewById(R.id.edtFMCoupon);
-                    final String coupon = edtCoupon.getText().toString().trim();
-                    Log.d("truongne", "coupon " + coupon);
+                    clickcount[0] = clickcount[0] + 1;
+//                    Bundle getCheckTopup = getActivity().getIntent().getExtras();
+//                    if (getCheckTopup != null && getCheckTopup.getString("inputthan5times").equals("inputthan5times")) {
+//                        TextView txtMsg = (TextView) getView().findViewById(R.id.txtMessageTopup);
+//                        TextView txtTitle = (TextView) getView().findViewById(R.id.txtTileTopUp);
+//                        txtTitle.setText("THÔNG BÁO");
+//                        txtMsg.setText("Bạn đã nhập sai mã thẻ cào quá 5 lần \n Chức năng nạp bằng thẻ tạm thời bị khoá ");
+//                    } else
+                    if (clickcount[0] < 5 ) {
+                        EditText edtCoupon = (EditText) getView().findViewById(R.id.edtFMCoupon);
+                        final String coupon = edtCoupon.getText().toString().trim();
+                        Log.d("truongne", "coupon " + coupon);
 
-                    if (coupon != null && coupon != "") {
-                        Bundle bundle = getArguments();
+                        if (coupon != null && coupon != "") {
+                            Bundle bundle = getArguments();
 //                    String cardId = bundle.getString("cardId","null");
-                        final String[] params = {cardId, coupon};
-                        if (params != null) {
-                            if (Utility.isNetworkConnected(getActivity())) {
-                                new TopUpByCoupon().execute(params);
-                            } else {
-                                // custom dialog
-                                final Dialog dialog = new Dialog(getActivity());
-                                dialog.setContentView(R.layout.custom_dialog_login);
-                                dialog.setTitle("Mất kết nối mạng ...");
+                            final String[] params = {cardId, coupon};
+                            if (params != null) {
+                                if (Utility.isNetworkConnected(getActivity())) {
+                                    new TopUpByCoupon().execute(params);
+                                } else {
+                                    // custom dialog
+                                    final Dialog dialog = new Dialog(getActivity());
+                                    dialog.setContentView(R.layout.custom_dialog_login);
+                                    dialog.setTitle("Mất kết nối mạng ...");
 
-                                Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
-                                // if button is clicked, close the custom dialog
-                                dialogButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        if (Utility.isNetworkConnected(getActivity())) {
-                                            dialog.dismiss();
-                                            new TopUpByCoupon().execute(params);
+                                    Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
+                                    // if button is clicked, close the custom dialog
+                                    dialogButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if (Utility.isNetworkConnected(getActivity())) {
+                                                dialog.dismiss();
+                                                new TopUpByCoupon().execute(params);
+                                            }
                                         }
-                                    }
-                                });
+                                    });
 
-                                Button dialogCancel = (Button) dialog.findViewById(R.id.dialogBtnCancel);
-                                // if button is clicked, close the custom dialog
-                                dialogCancel.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                                    }
-                                });
-                                dialog.show();
+                                    Button dialogCancel = (Button) dialog.findViewById(R.id.dialogBtnCancel);
+                                    // if button is clicked, close the custom dialog
+                                    dialogCancel.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                        }
+                                    });
+                                    dialog.show();
+                                }
                             }
+                        } else {
+                            Log.d("truongne", "coupon is null ");
                         }
                     } else {
-                        Log.d("truongne", "coupon is null ");
+                        TextView txtMsg = (TextView) getView().findViewById(R.id.txtMessageTopup);
+                        TextView txtTitle = (TextView) getView().findViewById(R.id.txtTileTopUp);
+                        txtTitle.setText("THÔNG BÁO");
+                        txtMsg.setText("Bạn đã nhập sai mã thẻ cào quá 5 lần \n Chức năng nạp bằng thẻ tạm thời bị khoá ");
+                        clickcount[0] = 5;
+//                        Bundle checkTopup = new Bundle();
+//                        checkTopup.putString("inputthan5times", "inputthan5times");
+//                        Intent intentCheckTopup = getActivity().getIntent();
+//                        intentCheckTopup.putExtras(checkTopup);
                     }
+
                 }
             });
         }
@@ -147,7 +170,6 @@ public class TabHostTopup extends Fragment {
                 message = jsonObject.getString("message");
             } catch (JSONException e) {
                 e.printStackTrace();
-
             }
             if (success) {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -167,20 +189,11 @@ public class TabHostTopup extends Fragment {
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
             } else {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                alertDialogBuilder
-                        .setTitle(message)
-                        .setCancelable(false)
-                        .setNegativeButton("OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-
-                // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+//                \nXin vui lòng nhập mã khác
+                TextView txtMsg = (TextView) getView().findViewById(R.id.txtMessageTopup);
+                TextView txtTitle = (TextView) getView().findViewById(R.id.txtTileTopUp);
+                txtTitle.setText("THÔNG BÁO");
+                txtMsg.setText(message + "\nXin vui lòng nhập mã khác");
             }
         }
     }

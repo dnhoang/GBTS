@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="1dp">
+    android:gravity="center">
 
     <LinearLayout
         android:layout_width="300dp"
@@ -29,8 +28,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="Điểm khởi hành:"
+            android:text="Điểm khởi hành"
             android:textSize="15dp" />
 
        <LinearLayout
@@ -40,7 +40,7 @@
            android:orientation="horizontal">
            <AutoCompleteTextView
                android:id="@+id/AutoOrigin"
-               android:layout_width="260dp"
+               android:layout_width="250dp"
                android:layout_height="30dp"
                android:background="@drawable/edittext_profile"
                android:hint="Nhập điểm đi"
@@ -52,7 +52,6 @@
                android:id="@+id/txtClear1"
                android:layout_width="30dp"
                android:layout_height="30dp"
-               android:layout_margin="3dp"
                android:layout_gravity="center"
                android:gravity="center"
                android:textColor="#fff"
@@ -66,17 +65,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="Điểm đến: "
+            android:text="Điểm đến "
             android:textSize="15dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal">
             <AutoCompleteTextView
                 android:id="@+id/AutoDestination"
-                android:layout_width="260dp"
+                android:layout_width="250dp"
                 android:layout_height="30dp"
                 android:background="@drawable/edittext_profile"
                 android:hint="Nhập điểm đến"
@@ -88,7 +89,6 @@
                 android:id="@+id/txtClear2"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_margin="3dp"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:padding="5dp"
@@ -103,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/btn_purchase"
             android:text="Tìm kiếm" />
 
