@@ -66,10 +66,10 @@ namespace Green_Bus_Ticket_System_Data.Repositories
         public ScratchCardRepository(GreenBusEntities context) : base(context) { }
     }
 
-    public interface IOfferSubscriptionRepository : IGenericRepository<OfferSubscription> { }
-    public class OfferSubscriptionRepository : GenericRepository<OfferSubscription>, IOfferSubscriptionRepository
+    public interface ISubscriptionRepository : IGenericRepository<Subscription> { }
+    public class SubscriptionRepository : GenericRepository<Subscription>, ISubscriptionRepository
     {
-        public OfferSubscriptionRepository(GreenBusEntities context) : base(context) { }
+        public SubscriptionRepository(GreenBusEntities context) : base(context) { }
     }
 
     public interface IUserSubscriptionRepository : IGenericRepository<UserSubscription> { }
@@ -77,10 +77,5 @@ namespace Green_Bus_Ticket_System_Data.Repositories
     {
         public UserSubscriptionRepository(GreenBusEntities context) : base(context) { }
     }
-
-    public interface ITokenRepository : IGenericRepository<Token> { }
-    public class TokenRepository : GenericRepository<Token>, ITokenRepository
-    {
-        public TokenRepository(GreenBusEntities context) : base(context) { }
-    }
+    
 }

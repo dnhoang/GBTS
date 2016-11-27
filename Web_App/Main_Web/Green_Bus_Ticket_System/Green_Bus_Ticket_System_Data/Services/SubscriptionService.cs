@@ -10,30 +10,30 @@ using System.Threading.Tasks;
 
 namespace Green_Bus_Ticket_System_Data.Services
 {
-    public interface IOfferSubscriptionService : IEntityService<OfferSubscription>
+    public interface ISubscriptionService : IEntityService<Subscription>
     {
-        OfferSubscription GetOfferSubscription(int id);
-        OfferSubscription GetOfferSubscriptionByCode(string code);
+        Subscription GetOfferSubscription(int id);
+        Subscription GetOfferSubscriptionByCode(string code);
 
     }
 
-    public class OfferSubscriptionService : EntityService<OfferSubscription>, IOfferSubscriptionService
+    public class SubscriptionService : EntityService<Subscription>, ISubscriptionService
     {
         IUnitOfWork _unitOfWork;
-        IOfferSubscriptionRepository _repository;
+        ISubscriptionRepository _repository;
 
-        public OfferSubscriptionService(IUnitOfWork unitOfWork, IOfferSubscriptionRepository repository) : base(unitOfWork, repository)
+        public SubscriptionService(IUnitOfWork unitOfWork, ISubscriptionRepository repository) : base(unitOfWork, repository)
         {
             _unitOfWork = unitOfWork;
             _repository = repository;
         }
 
-        public OfferSubscription GetOfferSubscription(int id)
+        public Subscription GetOfferSubscription(int id)
         {
             return _repository.FindBy(u => u.Id == id).FirstOrDefault();
         }
 
-        public OfferSubscription GetOfferSubscriptionByCode(string code)
+        public Subscription GetOfferSubscriptionByCode(string code)
         {
             return _repository.FindBy(u => u.Code.ToLower().Equals(code.ToLower())).FirstOrDefault();
         }

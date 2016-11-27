@@ -82,9 +82,6 @@
     </Compile>
     <Compile Include="Model\AuditableEntity.cs" />
     <Compile Include="Model\Entity.cs" />
-    <Compile Include="OfferSubscription.cs">
-      <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="PaymentTransaction.cs">
       <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
     </Compile>
@@ -105,16 +102,18 @@
     <Compile Include="Services\CreditPlanService.cs" />
     <Compile Include="Services\EntityService.cs" />
     <Compile Include="Services\IService.cs" />
-    <Compile Include="Services\OfferSubscriptionService.cs" />
+    <Compile Include="Services\SubscriptionService.cs" />
     <Compile Include="Services\PaymentTransactionService.cs" />
     <Compile Include="Services\PromotionService.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\ScratchCardService.cs" />
     <Compile Include="Services\TicketService.cs" />
     <Compile Include="Services\TicketTypeService.cs" />
-    <Compile Include="Services\TokenService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\UserSubscriptionService.cs" />
+    <Compile Include="Subscription.cs">
+      <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="sysdiagram.cs">
       <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
     </Compile>
@@ -122,9 +121,6 @@
       <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
     </Compile>
     <Compile Include="TicketType.cs">
-      <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Token.cs">
       <DependentUpon>GreenBusTicketSystemModel.tt</DependentUpon>
     </Compile>
     <Compile Include="UnitOfWork\IUnitOfWork.cs" />

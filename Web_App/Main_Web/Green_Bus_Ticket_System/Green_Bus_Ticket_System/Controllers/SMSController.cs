@@ -24,14 +24,14 @@ namespace Green_Bus_Ticket_System.Controllers
         ICardService _cardService;
         IUserService _userService;
         IScratchCardService _scratchCardService;
-        IOfferSubscriptionService _offerSubscriptionService;
+        ISubscriptionService _offerSubscriptionService;
         IUserSubscriptionService _userSubscriptionService;
         IPaymentTransactionService _paymentTransactionService;
         ICreditPlanService _creditPlanService;
 
         public SMSController(ICardService cardService, IUserService userService,
             IScratchCardService scratchCardService,
-            IOfferSubscriptionService offerSubscriptionService,
+            ISubscriptionService offerSubscriptionService,
         IUserSubscriptionService userSubscriptionService,
         IPaymentTransactionService paymentTransactionService,
         ICreditPlanService creditPlanService)
@@ -125,7 +125,7 @@ namespace Green_Bus_Ticket_System.Controllers
                                 PaymentTransaction payment = new PaymentTransaction();
                                 payment.CardId = card.Id;
                                 payment.CreditPlanId = cp.Id;
-                                payment.TransactionId = "TOPU_" + code;
+                                payment.TransactionCode = "TOPU_" + code;
                                 payment.PaymentDate = DateTime.Now;
                                 payment.Total = scCard.Price;
                                 _paymentTransactionService.Create(payment);
@@ -149,7 +149,7 @@ namespace Green_Bus_Ticket_System.Controllers
                 {
                     string code = data[1];
 
-                    OfferSubscription offer = _offerSubscriptionService.GetOfferSubscriptionByCode(code);
+                    Subscription offer = _offerSubscriptionService.GetOfferSubscriptionByCode(code);
                     User user = _userService.GetUserByPhone(phone);
 
                     if (user != null)

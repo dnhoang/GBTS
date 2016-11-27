@@ -27,7 +27,7 @@ namespace Green_Bus_Ticket_System_Data
         public string Fullname { get; set; }
         public int Status { get; set; }
         public int RoleId { get; set; }
-        public string NotificationCode { get; set; }
+        public string DeviceToken { get; set; }
         public Nullable<int> MinBalance { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

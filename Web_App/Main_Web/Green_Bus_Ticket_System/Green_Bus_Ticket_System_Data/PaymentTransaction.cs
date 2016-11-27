@@ -17,7 +17,7 @@ namespace Green_Bus_Ticket_System_Data
         public int Id { get; set; }
         public int CardId { get; set; }
         public int CreditPlanId { get; set; }
-        public string TransactionId { get; set; }
+        public string TransactionCode { get; set; }
         public int Total { get; set; }
         public System.DateTime PaymentDate { get; set; }
     
