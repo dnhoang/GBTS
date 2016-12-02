@@ -78,7 +78,6 @@ public class CreditCardDetails extends DialogFragment
                 Log.d("truongtqqqqq ", "cardIdDetails " + cardIdDetails);
                 if (Utility.isNetworkConnected(getActivity())) {
                     if (cardId != null) {
-
                         new AsyncGetCardInfo().execute(cardId);
                     } else {
                         new AsyncGetCardInfo().execute(cardIdDetails);

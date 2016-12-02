@@ -91,12 +91,20 @@ public class CreditCard extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Bundle bundleNoti = getActivity().getIntent().getExtras();
+        String checkUpdateBalance = bundleNoti.getString("notiUpdateCard");
         if (Utility.isNetworkConnected(getActivity())) {
             //ASYNC GET TOKEN SERVER API
             //START FRAGMENT MAIN && INTEGRATION FB, PROMOTION
             Fragment fragment = null;
             Class fragmentClass = null;
-            fragmentClass = MainContent.class;
+            if (checkUpdateBalance.equals("PLEASEUPDATECARDLIST")) {
+
+                fragmentClass = CreditCard.class;
+            } else {
+
+                fragmentClass = MainContent.class;
+            }
             try {
                 fragment = (Fragment) fragmentClass.newInstance();
                 Bundle bundle = new Bundle();
@@ -109,7 +117,6 @@ public class CreditCard extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         } else {
             try {
                 FragmentDisconnect disconnect = new FragmentDisconnect();

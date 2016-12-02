@@ -526,18 +526,19 @@ public class MainActivity extends AppCompatActivity
                     try {
                         fragment = (Fragment) fragmentClass.newInstance();
                         fragment.setArguments(clearParameter);
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
+                                .addToBackStack(null)
+                                .commit();
+                        CreditCardDetails cardDetails = new CreditCardDetails();
+                        Intent intent1 = getIntent();
+                        intent1.putExtra("cardIDDetails", cardIDPaypal);
+                        FragmentManager manager = getSupportFragmentManager();
+                        cardDetails.show(manager, "CreditCardDetails");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
-                            .addToBackStack(null)
-                            .commit();
-                    CreditCardDetails cardDetails = new CreditCardDetails();
-                    Intent intent1 = getIntent();
-                    intent1.putExtra("cardIDDetails", cardIDPaypal);
-                    FragmentManager manager = getSupportFragmentManager();
-                    cardDetails.show(manager, "CreditCardDetails");
+
                 }
             } else if (checkTopUp != null) {
                 if (checkTopUp.equals("TabHostTopUP")) {
@@ -548,13 +549,19 @@ public class MainActivity extends AppCompatActivity
                     fragmentClass = CreditCard.class;
                     try {
                         fragment = (Fragment) fragmentClass.newInstance();
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
+                                .addToBackStack(null)
+                                .commit();
+//                        CreditCardDetails cardDetails = new CreditCardDetails();
+//                        Intent intent1 = getIntent();
+//                        intent1.putExtra("cardIDDetails", cardIDPaypal);
+//                        FragmentManager manager = getSupportFragmentManager();
+//                        cardDetails.show(manager, "CreditCardDetails");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
-                            .addToBackStack(null)
-                            .commit();
+
                 }
             } else if (checkUpdateBalance != null) {
                 Log.d("notiUpdateCard  ", " onResume not null");
@@ -567,20 +574,24 @@ public class MainActivity extends AppCompatActivity
                                     public void onClick(DialogInterface dialog, int id) {
                                         Bundle bundleCreditCard = getIntent().getExtras();
                                         if (bundleCreditCard != null) {
-                                            if (bundleCreditCard.getString("action").equals("transferCreditCard")) {
-                                                Fragment fragment = null;
-                                                Class fragmentClass = null;
-                                                fragmentClass = CreditCard.class;
-                                                try {
-                                                    fragment = (Fragment) fragmentClass.newInstance();
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
+                                            String checkTransfer = bundleCreditCard.getString("currentContext");
+                                            if (checkTransfer != null) {
+                                                if (checkTransfer.equals("CreditCard")) {
+                                                    Fragment fragment = null;
+                                                    Class fragmentClass = null;
+                                                    fragmentClass = CreditCard.class;
+                                                    try {
+                                                        fragment = (Fragment) fragmentClass.newInstance();
+                                                        FragmentManager fragmentManager = getSupportFragmentManager();
+                                                        fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
+                                                                .addToBackStack(null)
+                                                                .commit();
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
                                                 }
-                                                FragmentManager fragmentManager = getSupportFragmentManager();
-                                                fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
-                                                        .addToBackStack(null)
-                                                        .commit();
                                             }
+
                                         }
                                     }
                                 });
@@ -852,7 +863,7 @@ public class MainActivity extends AppCompatActivity
                                 fragmentClass = GetReport.class;
                             } else if (checkContext.getString("currentContext").equals("Profile")) {
                                 fragmentClass = Profile.class;
-                            }else if (checkContext.getString("currentContext").equals("FragmentAbout")) {
+                            } else if (checkContext.getString("currentContext").equals("FragmentAbout")) {
                                 fragmentClass = FragmentAbout.class;
                             }
                         }
