@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
@@ -166,7 +167,7 @@ public class FragmentDirection extends DialogFragment {
                         // custom dialog
                         final Dialog dialog = new Dialog(getActivity());
                         dialog.setContentView(R.layout.custom_dialog_login);
-                        dialog.setTitle("Mất kết nối mạng ...");
+                        dialog.setTitle(null);
 
                         Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
                         // if button is clicked, close the custom dialog
@@ -196,6 +197,14 @@ public class FragmentDirection extends DialogFragment {
         return view;
     }
 
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+
+        // request a window without the title
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
+    }
 
     private class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
         private ArrayList<String> result;

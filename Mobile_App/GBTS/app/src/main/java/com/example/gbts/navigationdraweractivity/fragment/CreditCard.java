@@ -98,13 +98,17 @@ public class CreditCard extends Fragment {
             //START FRAGMENT MAIN && INTEGRATION FB, PROMOTION
             Fragment fragment = null;
             Class fragmentClass = null;
-            if (checkUpdateBalance.equals("PLEASEUPDATECARDLIST")) {
+            if (checkUpdateBalance != null) {
+                if (checkUpdateBalance.equals("PLEASEUPDATECARDLIST")) {
+                    fragmentClass = CreditCard.class;
+                } else {
 
-                fragmentClass = CreditCard.class;
+                    fragmentClass = MainContent.class;
+                }
             } else {
-
-                fragmentClass = MainContent.class;
+                Log.d("truongtqqq", "Check Balance null");
             }
+
             try {
                 fragment = (Fragment) fragmentClass.newInstance();
                 Bundle bundle = new Bundle();
@@ -197,8 +201,8 @@ public class CreditCard extends Fragment {
                     }
                     if (getActivity() != null) {
                         CreditCardAdapter creditCardAdapter = new CreditCardAdapter(getActivity(), listCardNFC);
-                        Log.d("getviewne", "view " + getView().toString());
-                        Log.d("getviewne", "getActivity " + getActivity().toString());
+//                        Log.d("getviewne", "view " + getView().toString());
+//                        Log.d("getviewne", "getActivity " + getActivity().toString());
                         if (getView() == null) {
                             return;
                         }

@@ -10,11 +10,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DialogTitle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -67,7 +69,6 @@ public class CreditCardDetails extends DialogFragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_contain_details, container, false);
         Bundle bundle = getActivity().getIntent().getExtras();
         if (bundle != null) {
@@ -86,7 +87,8 @@ public class CreditCardDetails extends DialogFragment
                     // custom dialog
                     final Dialog dialog = new Dialog(getActivity());
                     dialog.setContentView(R.layout.custom_dialog_login);
-                    dialog.setTitle("Mất kết nối mạng ...");
+                    dialog.setTitle(null);
+
 
                     Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
                     // if button is clicked, close the custom dialog
@@ -134,7 +136,7 @@ public class CreditCardDetails extends DialogFragment
                     // custom dialog
                     final Dialog dialog = new Dialog(getActivity());
                     dialog.setContentView(R.layout.custom_dialog_change_card_name);
-                    dialog.setTitle("Mất kết nối mạng ...");
+                    dialog.setTitle(null);
 
                     TextView txtCardName = (TextView) dialog.findViewById(R.id.txtdialog_CardName);
                     txtCardName.setText("Tên thẻ: " + cardName);
@@ -168,7 +170,7 @@ public class CreditCardDetails extends DialogFragment
                     // custom dialog
                     final Dialog dialog = new Dialog(getActivity());
                     dialog.setContentView(R.layout.custom_dialog_login);
-                    dialog.setTitle("Mất kết nối mạng ...");
+                    dialog.setTitle(null);
 
                     Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
                     // if button is clicked, close the custom dialog
@@ -205,6 +207,14 @@ public class CreditCardDetails extends DialogFragment
     }
 
     @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+
+        // request a window without the title
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
+    }
+    @Override
     public void onDestroy() {
         super.onDestroy();
     }
@@ -232,7 +242,7 @@ public class CreditCardDetails extends DialogFragment
                     // custom dialog
                     final Dialog dialog = new Dialog(getActivity());
                     dialog.setContentView(R.layout.custom_dialog_login);
-                    dialog.setTitle("Mất kết nối mạng ...");
+                    dialog.setTitle(null);
 
                     Button dialogButton = (Button) dialog.findViewById(R.id.dialogBtnOK);
                     // if button is clicked, close the custom dialog
