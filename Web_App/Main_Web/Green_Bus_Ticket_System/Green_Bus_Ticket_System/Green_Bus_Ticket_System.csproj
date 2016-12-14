@@ -469,6 +469,7 @@
     <Content Include="Areas\Admin\Views\Account\SearchAccount.cshtml" />
     <Content Include="Areas\Staff\Views\ScratchCard\History.cshtml" />
     <Content Include="Areas\Staff\Views\ScratchCard\GetDate.cshtml" />
+    <Content Include="Areas\Staff\Views\Card\BoughtHistory.cshtml" />
     <None Include="Properties\PublishProfiles\GBTS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

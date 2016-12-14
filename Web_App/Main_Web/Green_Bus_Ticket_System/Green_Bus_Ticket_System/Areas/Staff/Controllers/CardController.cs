@@ -17,13 +17,16 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
         IUserService _userService;
         ICreditPlanService _creditPlanService;
         IPaymentTransactionService _paymentService;
+        ITicketService _ticketService;
         public CardController(ICardService cardService, IUserService userService,
-            ICreditPlanService creditPlanService, IPaymentTransactionService paymentService)
+            ICreditPlanService creditPlanService, IPaymentTransactionService paymentService,
+            ITicketService ticketService)
         {
             _cardService = cardService;
             _userService = userService;
             _creditPlanService = creditPlanService;
             _paymentService = paymentService;
+            _ticketService = ticketService;
         }
         // GET: Staff/Card
         public ActionResult Index()
@@ -44,7 +47,12 @@ namespace Green_Bus_Ticket_System.Areas.Staff.Controllers
             return PartialView();
         }
 
-
+        public ActionResult BoughtHistory(string id)
+        {
+            List<Ticket> tickets = _ticketService.GetLastTicketByCard(id);
+            ViewBag.Tickets = tickets;
+            return PartialView();
+        }
 
         public JsonResult LockCard(string id)
         {

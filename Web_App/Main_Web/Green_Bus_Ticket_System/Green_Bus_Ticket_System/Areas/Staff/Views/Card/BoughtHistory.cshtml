@@ -1,0 +1,30 @@
+﻿@{ 
+    List<Green_Bus_Ticket_System_Data.Ticket> tickets = (List<Green_Bus_Ticket_System_Data.Ticket>)ViewBag.Tickets;
+}
+@if(tickets.Count <= 0)
+{
+    <p>Thẻ này chưa mua vé nào!</p>
+}
+else
+{
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td>THỜI GIAN</td>
+                    <td>TUYẾN XE BUÝT</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in tickets)
+                {
+
+                    <tr>
+                        <td>@item.BoughtDated.ToString("dd/MM/yyyy")</td>
+                        <td>@item.BusRoute.Code - @item.BusRoute.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    
+}

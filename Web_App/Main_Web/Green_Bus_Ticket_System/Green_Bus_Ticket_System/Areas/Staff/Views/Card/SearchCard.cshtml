@@ -39,6 +39,7 @@
                 </p>
                 <p class="pull-right padding-t-30">
                     <button data-toggle="tooltip" title="Đổi thẻ" type="button" class="btn btn-success transfer" id="@item.UniqueIdentifier"><i class="fa fa-magic"></i></button>
+                    <button data-toggle="tooltip" title="Chuyến đi gần đây" type="button" class="btn btn-primary history" id="@item.Id"><i class="fa fa-list"></i></button>
                     @if (item.Status == (int)Green_Bus_Ticket_System_Utils.StatusReference.CardStatus.ACTIVATED)
                     {
                         <button data-toggle="tooltip" title="Khóa thẻ" type="button" class="btn btn-danger lockcard" id="@item.UniqueIdentifier"><i class="fa fa-lock"></i></button>

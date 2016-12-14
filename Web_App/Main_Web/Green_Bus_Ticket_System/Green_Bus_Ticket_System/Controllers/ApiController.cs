@@ -177,40 +177,51 @@ namespace Green_Bus_Ticket_System.Controllers
                     string current = DateTime.Now.ToString("hh:mm:ss tt");
                     DateTime bought = DateTime.ParseExact(boughtDate + " " + current, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.CurrentCulture);
 
-                    card.Balance = card.Balance - ticketType.Price;
-                    card.DataVersion = long.Parse(DateTime.Now.ToString("ddMMyyyyhhmmss"));
-                    _cardService.Update(card);
-
-                    Ticket ticket = new Ticket();
-                    ticket.CardId = card.Id;
-                    ticket.BusRouteId = busRoute.Id;
-                    ticket.TicketTypeId = ticketType.Id;
-                    ticket.BoughtDated = bought;
-                    ticket.Total = ticketType.Price;
-                    ticket.IsNoCard = false;
-
-                    _ticketService.Create(ticket);
-
-                    success = true;
-                    message = "Thành công.";
-
-                    int userMinbalance = minBalance;
-                    if(card.User.MinBalance != null)
+                    Ticket dupTicket = _ticketService.GetAll().Where(t => t.BoughtDated == bought && cardId.Equals(t.Card.UniqueIdentifier)).FirstOrDefault();
+                    if(dupTicket == null)
                     {
-                        userMinbalance = card.User.MinBalance.Value;
-                    }
+                        card.Balance = card.Balance - ticketType.Price;
+                        card.DataVersion = long.Parse(DateTime.Now.ToString("ddMMyyyyhhmmss"));
+                        _cardService.Update(card);
 
-                    //Check balance is running out & if user have installed mobile app
-                    if (card.Balance > 0 && card.Balance <= userMinbalance && card.User != null && card.User.DeviceToken != null)
-                    {
-                        string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
-                        if (card.Balance < _ticketTypeService.GetMinPrice())
+                        Ticket ticket = new Ticket();
+                        ticket.CardId = card.Id;
+                        ticket.BusRouteId = busRoute.Id;
+                        ticket.TicketTypeId = ticketType.Id;
+                        ticket.BoughtDated = bought;
+                        ticket.Total = ticketType.Price;
+                        ticket.IsNoCard = false;
+
+                        _ticketService.Create(ticket);
+
+                        success = true;
+                        message = "Thành công.";
+
+                        int userMinbalance = minBalance;
+                        if (card.User.MinBalance != null)
                         {
-                            msg = "Thẻ " + card.UniqueIdentifier + " còn lại không đủ mua vé, vui lòng nạp thêm.";
+                            userMinbalance = card.User.MinBalance.Value;
                         }
-                        Task task = SendToFireBase(card.User.DeviceToken, "Green Bus", msg);
-                        Task.WhenAll(task);
+
+                        //Check balance is running out & if user have installed mobile app
+                        if (card.Balance > 0 && card.Balance <= userMinbalance && card.User != null && card.User.DeviceToken != null)
+                        {
+                            string msg = "Thẻ " + card.UniqueIdentifier + " sắp hết tiền, vui lòng nạp thêm.";
+                            if (card.Balance < _ticketTypeService.GetMinPrice())
+                            {
+                                msg = "Thẻ " + card.UniqueIdentifier + " còn lại không đủ mua vé, vui lòng nạp thêm.";
+                            }
+                            Task task = SendToFireBase(card.User.DeviceToken, "Green Bus", msg);
+                            Task.WhenAll(task);
+                        }
                     }
+                    else
+                    {
+                        success = true;
+                        message = "Loại bỏ vé trùng. Thành công";
+                    }
+
+                    
 
                 }
             }

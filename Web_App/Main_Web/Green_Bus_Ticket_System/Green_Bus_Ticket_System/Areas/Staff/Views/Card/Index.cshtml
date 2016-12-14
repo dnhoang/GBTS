@@ -34,12 +34,12 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="form-inline">
+                    <div class="form-inline text-center">
                         <div class="form-group">
                             <label for="add-cardId" class="form-label">Mã thẻ</label>
                             <input type="text" class="form-control" id="add-cardId">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group hidden">
                             <label for="add-balance" class="form-label">Số dư</label>
                             <input type="number" class="form-control" id="add-balance" value="15000">
                         </div>
@@ -77,6 +77,29 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-white" data-dismiss="modal">HỦY</button>
                     <button type="button" class="btn btn-default" id="savetransfer"><i class="fa fa-floppy-o"></i> LƯU</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- End Moda Code -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Vé mua gần đây</h4>
+                </div>
+
+                <div class="modal-body">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">ĐÓNG</button>
+                    
                 </div>
 
             </div>
@@ -177,7 +200,7 @@
                         card.attr("title", "Mở khóa thẻ");
                         card.addClass("btn-primary unlockcard");
                         card.removeClass("btn-danger lockcard");
-                        $(".statuslable#" + id).html('<span class="red">KHÓA</span>');
+                        card.parents(".dash-card").find(".panel-title .statuslable").html('<span class="red">KHÓA</span>');
                     }
                 }
             });
@@ -199,11 +222,29 @@
                         card.attr("title", "Khóa thẻ");
                         card.removeClass("btn-primary unlockcard");
                         card.addClass("btn-danger lockcard");
-                        $(".statuslable#" + id).html('<span class="green">ĐÃ KÍCH HOẠT</span>');
+                        card.parents(".dash-card").find(".panel-title .statuslable").html('<span class="green">ĐÃ KÍCH HOẠT</span>');
                     }
                 }
             });
         });
+
+        $(document).on("click", ".history", function () {
+            var id = this.id;
+            var card = $(this);
+
+
+            $.ajax({
+                url: "/Staff/Card/BoughtHistory",
+                method: "GET",
+                dataType: "html",
+                data: { id: id },
+                success: function (data) {
+                    $("#historyModal .modal-body").html(data);
+                    $("#historyModal").modal("show");
+                }
+            });
+        });
+
 
         $("#save").click(function () {
             if (validate()) {
